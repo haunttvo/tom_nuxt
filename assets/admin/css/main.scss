@@ -2,8 +2,12 @@
     font-family: 'avo';
     src: url('../../fonts/avo/utm-avo.ttf');
 }
+h6{
+    font-size: 14px;
+}
 body{
     font-family: 'avo';
+    font-size: 14px;
 }
 .wrapper{
     display: flex;
@@ -15,9 +19,9 @@ body{
         transition: all 0.3s;
         background-color: #31353D;
         padding: 16px;
-        color: #fff;
+        color: #818896;
         a{
-            color: #fff;
+            color: #818896;
         }
         a:hover{
             text-decoration: none;
@@ -25,9 +29,28 @@ body{
         .menu-sidebar-items{
             li{
                 position: relative;
+                margin: 14px 0px;
+                span.badge{
+                    position: absolute;
+                    right: 18px;
+                    top: 7px;
+                }
+                i.fa{
+                    background-color: #3A3F48;
+                    padding: 7px;
+                    border-radius: 3px;
+                }
                 a{
                     display: block;
+                    transition: all 0.3s;
                 }
+                a:hover{
+                    color: #b8bfce;
+                }
+            }
+            li:hover .fa{
+                transition: all 0.3s ease;
+                color: #16c7ff;
             }
             li.sidebar-dropdown{
                 a.ls_down::after{
@@ -35,18 +58,47 @@ body{
                     font-weight: 900;
                     content: "\f105";
                     position: absolute;
-                    top: 2px;
+                    top: 5px;
                     right: 0;
+                    transition: all 0.3s;
                 }
                 .sidebar-submenu{
                     display: none;
                 }
             }
             li.sidebar-dropdown.active{
+                i.fa{
+                    color: #16c7ff;
+                }
                 a::after{
                     transform: rotate(90deg);
+                    transition: all 0.3s;
                 }
             }
+        }
+        .sidebar_header{
+            display: flex;
+            .user-pic{
+                flex: 1;
+                img{
+                    width: 80%;
+                    border-radius: 7px;
+                }
+            }
+            .user-info{
+                flex: 2;
+                span{
+                    display: block;
+                }
+                span.user-status i{
+                    font-size: 8px;
+                    margin-right: 4px;
+                    color: #5cb85c;
+                    vertical-align: middle;
+                }
+                // .user-status {}
+            }
+            
         }
     }
     #sidebar.active {
