@@ -41,6 +41,7 @@ module.exports = {
   ** Plugins to load before mounting the App
   */
   plugins: [
+
   ],
 
   /*
@@ -61,5 +62,6 @@ module.exports = {
     extend(config, ctx) {
       
     }
-  }
+  },
+  connectString: 'mongodb://sohuyn1996:meo123456@ds151805.mlab.com:51805/nuxt_tom',
 }

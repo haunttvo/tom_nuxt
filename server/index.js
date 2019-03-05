@@ -1,7 +1,21 @@
 const express = require('express')
 const consola = require('consola')
+require('express-group-routes')
 const { Nuxt, Builder } = require('nuxt')
+const bodyParser = require('body-parser')
+const mongoose = require('mongoose')
 const app = express()
+
+/** Import Controllers */
+
+const cptControllers = require('./controllers/admin/cptControllers'); 
+
+/** End Import Controller */
+
+
+// app.set('port', port);
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 // Import and Set Nuxt.js options
 let config = require('../nuxt.config.js')
@@ -23,7 +37,16 @@ async function start() {
   } else {
     await nuxt.ready()
   }
-
+  mongoose.connect(config.connectString,{useNewUrlParser: true});
+  var db = mongoose.connection;
+  db.on('error', console.error.bind(console, 'connection error'));
+  db.once('open', function() {
+    console.log("connected db ");
+    // we're connected!
+  });
+  app.group('/api/admin/cpt', (router) => {
+    cptControllers(router);
+  });
   // Give nuxt middleware to express
   app.use(nuxt.render)
 

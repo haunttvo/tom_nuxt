@@ -2,7 +2,7 @@
     <div>
     <div id="header">
       <b-navbar toggleable="lg" type="dark" variant="info">
-        <b-navbar-brand href="/admin">NavBar</b-navbar-brand>
+        <b-navbar-brand to="/admin">NavBar</b-navbar-brand>
 
         <b-navbar-toggle target="nav_collapse" />
 
@@ -66,9 +66,10 @@
                 <div class="sidebar-submenu">
                   <ul>
                     <li>
-                      <a href="/admin/posts/addnews">Add new
+                      <nuxt-link to="/admin/posts/addnews">
+                        Add new
                         <span class="badge badge-pill badge-success">Pro</span>
-                      </a>
+                      </nuxt-link>
                     </li>
                     <li>
                       <a href="#">Dashboard 2</a>
@@ -124,11 +125,10 @@
                 </div>
             </li>
             <li>
-                <a class="only_menu" href="/admin/cpt">
+                <nuxt-link to="/admin/cpt">
                   <i class="fa fa-globe"></i>
                   <span>CPT</span>
-                  <!-- <span class="badge badge-pill badge-danger">3</span> -->
-                </a>
+                </nuxt-link>
             </li>
             <li>
                 <a href="#">Contact</a>

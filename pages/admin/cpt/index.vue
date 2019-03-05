@@ -1,22 +1,51 @@
 <template>
   <div>
-      <b-table striped hover :items="items" :fields="fields" />
+      <nuxt-link to="/admin/cpt/addnew">Add new post type</nuxt-link>
+      <b-table striped hover bordered="" index="1" :items="items" :fields="fields" >
+        <template slot="action" slot-scope="row">
+          <b-button size="sm" @click="row.toggleDetails" class="mr-2">
+            {{ row.detailsShowing ? 'Hide' : 'Show'}}
+          </b-button>
+          <n-link :to='`/admin/cpt/edit/${row.item._id}`'>Edit</n-link>
+        </template>
+        <template slot="row-details" slot-scope="row">
+          <b-card>
+            <b-row class="mb-2">
+              <b-col sm="3" class="text-sm-right"><b>Age:</b></b-col>
+              <b-col>{{ row.item.age }}</b-col>
+            </b-row>
+
+            <b-row class="mb-2">
+              <b-col sm="3" class="text-sm-right"><b>Is Active:</b></b-col>
+              <b-col>{{ row.item.isActive }}</b-col>
+            </b-row>
+
+            <b-button size="sm" @click="row.toggleDetails">Hide Details</b-button>
+          </b-card>
+        </template>
+      </b-table>
   </div>
 </template>
 <script>
+import axios from 'axios';
 export default {
   layout: 'admin',
+  methods:{
+    getListCpt(){
+      let self = this;
+      axios.get('/api/admin/cpt').then( (res) => {
+        this.items = res.data;  
+      });
+    }
+  },
   data(){
     return{
-      // Note `isActive` is left out and will not appear in the rendered table
-        fields: ['first_name', 'last_name', 'age'],
-        items: [
-          { isActive: true, age: 40, first_name: 'Dickerson', last_name: 'Macdonald' },
-          { isActive: false, age: 21, first_name: 'Larsen', last_name: 'Shaw' },
-          { isActive: false, age: 89, first_name: 'Geneva', last_name: 'Wilson' },
-          { isActive: true, age: 38, first_name: 'Jami', last_name: 'Carney' }
-        ]
+        fields: ['name', 'slug', 'action'],
+        items: []
     }
-  }
+  },
+  created(){
+    this.getListCpt();
+  },
 }
 </script>
