@@ -26,7 +26,7 @@
           required
           placeholder="Enter Slug Post Type" />
       </b-form-group>
-      <b-button type="submit" variant="primary">Submit</b-button>
+      <b-button type="submit" variant="primary">Update</b-button>
       <b-button type="reset" variant="danger">Reset</b-button>
     </b-form>
     </div>
@@ -39,17 +39,11 @@ import axios from 'axios'
 Vue.use(VueTheMask)
 export default {
     layout : 'admin',
-    asyncData: function(context){
-
-    },
-    middleware: 'hau',
-    methods:{
-        onSubmit(){
-
-        },
-        onReset(){
-
-        }
+    middleware: 'md-before-params',
+    asyncData ({ params }) {
+      return { project: 'nuxt' }
+      // let { data } = await axios.get(`https://my-api/posts/${params.id}`)
+      // return { title: data.title }
     },
     data() {
       return {
@@ -60,8 +54,22 @@ export default {
         show: true
       }
     },
+    methods:{
+        getItemcpt(id){
+          axios.get(`/api/admin/cpt/getCpt/${id}`).then( (res) => {
+            this.formCpt.name = res.data.name;
+            this.formCpt.slug = res.data.slug;
+          });
+        },
+        onSubmit(){
+
+        },
+        onReset(){
+
+        }
+    },
     created(){
-        // console.log(this.$route.params);
+      this.getItemcpt(this.$route.params.idCpt);
     }
 }
 </script>

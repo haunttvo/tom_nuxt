@@ -15,14 +15,20 @@ var cptFn = {
             slug: req.body.slug
         }
         cpt.create(itemCpt, function(err, result){
-            if(err) return handleError(err);
+            if(err) return res.status(404).json(err);
             return res.status(200).json(result);
         });
     },
     getListCpt : function(req, res){
         cpt.find(function(err, result){
-            if(err) return handleError(err)
+            if(err) return res.status(404).json(err);
             return res.status(200).json(result)
+        });
+    },
+    getItemCpt : function(req, res){
+        cpt.findById(req.params.idCpt, function(err, result){
+            if(err) return res.status(404).json(err);
+            return res.status(200).json(result);
         });
     }
 }
