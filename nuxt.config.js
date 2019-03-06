@@ -3,6 +3,12 @@ const pkg = require('./package')
 
 module.exports = {
   mode: 'universal',
+  router: {
+    prefetchLinks: true
+  },
+  env: {
+    baseUrl: process.env.BASE_URL || 'http://localhost:3000'
+  },
 
   /*
   ** Headers of the page
@@ -49,7 +55,7 @@ module.exports = {
   */
   modules: [
     // Doc: https://bootstrap-vue.js.org/docs/
-    'bootstrap-vue/nuxt',
+    'bootstrap-vue/nuxt'
   ],
 
   /*

@@ -26,8 +26,9 @@
           required
           placeholder="Enter Slug Post Type" />
       </b-form-group>
-      <b-button type="submit" variant="primary">Update</b-button>
-      <b-button type="reset" variant="danger">Reset</b-button>
+      <p class="t-red cursor-pointer" @click="deleteCpt()">Delete Post Type</p>
+      <b-button type="submit" size="sm" variant="primary">Update</b-button>
+      <b-button type="reset" size="sm" variant="danger">Reset</b-button>
     </b-form>
     </div>
 </template>
@@ -38,38 +39,35 @@ import VueTheMask from 'vue-the-mask'
 import axios from 'axios'
 Vue.use(VueTheMask)
 export default {
+    async asyncData ({ params }) {
+      let res = await axios.get(`/api/admin/cpt/getCpt/${params.idCpt}`);
+      return { formCpt : { name: res.data.name, slug : res.data.slug } }
+    },
     layout : 'admin',
     middleware: 'md-before-params',
-    asyncData ({ params }) {
-      return { project: 'nuxt' }
-      // let { data } = await axios.get(`https://my-api/posts/${params.id}`)
-      // return { title: data.title }
-    },
     data() {
       return {
-        formCpt: {
-          name: '',
-          slug: '',
-        },
         show: true
       }
     },
     methods:{
-        getItemcpt(id){
-          axios.get(`/api/admin/cpt/getCpt/${id}`).then( (res) => {
-            this.formCpt.name = res.data.name;
-            this.formCpt.slug = res.data.slug;
+        onSubmit(evt){
+          evt.preventDefault();
+          axios.put('/api/admin/cpt/update', {id : this.$route.params.idCpt, arg : this.formCpt}).then((res) => {
+            this.$nuxt.$router.push({path: '/admin/cpt', query : { status: 'success' }});
           });
-        },
-        onSubmit(){
-
         },
         onReset(){
 
+        },
+        deleteCpt(){
+          let del = confirm('are you delete it');
+          if(del){
+            axios.delete(`${process.env.baseUrl}/api/admin/cpt/deleteCpt/${this.$route.params.idCpt}`).then((res) => {
+              this.$nuxt.$router.push({path: '/admin/cpt', query : { status: 'success' }});
+            });
+          }
         }
-    },
-    created(){
-      this.getItemcpt(this.$route.params.idCpt);
     }
 }
 </script>

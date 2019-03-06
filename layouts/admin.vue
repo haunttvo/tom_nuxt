@@ -124,11 +124,33 @@
                   </ul>
                 </div>
             </li>
+            <li class="sidebar-dropdown">
+                <a class="ls_down" href="javascript:void(0)">
+                  <i class="fa fa-apple-alt"></i>
+                  <span>Custom field</span>
+                  <span class="badge badge-pill badge-danger">2</span>
+                </a>
+                <div class="sidebar-submenu">
+                  <ul>
+                    <li>
+                      <n-link to="/admin/acf">
+                        List Field
+                        <span class="badge badge-pill badge-success">Pro</span>
+                      </n-link>
+                    </li>
+                    <li>
+                      <n-link to="/admin/acf/addnew">
+                        Add new field
+                      </n-link>
+                    </li>
+                  </ul>
+                </div>
+            </li>
             <li>
-                <nuxt-link to="/admin/cpt">
+                <n-link to="/admin/cpt">
                   <i class="fa fa-globe"></i>
                   <span>CPT</span>
-                </nuxt-link>
+                </n-link>
             </li>
             <li>
                 <a href="#">Contact</a>

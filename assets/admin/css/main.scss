@@ -2,6 +2,13 @@
     font-family: 'avo';
     src: url('../../fonts/avo/utm-avo.ttf');
 }
+$cool-red: red;
+.t-red {
+    color: $cool-red
+}
+.cursor-pointer{
+    cursor: pointer;
+}
 h6{
     font-size: 14px;
 }

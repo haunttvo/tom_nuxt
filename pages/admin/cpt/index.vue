@@ -1,5 +1,12 @@
 <template>
   <div>
+    <b-alert
+      :show="$route.query.status != null" 
+      dismissible 
+      variant="success"
+    >
+      Thêm mới thành công
+    </b-alert>
       <nuxt-link to="/admin/cpt/addnew">Add new post type</nuxt-link>
       <b-table striped hover bordered="" index="1" :items="items" :fields="fields" >
         <template slot="action" slot-scope="row">
@@ -28,7 +35,20 @@
 </template>
 <script>
 import axios from 'axios';
+// axios.defaults.baseURL = 'http://localhost:3000'
 export default {
+  props:{
+    text : {
+      type: String,
+      default: ''
+    }
+  },
+  async asyncData({params}){
+    if(process.server){
+      const {data} = await axios.get(`/api/admin/cpt`);
+      return { items: data }
+    }  
+  },  
   layout: 'admin',
   methods:{
     getListCpt(){
@@ -41,11 +61,11 @@ export default {
   data(){
     return{
         fields: ['name', 'slug', 'action'],
-        items: []
+        items : []
     }
   },
   created(){
     this.getListCpt();
-  },
+  }
 }
 </script>

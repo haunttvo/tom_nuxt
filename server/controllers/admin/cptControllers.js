@@ -10,4 +10,13 @@ module.exports = function(router){
     router.post('/addnew', function(req, res){
         return cptModels.cptFn.createCpt(req, res);
     });
+
+    router.put('/update', function(req, res){
+        return cptModels.cptFn.updateCpt(req, res);
+    });
+
+    router.delete('/deleteCpt/:id', function(req, res){
+        return cptModels.cptFn.deleteCpt(req, res);
+    });
+
 }
