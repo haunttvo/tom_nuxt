@@ -175,12 +175,18 @@
 
 <script>
 export default {
+    head : {
+      script: [
+        {src : '/scripts/admin/main.js'}
+      ]
+    },
     data(){
         return{
         collapseSidebar: false
         }
     },
     mounted(){
+        // console.log(process.env.baseUrl);
         $('.menu-sidebar-items a.ls_down').click(function(){
             if( $(this).parent().hasClass('active') ){
                 $(this).parent().removeClass('active');

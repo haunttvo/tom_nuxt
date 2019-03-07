@@ -42,7 +42,6 @@ module.exports = {
     'bootstrap/dist/css/bootstrap.css',
     '@/assets/admin/css/main.scss'
   ],
-
   /*
   ** Plugins to load before mounting the App
   */

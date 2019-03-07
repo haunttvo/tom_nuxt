@@ -3,6 +3,13 @@
     src: url('../../fonts/avo/utm-avo.ttf');
 }
 $cool-red: red;
+$cool-green : #17A2B8;
+.flex-style-1{
+    display: flex;
+    li{
+        flex: 1;
+    }
+}
 .t-red {
     color: $cool-red
 }
@@ -103,7 +110,6 @@ body{
                     color: #5cb85c;
                     vertical-align: middle;
                 }
-                // .user-status {}
             }
             
         }
@@ -118,7 +124,72 @@ body{
         min-height: 100vh;
         transition: all 0.3s;
     }
-
+    .header-acf-field{
+        .u-acf-head{
+            font-weight: bold;
+            @extend .flex-style-1;
+        }
+    }
+    .acf-form-wrapper{
+        .items-acf{
+            margin-bottom: 10px;
+            .head-acf{
+                border: 1px solid #ccc;
+            }
+        }
+        .head-acf{
+            .u-acf-head{
+                margin-bottom: 0;
+                padding: 12px 4px;
+                @extend .flex-style-1;
+                > li > span{
+                    font-weight: bold;
+                }
+                .order{
+                    display: inline-block;
+                    border-radius: 50%;
+                    width: 34px;
+                    height: 34px;
+                    text-align: center;
+                    border: 1px solid;
+                    padding-top: 5px;
+                }
+                .fn-crud{
+                    cursor: pointer;
+                }
+            }
+            .u-acf-head.active{
+                background-color: $cool-green;
+                color: #fff;
+            }
+            
+        }
+        .tb-acf{
+            display: none;
+            .table-acf-form{
+                border-top: 0;
+                tr{
+                    display: flex;
+                    td.td-label{
+                        flex: 1;
+                        font-weight: bold;
+                    }
+                    td.et-form{
+                        flex: 4;
+                    }
+                }
+            }
+        }
+    }
+    .box-tom{
+        .header-box-tom{
+            border: 1px solid #dee2e6;
+    border-bottom: 0;
+    padding: 0.75rem;
+    margin-top: 10px;
+        }
+    }
+    
 }
 
 @media (max-width: 768px) {
