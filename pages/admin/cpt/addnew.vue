@@ -50,6 +50,7 @@ export default {
     },
     methods: {
       onSubmit(evt) {
+        // this.$validator.validateAll();
         evt.preventDefault()
         axios.post('/api/admin/cpt/addnew', this.formCpt ).then( (res) => {
           console.log(res);
