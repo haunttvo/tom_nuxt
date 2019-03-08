@@ -9,7 +9,7 @@ const app = express()
 /** Import Controllers */
 
 const cptControllers = require('./controllers/admin/cptControllers'); 
-
+const acfControllers = require('./controllers/admin/acfControllers'); 
 /** End Import Controller */
 
 
@@ -46,6 +46,9 @@ async function start() {
   });
   app.group('/api/admin/cpt', (router) => {
     cptControllers(router);
+  });
+  app.group('/api/admin/acf', (router) => {
+    acfControllers(router);
   });
   // Give nuxt middleware to express
   app.use(nuxt.render)

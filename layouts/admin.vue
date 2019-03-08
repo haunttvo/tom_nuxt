@@ -3,7 +3,6 @@
     <div id="header">
       <b-navbar toggleable="lg" type="dark" variant="info">
         <b-navbar-brand to="/admin">NavBar</b-navbar-brand>
-
         <b-navbar-toggle target="nav_collapse" />
 
         <b-collapse is-nav id="nav_collapse">

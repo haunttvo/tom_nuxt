@@ -49,7 +49,7 @@
                                     <tr>
                                         <td class="td-label">Field Name</td>
                                         <td class="et-form">
-                                            <input type="text" class="form-control form-control-sm" v-mask="'XXXXXXXXXXXXXXXXXXXXXXXX'" v-validate="'required|max:50'" name="field_name" v-model="itemAcf.formAcf.fieldName">
+                                            <input type="text" class="form-control form-control-sm" v-validate="'required|max:50'" name="field_name" v-model="itemAcf.formAcf.fieldName">
                                             <div class="invalid-feedback d-block">
                                                 {{ errors.first('field_name') }}
                                             </div>
@@ -98,7 +98,7 @@
                     </table>
                 </div>
             </div>
-            <b-button variant="info" size="sm" @click="publishAcf()" >Publish</b-button>
+            <b-button variant="info" size="sm" @click="updateAcf()" >Publish</b-button>
         </b-form>
     </div>
 </template>
@@ -107,14 +107,15 @@
 import Vue from 'vue';
 import vi from 'vee-validate/dist/locale/vi';
 import VeeValidate, { Validator } from 'vee-validate';
-import VueTheMask from 'vue-the-mask';
 import axios from 'axios';
-Vue.use(VueTheMask)
 Vue.use(VeeValidate);
 Validator.localize('ar', vi);
-
 export default {
-    layout: 'admin',
+    layout : 'admin',
+    async asyncData({params}){
+        let dataAcf = await axios.get(`http://localhost:3000/api/admin/acf/getAcfItem/${params.id}`);
+        return { itemDataAcf: dataAcf.data, createItemAcf : dataAcf.data.field }
+    },
     data(){
         return{
             items: [
@@ -125,15 +126,6 @@ export default {
             optionPostsType : [{value : 'post', text: 'post'}, {value : 'page', text: 'page'}],
             optionType : [ {value : 'cpt', text: 'Post Type'} ],
             optionsTypeChoiceCpt : [{value : '=', text : 'is equal to'}],
-            createItemAcf : {
-                nameField: '',
-                fieldAcf : [],
-                formLocation : {
-                    optionChoiceType: 'cpt',
-                    optionEqual : '=',
-                    optionPostType : 'post'
-                }
-            }
         }
     },
     methods:{
@@ -160,22 +152,11 @@ export default {
             }    
             
         },
-        publishAcf(){
-            axios.post('/api/admin/acf/addnewacf', { field: this.createItemAcf }).then((res) => {
-                
-                console.log(res);
+        updateAcf(){
+            axios.put('/api/admin/acf/updateacf', { id: this.$route.params.id, args : this.createItemAcf } ).then((res) => {
+                this.$router.push('/admin/acf');
             });
         }
-    },
-    mounted(){
-        // $(document).on('.fn-crud .edit-acf','click', function(){
-        //     $(this).parents('.head-acf').next().slideToggle();
-        //   if( !$(this).parents('.u-acf-head').hasClass('active') ){
-        //       $(this).parents('.u-acf-head').addClass('active');
-        //   }else{
-        //       $(this).parents('.u-acf-head').removeClass('active');
-        //   }
-        // });
     }
 }
 </script>

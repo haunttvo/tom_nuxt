@@ -22,6 +22,7 @@
     "node-sass": "^4.11.0",
     "nuxt": "^2.4.0",
     "sass-loader": "^7.1.0",
+    "vee-validate": "^2.1.7",
     "vue-form-generator": "^2.3.4",
     "vue-the-mask": "^0.11.1"
   },

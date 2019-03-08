@@ -35,7 +35,6 @@
 </template>
 <script>
 import axios from 'axios';
-// axios.defaults.baseURL = 'http://localhost:3000'
 export default {
   props:{
     text : {
@@ -44,10 +43,8 @@ export default {
     }
   },
   async asyncData({params}){
-    if(process.server){
-      const {data} = await axios.get(`/api/admin/cpt`);
-      return { items: data }
-    }  
+    const {data} = await axios.get(`/api/admin/cpt`);
+    return { items: data } 
   },  
   layout: 'admin',
   methods:{
@@ -61,7 +58,6 @@ export default {
   data(){
     return{
         fields: ['name', 'slug', 'action'],
-        items : []
     }
   },
   created(){
