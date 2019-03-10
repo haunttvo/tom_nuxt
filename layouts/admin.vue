@@ -56,29 +56,30 @@
             <h6>General</h6>
         </div>
         <ul class="list-unstyled components menu-sidebar-items">
-            <li class="sidebar-dropdown">
+            <!-- router post type -->
+            <li class="sidebar-dropdown" v-for=" (cpt, i) in $store.state.listCptSidebar" :key="i">
                 <a class="ls_down" href="javascript:void(0)">
                   <i class="fa fa-tachometer-alt"></i>
-                  <span>Posts</span>
+                  <span>{{ cpt.name }}</span>
                   <span class="badge badge-pill badge-warning">New</span>
                 </a>
                 <div class="sidebar-submenu">
                   <ul>
                     <li>
-                      <nuxt-link to="/admin/posts/addnews">
+                      <n-link :to="`/admin/posts/${cpt.slug}`">
+                        List {{ cpt.name }}
+                      </n-link>
+                    </li>
+                    <li>
+                      <nuxt-link :to="`/admin/posts/${cpt.slug}/addnew`">
                         Add new
                         <span class="badge badge-pill badge-success">Pro</span>
                       </nuxt-link>
                     </li>
-                    <li>
-                      <a href="#">Dashboard 2</a>
-                    </li>
-                    <li>
-                      <a href="#">Dashboard 3</a>
-                    </li>
                   </ul>
                 </div>
             </li>
+            <!-- end router post type -->
             <li class="sidebar-dropdown">
                 <a class="ls_down" href="javascript:void(0)">
                   <i class="fa fa-shopping-cart"></i>
@@ -181,11 +182,10 @@ export default {
     },
     data(){
         return{
-        collapseSidebar: false
+          collapseSidebar: false,
         }
     },
     mounted(){
-        // console.log(process.env.baseUrl);
         $('.menu-sidebar-items a.ls_down').click(function(){
             if( $(this).parent().hasClass('active') ){
                 $(this).parent().removeClass('active');
@@ -197,6 +197,11 @@ export default {
                 $(this).next('.sidebar-submenu').slideDown(200);
             }
         });
-    }
+    },
+    computed: {
+      map () {
+        return this.$store.state.listCptSidebar;
+      }
+    },
 }
 </script>

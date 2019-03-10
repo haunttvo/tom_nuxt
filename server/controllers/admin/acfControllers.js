@@ -13,4 +13,8 @@ module.exports = function(router){
     router.post('/addnewacf', function(req, res){
         return acfModels.acfFn.createAcf(req, res);
     });
+
+    router.get('/getAcfPost/:cpt', function(req, res){
+        return acfModels.acfFn.getAcfCpt(req, res);
+    });
 }

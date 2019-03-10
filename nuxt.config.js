@@ -3,9 +3,9 @@ const pkg = require('./package')
 
 module.exports = {
   mode: 'universal',
-  router: {
-    prefetchLinks: true
-  },
+  // router: {
+  //   prefetchLinks: true
+  // },
   env: {
     baseUrl: process.env.BASE_URL || 'http://localhost:3000'
   },
@@ -46,7 +46,7 @@ module.exports = {
   ** Plugins to load before mounting the App
   */
   plugins: [
-
+    // '~/plugins/nuxt-client-init',
   ],
 
   /*

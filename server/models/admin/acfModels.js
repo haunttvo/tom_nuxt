@@ -31,6 +31,12 @@ var acfFn = {
             if(err) return res.status(400).json(err);
             return res.status(200).json(result);
         });
+    },
+    getAcfCpt(req, res){
+        acf.find({ 'field.formLocation.optionPostType' : req.params.cpt},function(err, result){
+            if(err) return res.status(400).json(err);
+            return res.status(200).json(result);
+        });
     }
 }
 

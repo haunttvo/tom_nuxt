@@ -36,32 +36,15 @@
 <script>
 import axios from 'axios';
 export default {
-  props:{
-    text : {
-      type: String,
-      default: ''
-    }
-  },
   async asyncData({params}){
-    const {data} = await axios.get(`/api/admin/cpt`);
+    const {data} = await axios.get(`http://localhost:3000/api/admin/cpt`);
     return { items: data } 
   },  
   layout: 'admin',
-  methods:{
-    getListCpt(){
-      let self = this;
-      axios.get('/api/admin/cpt').then( (res) => {
-        this.items = res.data;  
-      });
-    }
-  },
   data(){
     return{
         fields: ['name', 'slug', 'action'],
     }
-  },
-  created(){
-    this.getListCpt();
   }
 }
 </script>

@@ -161,10 +161,14 @@ export default {
             
         },
         publishAcf(){
-            axios.post('/api/admin/acf/addnewacf', { field: this.createItemAcf }).then((res) => {
-                
-                console.log(res);
+            this.$validator.validate().then(valid => {
+                if (valid) {
+                    axios.post('/api/admin/acf/addnewacf', { field: this.createItemAcf }).then((res) => {
+                        return this.$router.push('/admin/acf');
+                    });
+                }
             });
+            
         }
     },
     mounted(){

@@ -153,9 +153,14 @@ export default {
             
         },
         updateAcf(){
-            axios.put('/api/admin/acf/updateacf', { id: this.$route.params.id, args : this.createItemAcf } ).then((res) => {
-                this.$router.push('/admin/acf');
+            this.$validator.validate().then(valid => {
+                if (valid) {
+                    axios.put('/api/admin/acf/updateacf', { id: this.$route.params.id, args : this.createItemAcf } ).then((res) => {
+                        this.$router.push('/admin/acf');
+                    });
+                }
             });
+            
         }
     }
 }
