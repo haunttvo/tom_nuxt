@@ -3,6 +3,8 @@ export const field_ex = {
     fd_text : function(arg){
         let fs = {
             inputType: 'text',
+            model : arg.name
+            // model : 'price1'
         }
         Object.assign(fs, arg);
         return { fs }
@@ -10,6 +12,7 @@ export const field_ex = {
     /** type select */
     fd_select : function(arg){
         let fs = {
+            model : arg.name,
             values : function(){
                 return [
                     { id: 'vue', name : 'vue', value : '1' }

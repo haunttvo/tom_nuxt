@@ -1,8 +1,8 @@
 <template>
     <div>
-      <vue-form-generator :schema="schema" :model="model" :options="formOptions"></vue-form-generator>
+        <vue-form-generator :schema="schema" :model="model" :options="formOptions"></vue-form-generator>
+        <b-button variant="info" @click="publishpost()" size="sm">Publish</b-button>
     </div>
-
 </template>
 
 <script>
@@ -24,12 +24,8 @@ export default {
     data(){
         return{
             model: {
-                id: 1,
-                name: 'John Doe',
-                password: 'J0hnD03!x4',
-                skills: ['Javascript', 'VueJS'],
-                email: 'john.doe@gmail.com',
-                status: true
+                // price1: '',
+                // test : ''
             },
             schema: {
                 fields: [
@@ -88,10 +84,16 @@ export default {
             }
         }
     },
+    methods:{
+        publishpost(){
+            alert(1);
+        }
+    },
     created(){
         var self = this;
         for (let index = 0; index < this.acfField.length; index++) {
             self.acfField[index].field.fieldAcf.forEach((e) => {
+                self.model = Object.assign(self.model, { [e.formAcf.name] : ''} ); 
                 switch (e.formAcf.type) {
                     case 'input':
                         self.schema.fields.push( field_ex.fd_text(e.formAcf).fs );
@@ -103,7 +105,7 @@ export default {
                         break;
                 }
             })
-        }
+        };
     }
 
 }

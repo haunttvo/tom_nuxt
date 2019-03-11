@@ -134,7 +134,7 @@ export default {
             createItemAcf : {
                 nameField: '',
                 fieldAcf : [],
-                // defaultValues : '',
+                defaultValues : '',
                 formLocation : {
                     optionChoiceType: 'cpt',
                     optionEqual : '=',

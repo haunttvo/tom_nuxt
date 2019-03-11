@@ -141,7 +141,7 @@ export default {
                 formAcf:{
                     label: '',
                     name : '',
-                    type : 'text'
+                    type : 'input'
                 },
                 attr:{
                   defaultsvalues: ''
