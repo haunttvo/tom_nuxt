@@ -4,7 +4,7 @@
             <b-form-group label="Add new field Group">
                 <b-form-input v-model="createItemAcf.nameField" v-validate="'required|max:50'" name="namefield" placeholder="Enter title here" type="text"></b-form-input>
                 <div class="invalid-feedback d-block">
-                    {{ errors.first('namefield') }}
+                    {{ vErrors.first('namefield') }}
                 </div>
             </b-form-group>
             <div class="header-acf-field">
@@ -42,7 +42,7 @@
                                         <td class="et-form">
                                             <input type="text" required class="form-control form-control-sm" v-validate="'required|max:50'" name="field_label" v-model="itemAcf.formAcf.label">
                                             <div class="invalid-feedback d-block">
-                                                {{ errors.first('field_label') }}
+                                                {{ vErrors.first('field_label') }}
                                             </div>
                                         </td>
                                     </tr>
@@ -51,7 +51,7 @@
                                         <td class="et-form">
                                             <input type="text" class="form-control form-control-sm" v-validate="'required|max:50'" name="field_name" v-model="itemAcf.formAcf.name">
                                             <div class="invalid-feedback d-block">
-                                                {{ errors.first('field_name') }}
+                                                {{ vErrors.first('field_name') }}
                                             </div>
                                         </td>
                                     </tr>
@@ -59,6 +59,17 @@
                                         <td class="td-label">Field Type</td>
                                         <td class="et-form">
                                             <b-form-select size="sm" v-model="itemAcf.formAcf.type" :options="optionsTypeAcf"></b-form-select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="td-label">Default Values</td>
+                                        <td class="et-form">
+                                            <template v-if="itemAcf.formAcf.type == 'input'">
+                                              <input type="text" v-model="itemAcf.attr.defaultsvalues" class="form-control form-control-sm">
+                                            </template>
+                                            <template v-else>
+                                              <textarea name="" v-model="itemAcf.attr.defaultsvalues" rows="8" cols="80" class="form-control"></textarea>
+                                            </template>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -86,10 +97,10 @@
                                             <b-form-select size="sm" :options="optionType" v-model="createItemAcf.formLocation.optionChoiceType"></b-form-select>
                                         </b-col>
                                         <b-col cols="3">
-                                           <b-form-select size="sm" :options="optionsTypeChoiceCpt" v-model="createItemAcf.formLocation.optionEqual"></b-form-select>         
+                                           <b-form-select size="sm" :options="optionsTypeChoiceCpt" v-model="createItemAcf.formLocation.optionEqual"></b-form-select>
                                         </b-col>
                                         <b-col cols="3">
-                                           <b-form-select size="sm" :options="optionPostsType" v-model="createItemAcf.formLocation.optionPostType"></b-form-select>         
+                                           <b-form-select size="sm" :options="optionPostsType" v-model="createItemAcf.formLocation.optionPostType"></b-form-select>
                                         </b-col>
                                     </b-row>
                                 </td>
@@ -105,15 +116,11 @@
 
 <script>
 import Vue from 'vue';
-import vi from 'vee-validate/dist/locale/vi';
-import VeeValidate, { Validator } from 'vee-validate';
 import axios from 'axios';
-Vue.use(VeeValidate);
-Validator.localize('ar', vi);
 export default {
     layout : 'admin',
     async asyncData({params}){
-        let dataAcf = await axios.get(`http://localhost:3000/api/admin/acf/getAcfItem/${params.id}`);
+        let dataAcf = await axios.get(`/api/admin/acf/getAcfItem/${params.id}`);
         return { itemDataAcf: dataAcf.data, createItemAcf : dataAcf.data.field }
     },
     data(){
@@ -135,6 +142,9 @@ export default {
                     label: '',
                     name : '',
                     type : 'text'
+                },
+                attr:{
+                  defaultsvalues: ''
                 }
             });
         },
@@ -149,20 +159,19 @@ export default {
         delteAcf(index){
             if(index > -1){
                 this.createItemAcf.fieldAcf.splice( index , 1);
-            }    
-            
+            }
+
         },
         updateAcf(){
             this.$validator.validate().then(valid => {
                 if (valid) {
                     axios.put('/api/admin/acf/updateacf', { id: this.$route.params.id, args : this.createItemAcf } ).then((res) => {
-                        this.$router.push('/admin/acf');
+                        this.$router.replace('/admin/acf');
                     });
                 }
             });
-            
+
         }
     }
 }
 </script>
-

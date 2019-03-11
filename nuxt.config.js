@@ -3,9 +3,6 @@ const pkg = require('./package')
 
 module.exports = {
   mode: 'universal',
-  // router: {
-  //   prefetchLinks: true
-  // },
   env: {
     baseUrl: process.env.BASE_URL || 'http://localhost:3000'
   },
@@ -46,7 +43,8 @@ module.exports = {
   ** Plugins to load before mounting the App
   */
   plugins: [
-    // '~/plugins/nuxt-client-init',
+    { src : '~/plugins/veeValidator'},
+    { src : '~/plugins/settingAxios' }
   ],
 
   /*
@@ -65,7 +63,7 @@ module.exports = {
     ** You can extend webpack config here
     */
     extend(config, ctx) {
-      
+
     }
   },
   connectString: 'mongodb://sohuyn1996:meo123456@ds151805.mlab.com:51805/nuxt_tom',

@@ -8,7 +8,7 @@
                     <th>...</th>
                     <th>Fields</th>
                 </tr>
-            </thead>    
+            </thead>
             <tbody>
                 <template v-for="(itemacf, i) in listAcf">
                     <tr :key="i">
@@ -23,7 +23,7 @@
                         <td>2</td>
                     </tr>
                 </template>
-                
+
             </tbody>
         </table>
     </div>
@@ -31,15 +31,14 @@
 
 <script>
 import axios from 'axios';
-axios.defaults.baseURL = 'http://localhost:3000';
 export default {
     layout: 'admin',
     async asyncData({params}){
-        const { data } = await axios.get('/api/admin/acf/getListAcf'); 
+        const { data } = await axios.get('/api/admin/acf/getListAcf');
         return { listAcf: data }
     },
     data(){
-        
+
     }
 }
 </script>

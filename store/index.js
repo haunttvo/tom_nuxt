@@ -11,7 +11,7 @@ export const mutations = {
 }
 export const actions = {
 	async nuxtServerInit ({commit}) {
-		let dataCpt = await axios.get('http://localhost:3000/api/admin/cpt');
-		commit('receiveCpt', dataCpt.data);		
+		let dataCpt = await axios.get('/api/admin/cpt');
+		commit('receiveCpt', dataCpt.data);
 	}
 }

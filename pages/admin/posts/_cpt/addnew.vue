@@ -1,7 +1,8 @@
 <template>
     <div>
-        <vue-form-generator :schema="schema" :model="model" :options="formOptions"></vue-form-generator>
+      <vue-form-generator :schema="schema" :model="model" :options="formOptions"></vue-form-generator>
     </div>
+
 </template>
 
 <script>
@@ -11,14 +12,13 @@ import 'vue-form-generator/dist/vfg.css'
 import axios from 'axios'
 import { field_ex } from  './fields.js'
 Vue.use(VueFormGenerator)
-
 export default {
     layout: 'admin',
     fetch ({ store, params }) {
     //    console.log("params:", params);
     },
     async asyncData({params}) {
-        let fieldAcf = await axios.get(`http://localhost:3000/api/admin/acf/getAcfPost/${params.cpt}`);
+        let fieldAcf = await axios.get(`/api/admin/acf/getAcfPost/${params.cpt}`);
         return { acfField : fieldAcf.data }
     },
     data(){
@@ -102,7 +102,7 @@ export default {
                     default:
                         break;
                 }
-            })            
+            })
         }
     }
 
