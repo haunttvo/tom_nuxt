@@ -22,7 +22,7 @@
                             <ul class="u-acf-head list-unstyled">
                                 <li><span class="order">{{ i + 1 }}</span></li>
                                 <li>
-                                    <span>{{ (!itemAcf.formAcf.fieldLabel) ? 'No label' : itemAcf.formAcf.fieldLabel }}</span>
+                                    <span>{{ (!itemAcf.formAcf.label) ? 'No label' : itemAcf.formAcf.label }}</span>
                                     <div class="fn-crud">
                                         <span class="edit-acf" @click="editAcf('acf_table' + i)">Edit</span>
                                         <span>Duplicate</span>
@@ -30,8 +30,8 @@
                                         <span @click="delteAcf(i)">Delete</span>
                                     </div>
                                 </li>
-                                <li><span>{{ (!itemAcf.formAcf.fieldName) ? 'No name' : itemAcf.formAcf.fieldName }}</span></li>
-                                <li><span>{{ itemAcf.formAcf.fieldType }}</span></li>
+                                <li><span>{{ (!itemAcf.formAcf.name) ? 'No name' : itemAcf.formAcf.name }}</span></li>
+                                <li><span>{{ itemAcf.formAcf.type }}</span></li>
                             </ul>
                         </div>
                         <div class="tb-acf">
@@ -40,7 +40,7 @@
                                     <tr>
                                         <td class="td-label">Field Label</td>
                                         <td class="et-form">
-                                            <input type="text" required class="form-control form-control-sm" v-validate="'required|max:50'" name="field_label" v-model="itemAcf.formAcf.fieldLabel">
+                                            <input type="text" required class="form-control form-control-sm" v-validate="'required|max:50'" name="field_label" v-model="itemAcf.formAcf.label">
                                             <div class="invalid-feedback d-block">
                                                 {{ errors.first('field_label') }}
                                             </div>
@@ -49,7 +49,7 @@
                                     <tr>
                                         <td class="td-label">Field Name</td>
                                         <td class="et-form">
-                                            <input type="text" class="form-control form-control-sm" v-validate="'required|max:50'" name="field_name" v-model="itemAcf.formAcf.fieldName">
+                                            <input type="text" class="form-control form-control-sm" v-validate="'required|max:50'" name="field_name" v-model="itemAcf.formAcf.name">
                                             <div class="invalid-feedback d-block">
                                                 {{ errors.first('field_name') }}
                                             </div>
@@ -58,7 +58,7 @@
                                     <tr>
                                         <td class="td-label">Field Type</td>
                                         <td class="et-form">
-                                            <b-form-select size="sm" v-model="itemAcf.formAcf.fieldType" :options="optionsTypeAcf"></b-form-select>
+                                            <b-form-select size="sm" v-model="itemAcf.formAcf.type" :options="optionsTypeAcf"></b-form-select>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -122,7 +122,7 @@ export default {
                 {name: 'Field Label', typefield: ''},
                 {name: 'Field Name', typefield: ''},
             ],
-            optionsTypeAcf: [{ value : 'text', text: 'Text' }, { value : 'select', text:  'Select' }],
+            optionsTypeAcf: [{ value : 'input', text: 'Input' }, { value : 'select', text:  'Select' }],
             optionPostsType : [{value : 'post', text: 'post'}, {value : 'page', text: 'page'}],
             optionType : [ {value : 'cpt', text: 'Post Type'} ],
             optionsTypeChoiceCpt : [{value : '=', text : 'is equal to'}],
@@ -132,9 +132,9 @@ export default {
         pushItemAcf(){
             this.createItemAcf.fieldAcf.push({
                 formAcf:{
-                    fieldLabel: '',
-                    fieldName : '',
-                    fieldType : 'text'
+                    label: '',
+                    name : '',
+                    type : 'text'
                 }
             });
         },
