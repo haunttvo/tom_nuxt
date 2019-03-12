@@ -35,7 +35,8 @@ export default {
         return  { 
             detailpost: detailpost.data, 
             acfField : fieldAcf.data, 
-            model : {} 
+            model : {},
+            argsFormPosts :  detailpost.data.context
         }
     },
     data(){
@@ -104,23 +105,31 @@ export default {
     },
     methods:{
         updatepost(){
-            alert(1);
+            var vm = this;
+            axios.put('/api/admin/posts/updatePost',{arg : this.argsFormPosts, id : this.$route.params.id}).then((res) => {
+                Object.keys(this.model).forEach((e) => {
+                    // console.log(vm.model[e]);
+                    let arg = {
+                        key: e,
+                        value : vm.model[e],
+                    };
+                    if(vm.model[e] != ''){
+                        axios.put('/api/admin/meta/update', { arg : arg, postid : vm.$route.params.id }).then((res) => {
+                        console.log(res);
+                    });
+                    }
+                    
+                });
+            });
         }
     },
     created(){
-        
-        this.model = {
-            gioithieu : '',
-            dientich : '',
-            khuvuc : ''
-        }
         var vm = this;
         this.acfField.forEach((field) => {
                 field.field.fieldAcf.forEach((e) => {
-
-                   
-                axios.post(`/api/admin/meta/getmeta`,{ arg : { id : '5c8721535af47606f84c8ead', key : [e.formAcf.name] } }).then((res) => {
-                    if(res.data[0]) vm.model.gioithieu = res.data[0].value;
+                vm.model = Object.assign({},vm.model, { [e.formAcf.name] : ''} ); 
+                axios.post(`/api/admin/meta/getmeta`,{ arg : { id : vm.$route.params.id, key : [e.formAcf.name] } }).then((res) => {
+                    if(res.data[0]) vm.model[e.formAcf.name] = res.data[0].value;
                 });
                 switch (e.formAcf.type) {
                     case 'input':
@@ -135,35 +144,6 @@ export default {
                 
             })
         });
-        // console.log(vm.model);
-        // for (let index = 0; index < this.acfField.length; index++) {
-        //     this.acfField[index].field.fieldAcf.forEach((e) => {
-        //         // self.model = Object.assign(self.model, { [e.formAcf.name] : ''} ); 
-        //         self.model[e.formAcf.name] = '';
-        //         // axios.post(`/api/admin/meta/getmeta`,{ arg : { id : '5c8721535af47606f84c8ead', key : [e.formAcf.name] } }).then((res) => {
-        //         //     if(res.data[0]) self.model[e.formAcf.name] = res.data[0].value;
-        //         // });
-        //         switch (e.formAcf.type) {
-        //             case 'input':
-        //                 self.schema.fields.push( field_ex.fd_text(e.formAcf).fs );
-        //                 break;
-        //             case 'select':
-        //                 self.schema.fields.push( field_ex.fd_select(e.formAcf).fs );
-        //                 break;
-        //             default:
-        //                 break;
-        //         }
-                
-        //     })
-        // };
-        // Object.keys(this.model).forEach((a) => {
-        //     axios.post(`/api/admin/meta/getmeta`,{ arg : { id : '5c8721535af47606f84c8ead', key : a } }).then((res) => {
-        //         self.model.gioithieu = '123213123213';
-        //         if(res.data[0]) self.model[a] = res.data[0].value;
-        //     });
-        // });
-        // console.log(this.model);
-        // this.model.gioithieu = '213213213';
     }
 }
 </script>

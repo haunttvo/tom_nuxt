@@ -7,4 +7,7 @@ module.exports = function(router){
     router.post('/addnew', function(req, res){
         return metaModels.fnMeta.addNewMeta(req, res);
     });
+    router.put('/update', function(req, res){
+        return metaModels.fnMeta.updateMeta(req, res);
+    });
 }

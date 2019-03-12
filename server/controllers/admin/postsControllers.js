@@ -10,4 +10,7 @@ module.exports = function(router){
     router.post('/addnew', function(req, res){
         return postsModels.fnPosts.addnewPosts(req, res);
     });
+    router.put('/updatePost', function(req, res){
+        return postsModels.fnPosts.updatePost(req, res);
+    });
 }

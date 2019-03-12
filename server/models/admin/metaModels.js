@@ -26,6 +26,12 @@ var fnMeta = {
             if(err) return res.status(400).json(err);
             return res.status(200).json(result);
         });
+    },
+    updateMeta: function(req, res){
+        meta.findOneAndUpdate( { post_id : req.body.postid, key : req.body.arg.key } , { value : req.body.arg.key }, function(err, result){
+            if(err) return res.status(400).json(err);
+            return res.status(200).json(result);
+        });
     }
 }
 

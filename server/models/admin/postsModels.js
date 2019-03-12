@@ -28,6 +28,15 @@ var fnPosts = {
             if(err) return res.status(400).json(err);
             return res.status(200).json(result);
         });
+    },
+    updatePost(req, res){
+        var args = {
+            context : req.body.arg
+        };
+        posts.findOneAndUpdate( {_id: req.body.id}, args, {upsert: true}, function(err, result){
+            if(err) return res.status(400).json(err);
+            return res.status(200).json(result);
+        });
     }
 }
 

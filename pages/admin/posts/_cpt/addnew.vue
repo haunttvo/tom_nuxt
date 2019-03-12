@@ -125,7 +125,7 @@ export default {
         var self = this;
         for (let index = 0; index < this.acfField.length; index++) {
             self.acfField[index].field.fieldAcf.forEach((e) => {
-                self.model = Object.assign(self.model, { [e.formAcf.name] : ''} ); 
+                self.model = Object.assign({},self.model, { [e.formAcf.name] : ''} ); 
                 switch (e.formAcf.type) {
                     case 'input':
                         self.schema.fields.push( field_ex.fd_text(e.formAcf).fs );
