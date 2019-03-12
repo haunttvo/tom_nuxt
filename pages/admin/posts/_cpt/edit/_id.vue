@@ -10,11 +10,12 @@
                         <b-form-textarea autocomplete="off" id="postContent" v-model="argsFormPosts.content" />
                     </b-form-group>
                     <vue-form-generator :schema="schema" :model="model" :options="formOptions"></vue-form-generator>
-                    <b-button variant="info" @click="publishpost()" size="sm">Publish</b-button>
+                    <b-button variant="info" @click="updatepost()" size="sm">Update</b-button>
                 </b-form>
             </b-col>
             <b-col md="3">
                 form right
+                {{ model.gioithieu }}
             </b-col>
         </b-row>
     </div>
@@ -23,22 +24,22 @@
 <script>
 import Vue from 'vue'
 import VueFormGenerator from 'vue-form-generator'
-// import 'vue-form-generator/dist/vfg.css'
 import axios from 'axios'
-import { field_ex } from  './fields.js'
+import { field_ex } from  '../fields.js'
 Vue.use(VueFormGenerator)
 export default {
     layout: 'admin',
-    fetch ({ store, params }) {
-    //    console.log("params:", params);
-    },
-    async asyncData({params}) {
+    async asyncData({params}){
+        let detailpost = await axios.get(`/api/admin/posts/detailpost/${params.id}`);
         let fieldAcf = await axios.get(`/api/admin/acf/getAcfPost/${params.cpt}`);
-        return { acfField : fieldAcf.data }
+        return  { 
+            detailpost: detailpost.data, 
+            acfField : fieldAcf.data, 
+            model : {} 
+        }
     },
     data(){
         return{
-            model: {},
             argsFormPosts: {
                 title : '',
                 content: '',
@@ -102,43 +103,68 @@ export default {
         }
     },
     methods:{
-        publishpost(){
-            let self = this;
-            axios.post('/api/admin/posts/addnew', {arg: this.argsFormPosts} ).then((res) => {
-                let residPost = res.data._id;
-                Object.keys(self.model).forEach((key) => {
-                    let arg = {
-                        key: key,
-                        value : self.model[key],
-                        postid : residPost
-                    }
-                    if( self.model[key] != '' ){
-                        axios.post('/api/admin/meta/addnew', { arg: arg }).then((res) => {
-                            console.log(res);
-                        });
-                    }
-                });
-            })
+        updatepost(){
+            alert(1);
         }
     },
     created(){
-        var self = this;
-        for (let index = 0; index < this.acfField.length; index++) {
-            self.acfField[index].field.fieldAcf.forEach((e) => {
-                self.model = Object.assign(self.model, { [e.formAcf.name] : ''} ); 
+        
+        this.model = {
+            gioithieu : '',
+            dientich : '',
+            khuvuc : ''
+        }
+        var vm = this;
+        this.acfField.forEach((field) => {
+                field.field.fieldAcf.forEach((e) => {
+
+                   
+                axios.post(`/api/admin/meta/getmeta`,{ arg : { id : '5c8721535af47606f84c8ead', key : [e.formAcf.name] } }).then((res) => {
+                    if(res.data[0]) vm.model.gioithieu = res.data[0].value;
+                });
                 switch (e.formAcf.type) {
                     case 'input':
-                        self.schema.fields.push( field_ex.fd_text(e.formAcf).fs );
+                        vm.schema.fields.push( field_ex.fd_text(e.formAcf).fs );
                         break;
                     case 'select':
-                        self.schema.fields.push( field_ex.fd_select(e.formAcf).fs );
+                        vm.schema.fields.push( field_ex.fd_select(e.formAcf).fs );
                         break;
                     default:
                         break;
                 }
+                
             })
-        };
+        });
+        // console.log(vm.model);
+        // for (let index = 0; index < this.acfField.length; index++) {
+        //     this.acfField[index].field.fieldAcf.forEach((e) => {
+        //         // self.model = Object.assign(self.model, { [e.formAcf.name] : ''} ); 
+        //         self.model[e.formAcf.name] = '';
+        //         // axios.post(`/api/admin/meta/getmeta`,{ arg : { id : '5c8721535af47606f84c8ead', key : [e.formAcf.name] } }).then((res) => {
+        //         //     if(res.data[0]) self.model[e.formAcf.name] = res.data[0].value;
+        //         // });
+        //         switch (e.formAcf.type) {
+        //             case 'input':
+        //                 self.schema.fields.push( field_ex.fd_text(e.formAcf).fs );
+        //                 break;
+        //             case 'select':
+        //                 self.schema.fields.push( field_ex.fd_select(e.formAcf).fs );
+        //                 break;
+        //             default:
+        //                 break;
+        //         }
+                
+        //     })
+        // };
+        // Object.keys(this.model).forEach((a) => {
+        //     axios.post(`/api/admin/meta/getmeta`,{ arg : { id : '5c8721535af47606f84c8ead', key : a } }).then((res) => {
+        //         self.model.gioithieu = '123213123213';
+        //         if(res.data[0]) self.model[a] = res.data[0].value;
+        //     });
+        // });
+        // console.log(this.model);
+        // this.model.gioithieu = '213213213';
     }
-
 }
 </script>
+
