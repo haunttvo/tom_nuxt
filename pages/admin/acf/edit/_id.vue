@@ -109,6 +109,28 @@
                     </table>
                 </div>
             </div>
+            <div class="box-tom">
+                <div class="header-box-tom border-bottom-0">
+                    <span>Position</span>
+                    <span class="float-right"><i class="fa fa-chevron-circle-up cursor-pointer bt-toggle-box-tom"></i></span>
+                </div>
+                <div class="tb-acf">
+                    <table class="table table-bordered table-acf-form">
+                        <tbody>
+                            <tr>
+                                <td class="td-label"><p class="font-weight-bold">Position</p></td>
+                                <td class="et-form">
+                                    <b-row>
+                                        <b-col cols="12">
+                                            <b-form-select size="sm" v-model="createItemAcf.position" :options="optionPosition"></b-form-select>
+                                        </b-col>
+                                    </b-row>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
             <b-button variant="info" size="sm" @click="updateAcf()" >Publish</b-button>
         </b-form>
     </div>
@@ -132,6 +154,7 @@ export default {
             optionsTypeAcf: [{ value : 'input', text: 'Input' }, { value : 'select', text:  'Select' }],
             optionPostsType : [{value : 'post', text: 'post'}, {value : 'page', text: 'page'}],
             optionType : [ {value : 'cpt', text: 'Post Type'} ],
+            optionPosition : [ {value : 'left', text : 'Left'},{value : 'right', text : 'Right'} ],
             optionsTypeChoiceCpt : [{value : '=', text : 'is equal to'}],
         }
     },
@@ -144,7 +167,8 @@ export default {
                     type : 'input'
                 },
                 attr:{
-                  defaultsvalues: ''
+                  defaultsvalues: '',
+                  position : ''
                 }
             });
         },

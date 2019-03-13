@@ -14,7 +14,7 @@ module.exports = function(router){
         return acfModels.acfFn.createAcf(req, res);
     });
 
-    router.get('/getAcfPost/:cpt', function(req, res){
+    router.get('/getAcfPost/:cpt/:position', function(req, res){
         return acfModels.acfFn.getAcfCpt(req, res);
     });
 }

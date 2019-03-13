@@ -58,14 +58,15 @@ export default {
     },
     async asyncData({params}){
         let detailpost = await axios.get(`/api/admin/posts/detailpost/${params.id}`);
-        let fieldAcf = await axios.get(`/api/admin/acf/getAcfPost/${params.cpt}`);
-        let sortColumnPost = await axios.post(`/api/admin/meta/getmeta`,{ arg : { key : 'sortColumn' } });
+        let fieldAcfLeft = await axios.get(`/api/admin/acf/getAcfPost/${params.cpt}/left`);
+        let fieldAcfRight = await axios.get(`/api/admin/acf/getAcfPost/${params.cpt}/right`);
+        // let sortColumnPost = await axios.post(`/api/admin/meta/getmeta`,{ arg : { key : 'sortColumn' } });
         return  { 
             detailpost: detailpost.data, 
-            acfField : fieldAcf.data, 
+            acfField : fieldAcfLeft.data, 
+            acfFieldRight : fieldAcfRight.data,
             model : {},
-            argsFormPosts :  detailpost.data.context,
-            arrFormGeneratorCol2Req : JSON.parse(sortColumnPost.data[0].value) 
+            argsFormPosts :  detailpost.data.context
         }
     },
     data(){
@@ -160,18 +161,14 @@ export default {
         this.acfField.forEach((field) => {
                 vm.arrFormGenerator.push({fd: field.field.fieldAcf, nameAcf : field.field.nameField, model : {}, schema : { fields: [] } });
         });
-        this.arrFormGenerator.forEach((v) => {
+        this.acfFieldRight.forEach((field) => {
+                vm.arrFormGeneratorCol2.push({fd: field.field.fieldAcf, nameAcf : field.field.nameField, model : {}, schema : { fields: [] } });
+        });
+
+        this.arrFormGenerator.concat(vm.arrFormGeneratorCol2).forEach((v, index) => {
             v.fd.forEach((i) => {
                 v.model = Object.assign({}, v.model, { [i.formAcf.name] : '' }) ;
                 axios.post(`/api/admin/meta/getmeta`,{ arg : { postid : vm.$route.params.id, key : [i.formAcf.name] } }).then((res) => {
-                    // vm.arrFormGeneratorCol2.filter((e) => {
-                    //     Object.keys(e.model).forEach((m) => {
-                    //         if(m == res.data[0].key){
-                    //             console.log();
-                    //             e.model[m] = res.data[0].value;
-                    //         }
-                    //     }) 
-                    // });
                     if(res.data[0]) v.model[i.formAcf.name] = res.data[0].value;
                 });
                 switch (i.formAcf.type) {
@@ -186,32 +183,6 @@ export default {
                 }
             }); 
         });
-        // if(this.arrFormGeneratorCol2.length > 0){
-        //     this.arrFormGenerator = this.arrFormGenerator.filter(item1 => 
-        //     !this.arrFormGeneratorCol2.some(item2 => (item2.nameAcf === item1.nameAcf)));
-        // }
-        // var res = this.arrFormGenerator = this.arrFormGenerator.filter(item1 => 
-        //     !this.arrFormGeneratorCol2.some(item2 => (item2.nameAcf != item1.nameAcf)));
-        // console.log(res);
-        // this.arrFormGenerator = [];
-        // this.arrFormGenerator.push(res);
-        // console.log(res);
-
-        // this.arrFormGenerator.filter(function(el){
-        //     var arrGE = [];
-        //     vm.arrFormGeneratorCol2.forEach((c) => {
-        //         console.log(c);
-        //     });
-        //     // console.log(el.nameAcf);
-        // })
-        // this.arrFormGenerator = [];
-        // this.arrFormGenerator.push(this.arrFormGenerator.arr_diff( this.arrFormGeneratorCol2 ));
-        // this.arrFormGenerator.arr_diff( this.arrFormGeneratorCol2 );
-        // if( this.arr_diff(this.arrFormGenerator, this.arrFormGeneratorCol2).length > 0 ){
-        //     this.arrFormGenerator = [];
-        //     this.arrFormGenerator.push(this.arr_diff(this.arrFormGenerator, this.arrFormGeneratorCol2));
-        // }   
-        // console.log( this.arr_diff(this.arrFormGenerator, this.arrFormGeneratorCol2) );
     }
 }
 </script>
