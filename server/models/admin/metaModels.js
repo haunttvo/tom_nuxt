@@ -3,7 +3,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema({
     key : String,
     value : String,
-    postid : { type : String, require },
+    postid : { type : String },
     date_created : { type : Date, default: Date.now }
 });
 
@@ -22,13 +22,13 @@ var fnMeta = {
         });
     },
     getmeta: function(req, res){
-        meta.find( { postid : req.body.arg.id, key : req.body.arg.key } , function(err, result){
+        meta.find( req.body.arg , function(err, result){
             if(err) return res.status(400).json(err);
             return res.status(200).json(result);
         });
     },
     updateMeta: function(req, res){
-        meta.findOneAndUpdate( { post_id : req.body.postid, key : req.body.arg.key } , { value : req.body.arg.key }, function(err, result){
+        meta.findOneAndUpdate( {  $and : [ { postid : req.body.postid }, { key : req.body.arg.key } ]} , { value : req.body.arg.value, key : req.body.arg.key, postid : req.body.postid }, { upsert : true, setDefaultsOnInsert : true }, function(err, result){
             if(err) return res.status(400).json(err);
             return res.status(200).json(result);
         });

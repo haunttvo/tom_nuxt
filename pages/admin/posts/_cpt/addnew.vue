@@ -9,12 +9,35 @@
                     <b-form-group label="Content" label-for="postContent">
                         <b-form-textarea autocomplete="off" id="postContent" v-model="argsFormPosts.content" />
                     </b-form-group>
-                    <vue-form-generator :schema="schema" :model="model" :options="formOptions"></vue-form-generator>
+                    <draggable :list="arrFormGenerator" group="acfDrag">    
+                        <template v-for="(form, i) in arrFormGenerator" >
+                            <div :key="i" class="df-acf">
+                                <div class="box-header-field cursor-pointer" :href="'#collapseExample' + i" data-toggle="collapse">{{ form.nameAcf }}<i class="fas fa-caret-up float-right fd-down-acf"></i></div>
+                                <div class="collapse show" :id="'collapseExample' + i">
+                                    <div class="card card-body">
+                                        <vue-form-generator  :schema="form.schema" :model="form.model"></vue-form-generator>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                    </draggable>  
                     <b-button variant="info" @click="publishpost()" size="sm">Publish</b-button>
                 </b-form>
             </b-col>
             <b-col md="3">
-                form right
+                <label for="">Form right</label>
+                <draggable :list="arrFormGeneratorCol2" group="acfDrag">
+                    <template v-for="(form, i) in arrFormGeneratorCol2" >
+                            <div :key="i" class="df-acf">
+                                <div class="box-header-field cursor-pointer" :href="'#collapseExample1' + i" data-toggle="collapse">{{ form.nameAcf }}<i class="fas fa-caret-up float-right fd-down-acf"></i></div>
+                                <div class="collapse show" :id="'collapseExample1' + i">
+                                    <div class="card card-body">
+                                        <vue-form-generator  :schema="form.schema" :model="form.model"></vue-form-generator>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                </draggable>
             </b-col>
         </b-row>
     </div>
@@ -23,12 +46,15 @@
 <script>
 import Vue from 'vue'
 import VueFormGenerator from 'vue-form-generator'
-// import 'vue-form-generator/dist/vfg.css'
+import draggable from 'vuedraggable'
 import axios from 'axios'
 import { field_ex } from  './fields.js'
 Vue.use(VueFormGenerator)
 export default {
     layout: 'admin',
+    components:{
+        draggable
+    },
     fetch ({ store, params }) {
     //    console.log("params:", params);
     },
@@ -39,6 +65,8 @@ export default {
     data(){
         return{
             model: {},
+            arrFormGeneratorCol2 : [],
+            arrFormGenerator : [],
             argsFormPosts: {
                 title : '',
                 content: '',
@@ -106,38 +134,56 @@ export default {
             let self = this;
             axios.post('/api/admin/posts/addnew', {arg: this.argsFormPosts} ).then((res) => {
                 let residPost = res.data._id;
-                Object.keys(self.model).forEach((key) => {
-                    let arg = {
-                        key: key,
-                        value : self.model[key],
-                        postid : residPost
-                    }
-                    if( self.model[key] != '' ){
-                        axios.post('/api/admin/meta/addnew', { arg: arg }).then((res) => {
-                            console.log(res);
-                        });
-                    }
+                self.arrFormGenerator.concat(self.arrFormGeneratorCol2).forEach((field) => {
+                    Object.keys(field.model).forEach((key) => {
+                        let arg = {
+                            key: key,
+                            value : field.model[key],
+                            postid : residPost
+                        }
+                        if( field.model[key] != '' ){
+                            axios.post('/api/admin/meta/addnew', { arg: arg }).then((res) => {
+                                console.log(res);
+                            });
+                        }
+                    });
+                });
+                /** sort column */
+                let itemsort = {
+                    key : 'sortColumn',
+                    value : JSON.stringify(this.arrFormGeneratorCol2)
+                }
+                axios.post('/api/admin/meta/addnew', { arg: itemsort }).then((res) => {
+                    console.log(res);
                 });
             })
         }
     },
+    watch:{
+        'arrFormGeneratorCol2' : function(evt){
+            console.log(evt);
+        }
+    },
     created(){
-        var self = this;
-        for (let index = 0; index < this.acfField.length; index++) {
-            self.acfField[index].field.fieldAcf.forEach((e) => {
-                self.model = Object.assign({},self.model, { [e.formAcf.name] : ''} ); 
-                switch (e.formAcf.type) {
+        var vm = this;
+        this.acfField.forEach((field) => {
+                vm.arrFormGenerator.push({fd: field.field.fieldAcf, nameAcf : field.field.nameField, model : {}, schema : { fields: [] } });
+        });
+        this.arrFormGenerator.forEach((v) => {
+            v.fd.forEach((i) => {
+                v.model = Object.assign({}, v.model, { [i.formAcf.name] : '' }) ;
+                switch (i.formAcf.type) {
                     case 'input':
-                        self.schema.fields.push( field_ex.fd_text(e.formAcf).fs );
+                        v.schema.fields.push( field_ex.fd_text(i.formAcf).fs );
                         break;
                     case 'select':
-                        self.schema.fields.push( field_ex.fd_select(e.formAcf).fs );
+                        v.schema.fields.push( field_ex.fd_select(i.formAcf).fs );
                         break;
                     default:
                         break;
                 }
-            })
-        };
+            }); 
+        });
     }
 
 }

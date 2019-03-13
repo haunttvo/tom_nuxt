@@ -3,6 +3,29 @@
     src: url('../../fonts/avo/utm-avo.ttf');
 }
 $cool-red: red;
+.df-acf{
+    margin-top: 14px;
+    .box-header-field{
+        border: 1px solid rgba(0, 0, 0, 0.125);
+        padding: 4px 10px;
+        font-weight: 600;
+        .fd-down-acf{
+            margin-top: 4px;
+        }
+    }
+    .box-header-field.collapsed{
+        .fd-down-acf{
+            transform: rotate(180deg);
+        }
+    }
+    .card{
+        border-radius: 0;
+        border-top: 0;
+    }
+}
+
+
+
 $cool-green : #17A2B8;
 .table-acf-form{
     tr{

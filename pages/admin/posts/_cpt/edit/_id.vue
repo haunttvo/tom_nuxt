@@ -9,13 +9,36 @@
                     <b-form-group label="Content" label-for="postContent">
                         <b-form-textarea autocomplete="off" id="postContent" v-model="argsFormPosts.content" />
                     </b-form-group>
-                    <vue-form-generator :schema="schema" :model="model" :options="formOptions"></vue-form-generator>
+                    <draggable :list="arrFormGenerator" group="people">    
+                        <template v-for="(form, i) in arrFormGenerator" >
+                            <div :key="i" class="df-acf">
+                                <div class="box-header-field cursor-pointer" :href="'#collapseExample' + i" data-toggle="collapse">{{ form.nameAcf }}<i class="fas fa-caret-up float-right fd-down-acf"></i></div>
+                                <div class="collapse show" :id="'collapseExample' + i">
+                                    <div class="card card-body">
+                                        <vue-form-generator  :schema="form.schema" :model="form.model"></vue-form-generator>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                    </draggable>    
+                    <!-- <vue-form-generator :schema="schema" :model="model" :options="formOptions"></vue-form-generator> -->
                     <b-button variant="info" @click="updatepost()" size="sm">Update</b-button>
                 </b-form>
             </b-col>
             <b-col md="3">
-                form right
-                {{ model.gioithieu }}
+                <label for="">Form right</label>
+                <draggable :list="arrFormGeneratorCol2" group="people">
+                    <template v-for="(form, i) in arrFormGeneratorCol2" >
+                            <div :key="i" class="df-acf">
+                                <div class="box-header-field cursor-pointer" :href="'#collapseExample1' + i" data-toggle="collapse">{{ form.nameAcf }}<i class="fas fa-caret-up float-right fd-down-acf"></i></div>
+                                <div class="collapse show" :id="'collapseExample1' + i">
+                                    <div class="card card-body">
+                                        <vue-form-generator  :schema="form.schema" :model="form.model"></vue-form-generator>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                </draggable>
             </b-col>
         </b-row>
     </div>
@@ -25,22 +48,30 @@
 import Vue from 'vue'
 import VueFormGenerator from 'vue-form-generator'
 import axios from 'axios'
+import draggable from 'vuedraggable'
 import { field_ex } from  '../fields.js'
 Vue.use(VueFormGenerator)
 export default {
     layout: 'admin',
+    components:{
+        draggable
+    },
     async asyncData({params}){
         let detailpost = await axios.get(`/api/admin/posts/detailpost/${params.id}`);
         let fieldAcf = await axios.get(`/api/admin/acf/getAcfPost/${params.cpt}`);
+        let sortColumnPost = await axios.post(`/api/admin/meta/getmeta`,{ arg : { key : 'sortColumn' } });
         return  { 
             detailpost: detailpost.data, 
             acfField : fieldAcf.data, 
             model : {},
-            argsFormPosts :  detailpost.data.context
+            argsFormPosts :  detailpost.data.context,
+            arrFormGeneratorCol2Req : JSON.parse(sortColumnPost.data[0].value) 
         }
     },
     data(){
         return{
+            arrFormGeneratorCol2 : [],
+            arrFormGenerator : [],
             argsFormPosts: {
                 title : '',
                 content: '',
@@ -107,43 +138,80 @@ export default {
         updatepost(){
             var vm = this;
             axios.put('/api/admin/posts/updatePost',{arg : this.argsFormPosts, id : this.$route.params.id}).then((res) => {
-                Object.keys(this.model).forEach((e) => {
-                    // console.log(vm.model[e]);
-                    let arg = {
-                        key: e,
-                        value : vm.model[e],
-                    };
-                    if(vm.model[e] != ''){
-                        axios.put('/api/admin/meta/update', { arg : arg, postid : vm.$route.params.id }).then((res) => {
-                        console.log(res);
+                vm.arrFormGenerator.concat(vm.arrFormGeneratorCol2).forEach((field) => {
+                    Object.keys(field.model).forEach((e) => {
+                        let arg = {
+                            key: e,
+                            value : field.model[e],
+                        };
+                        if(field.model[e] != ''){
+                            axios.put('/api/admin/meta/update', { arg : arg, postid : vm.$route.params.id }).then((res) => {
+                                // console.log(res);
+                            });
+                        }
                     });
-                    }
-                    
                 });
             });
-        }
+        },
+        
     },
     created(){
         var vm = this;
         this.acfField.forEach((field) => {
-                field.field.fieldAcf.forEach((e) => {
-                vm.model = Object.assign({},vm.model, { [e.formAcf.name] : ''} ); 
-                axios.post(`/api/admin/meta/getmeta`,{ arg : { id : vm.$route.params.id, key : [e.formAcf.name] } }).then((res) => {
-                    if(res.data[0]) vm.model[e.formAcf.name] = res.data[0].value;
+                vm.arrFormGenerator.push({fd: field.field.fieldAcf, nameAcf : field.field.nameField, model : {}, schema : { fields: [] } });
+        });
+        this.arrFormGenerator.forEach((v) => {
+            v.fd.forEach((i) => {
+                v.model = Object.assign({}, v.model, { [i.formAcf.name] : '' }) ;
+                axios.post(`/api/admin/meta/getmeta`,{ arg : { postid : vm.$route.params.id, key : [i.formAcf.name] } }).then((res) => {
+                    // vm.arrFormGeneratorCol2.filter((e) => {
+                    //     Object.keys(e.model).forEach((m) => {
+                    //         if(m == res.data[0].key){
+                    //             console.log();
+                    //             e.model[m] = res.data[0].value;
+                    //         }
+                    //     }) 
+                    // });
+                    if(res.data[0]) v.model[i.formAcf.name] = res.data[0].value;
                 });
-                switch (e.formAcf.type) {
+                switch (i.formAcf.type) {
                     case 'input':
-                        vm.schema.fields.push( field_ex.fd_text(e.formAcf).fs );
+                        v.schema.fields.push( field_ex.fd_text(i.formAcf).fs );
                         break;
                     case 'select':
-                        vm.schema.fields.push( field_ex.fd_select(e.formAcf).fs );
+                        v.schema.fields.push( field_ex.fd_select(i.formAcf).fs );
                         break;
                     default:
                         break;
                 }
-                
-            })
+            }); 
         });
+        // if(this.arrFormGeneratorCol2.length > 0){
+        //     this.arrFormGenerator = this.arrFormGenerator.filter(item1 => 
+        //     !this.arrFormGeneratorCol2.some(item2 => (item2.nameAcf === item1.nameAcf)));
+        // }
+        // var res = this.arrFormGenerator = this.arrFormGenerator.filter(item1 => 
+        //     !this.arrFormGeneratorCol2.some(item2 => (item2.nameAcf != item1.nameAcf)));
+        // console.log(res);
+        // this.arrFormGenerator = [];
+        // this.arrFormGenerator.push(res);
+        // console.log(res);
+
+        // this.arrFormGenerator.filter(function(el){
+        //     var arrGE = [];
+        //     vm.arrFormGeneratorCol2.forEach((c) => {
+        //         console.log(c);
+        //     });
+        //     // console.log(el.nameAcf);
+        // })
+        // this.arrFormGenerator = [];
+        // this.arrFormGenerator.push(this.arrFormGenerator.arr_diff( this.arrFormGeneratorCol2 ));
+        // this.arrFormGenerator.arr_diff( this.arrFormGeneratorCol2 );
+        // if( this.arr_diff(this.arrFormGenerator, this.arrFormGeneratorCol2).length > 0 ){
+        //     this.arrFormGenerator = [];
+        //     this.arrFormGenerator.push(this.arr_diff(this.arrFormGenerator, this.arrFormGeneratorCol2));
+        // }   
+        // console.log( this.arr_diff(this.arrFormGenerator, this.arrFormGeneratorCol2) );
     }
 }
 </script>
