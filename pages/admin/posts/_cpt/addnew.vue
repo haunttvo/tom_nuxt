@@ -1,6 +1,6 @@
 <template>
     <div>
-        <b-row>
+        <b-row v-if="loadDatField">
             <b-col md="9">
                 <b-form>
                     <b-form-group label="Title" label-for="postTitle">
@@ -59,14 +59,19 @@ export default {
     //    console.log("params:", params);
     },
     async asyncData({params}) {
-        let fieldAcf = await axios.get(`/api/admin/acf/getAcfPost/${params.cpt}`);
-        return { acfField : fieldAcf.data }
+        let fieldAcfLeft = await axios.get(`/api/admin/acf/getAcfPost/${params.cpt}/left`);
+        let fieldAcfRight = await axios.get(`/api/admin/acf/getAcfPost/${params.cpt}/right`);
+        return { 
+            acfField : fieldAcfLeft.data,
+            acfFieldRight : fieldAcfRight.data,
+        }
     },
     data(){
         return{
             model: {},
             arrFormGeneratorCol2 : [],
             arrFormGenerator : [],
+            loadDatField: false,
             argsFormPosts: {
                 title : '',
                 content: '',
@@ -157,11 +162,24 @@ export default {
                     console.log(res);
                 });
             })
-        }
-    },
-    watch:{
-        'arrFormGeneratorCol2' : function(evt){
-            console.log(evt);
+        },
+        async resInput(){
+            var vm = this;
+            this.arrFormGenerator.concat(vm.arrFormGeneratorCol2).forEach((v, index) => {
+                v.fd.forEach((i) => {
+                    v.model = Object.assign({}, v.model, { [i.formAcf.name] : '' }) ;
+                    switch (i.formAcf.type) {
+                        case 'input':
+                            v.schema.fields.push( field_ex.fd_text(i.formAcf).fs );
+                            break;
+                        case 'select':
+                            v.schema.fields.push( field_ex.fd_select(i.formAcf).fs );
+                            break;
+                        default:
+                            break;
+                    }
+                }); 
+            });
         }
     },
     created(){
@@ -169,21 +187,12 @@ export default {
         this.acfField.forEach((field) => {
                 vm.arrFormGenerator.push({fd: field.field.fieldAcf, nameAcf : field.field.nameField, model : {}, schema : { fields: [] } });
         });
-        this.arrFormGenerator.forEach((v) => {
-            v.fd.forEach((i) => {
-                v.model = Object.assign({}, v.model, { [i.formAcf.name] : '' }) ;
-                switch (i.formAcf.type) {
-                    case 'input':
-                        v.schema.fields.push( field_ex.fd_text(i.formAcf).fs );
-                        break;
-                    case 'select':
-                        v.schema.fields.push( field_ex.fd_select(i.formAcf).fs );
-                        break;
-                    default:
-                        break;
-                }
-            }); 
+        this.acfFieldRight.forEach((field) => {
+                vm.arrFormGeneratorCol2.push({fd: field.field.fieldAcf, nameAcf : field.field.nameField, model : {}, schema : { fields: [] } });
         });
+        this.resInput().then(_ => {
+            this.loadDatField = true;
+        })
     }
 
 }

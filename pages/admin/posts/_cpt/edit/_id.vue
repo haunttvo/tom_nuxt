@@ -147,6 +147,7 @@ export default {
                         };
                         if(field.model[e] != ''){
                             axios.put('/api/admin/meta/update', { arg : arg, postid : vm.$route.params.id }).then((res) => {
+                                this.$router.push(`/admin/posts/${this.$route.params.cpt}`);
                                 // console.log(res);
                             });
                         }
