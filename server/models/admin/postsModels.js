@@ -37,6 +37,9 @@ var fnPosts = {
             if(err) return res.status(400).json(err);
             return res.status(200).json(result);
         });
+    },
+    deletePost(req, res){
+
     }
 }
 
