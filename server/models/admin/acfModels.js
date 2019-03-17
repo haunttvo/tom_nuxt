@@ -20,6 +20,12 @@ var acfFn = {
             return res.status(200).json(result);
         })
     },
+    updatePosition : function(req, res){
+        acf.update( {_id : req.body._id}, { $set : { "field.position" : req.body.position, "field.order" : req.body.idex } }  , function(err, result){
+            if(err) return res.status(400).json(err);
+            return res.status(200).json(result);
+        });
+    },
     getAcfItem : function(req, res){
         acf.findById(req.params.id, function(err, result){
             if(err) return res.status(400).json(err);
@@ -36,7 +42,7 @@ var acfFn = {
         acf.find( {$and : [ { 'field.formLocation.optionPostType' : req.params.cpt}, { 'field.position' : req.params.position } ]} ,function(err, result){
             if(err) return res.status(400).json(err);
             return res.status(200).json(result);
-        });
+        }).sort( { 'field.order' : 1 } );
     }
 }
 

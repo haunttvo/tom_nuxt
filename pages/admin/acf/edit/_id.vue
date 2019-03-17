@@ -131,7 +131,7 @@
                     </table>
                 </div>
             </div>
-            <b-button variant="info" size="sm" @click="updateAcf()" >Publish</b-button>
+            <b-button variant="info" size="sm" @click="updateAcf()" >Update</b-button>
         </b-form>
     </div>
 </template>

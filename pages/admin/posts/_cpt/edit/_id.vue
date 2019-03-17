@@ -9,7 +9,7 @@
                     <b-form-group label="Content" label-for="postContent">
                         <b-form-textarea autocomplete="off" id="postContent" v-model="argsFormPosts.content" />
                     </b-form-group>
-                    <draggable :list="arrFormGenerator" group="people">    
+                    <draggable :list="arrFormGenerator" group="posts_drag" @change="log">    
                         <template v-for="(form, i) in arrFormGenerator" >
                             <div :key="i" class="df-acf">
                                 <div class="box-header-field cursor-pointer" :href="'#collapseExample' + i" data-toggle="collapse">{{ form.nameAcf }}<i class="fas fa-caret-up float-right fd-down-acf"></i></div>
@@ -27,7 +27,7 @@
             </b-col>
             <b-col md="3">
                 <label for="">Form right</label>
-                <draggable :list="arrFormGeneratorCol2" group="people">
+                <draggable :list="arrFormGeneratorCol2" group="posts_drag" @change="log">
                     <template v-for="(form, i) in arrFormGeneratorCol2" >
                             <div :key="i" class="df-acf">
                                 <div class="box-header-field cursor-pointer" :href="'#collapseExample1' + i" data-toggle="collapse">{{ form.nameAcf }}<i class="fas fa-caret-up float-right fd-down-acf"></i></div>
@@ -60,7 +60,6 @@ export default {
         let detailpost = await axios.get(`/api/admin/posts/detailpost/${params.id}`);
         let fieldAcfLeft = await axios.get(`/api/admin/acf/getAcfPost/${params.cpt}/left`);
         let fieldAcfRight = await axios.get(`/api/admin/acf/getAcfPost/${params.cpt}/right`);
-        // let sortColumnPost = await axios.post(`/api/admin/meta/getmeta`,{ arg : { key : 'sortColumn' } });
         return  { 
             detailpost: detailpost.data, 
             acfField : fieldAcfLeft.data, 
@@ -139,30 +138,40 @@ export default {
         updatepost(){
             var vm = this;
             axios.put('/api/admin/posts/updatePost',{arg : this.argsFormPosts, id : this.$route.params.id}).then((res) => {
-                vm.arrFormGenerator.concat(vm.arrFormGeneratorCol2).forEach((field) => {
+                vm.arrFormGenerator.concat(vm.arrFormGeneratorCol2).forEach((field, idex) => {
+                    axios.put('/api/admin/acf/updateposition', { _id : field._id, position : field.position, idex : idex } );
                     Object.keys(field.model).forEach((e) => {
                         let arg = {
                             key: e,
                             value : field.model[e],
                         };
                         if(field.model[e] != ''){
-                            axios.put('/api/admin/meta/update', { arg : arg, postid : vm.$route.params.id }).then((res) => {
-                                // console.log(res);
-                            });
+                            axios.put('/api/admin/meta/update', { arg : arg, postid : vm.$route.params.id });
                         }
                     });
                 });
+            }).then(() => {
+                return vm.$router.push(`/admin/posts/${vm.$route.params.cpt}`);
             });
         },
+        log(evt, ori){
+            if(evt.added){
+                if(evt.added.element.position == 'left'){
+                    evt.added.element.position = 'right';
+                }else{
+                    evt.added.element.position = 'left';
+                }
+            }
+        }
         
     },
     created(){
         var vm = this;
         this.acfField.forEach((field) => {
-                vm.arrFormGenerator.push({fd: field.field.fieldAcf, nameAcf : field.field.nameField, model : {}, schema : { fields: [] } });
+                vm.arrFormGenerator.push({fd: field.field.fieldAcf, nameAcf : field.field.nameField, model : {}, schema : { fields: [] }, position : field.field.position, _id : field._id });
         });
         this.acfFieldRight.forEach((field) => {
-                vm.arrFormGeneratorCol2.push({fd: field.field.fieldAcf, nameAcf : field.field.nameField, model : {}, schema : { fields: [] } });
+                vm.arrFormGeneratorCol2.push({fd: field.field.fieldAcf, nameAcf : field.field.nameField, model : {}, schema : { fields: [] }, position : field.field.position, _id : field._id });
         });
 
         this.arrFormGenerator.concat(vm.arrFormGeneratorCol2).forEach((v, index) => {

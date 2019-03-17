@@ -10,6 +10,9 @@ module.exports = function(router){
     router.put('/updateacf', function(req, res){
         return acfModels.acfFn.updateItemAcf(req, res);
     });
+    router.put('/updateposition', function(req, res){
+        return acfModels.acfFn.updatePosition(req, res);
+    });
     router.post('/addnewacf', function(req, res){
         return acfModels.acfFn.createAcf(req, res);
     });
