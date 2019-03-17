@@ -1,6 +1,6 @@
 <template>
     <div>
-        <b-row>
+        <b-row v-if="loadDatField">
             <b-col md="9">
                 <b-form>
                     <b-form-group label="Title" label-for="postTitle">
@@ -65,7 +65,8 @@ export default {
             acfField : fieldAcfLeft.data, 
             acfFieldRight : fieldAcfRight.data,
             model : {},
-            argsFormPosts :  detailpost.data.context
+            argsFormPosts :  detailpost.data.context,
+            loadDatField: false
         }
     },
     data(){
@@ -173,25 +174,9 @@ export default {
         this.acfFieldRight.forEach((field) => {
                 vm.arrFormGeneratorCol2.push({fd: field.field.fieldAcf, nameAcf : field.field.nameField, model : {}, schema : { fields: [] }, position : field.field.position, _id : field._id });
         });
-
-        this.arrFormGenerator.concat(vm.arrFormGeneratorCol2).forEach((v, index) => {
-            v.fd.forEach((i) => {
-                v.model = Object.assign({}, v.model, { [i.formAcf.name] : '' }) ;
-                axios.post(`/api/admin/meta/getmeta`,{ arg : { postid : vm.$route.params.id, key : [i.formAcf.name] } }).then((res) => {
-                    if(res.data[0]) v.model[i.formAcf.name] = res.data[0].value;
-                });
-                switch (i.formAcf.type) {
-                    case 'input':
-                        v.schema.fields.push( field_ex.fd_text(i.formAcf).fs );
-                        break;
-                    case 'select':
-                        v.schema.fields.push( field_ex.fd_select(i.formAcf).fs );
-                        break;
-                    default:
-                        break;
-                }
-            }); 
-        });
+        this.resInput().then(_ => {
+            this.loadDatField = true;
+        })
     }
 }
 </script>
