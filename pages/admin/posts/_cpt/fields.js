@@ -10,16 +10,28 @@ export const field_ex = {
         return { fs }
     },
     /** type select */
-    fd_select : function(arg){
+    fd_select : function(arg, attr){
+        var arr_df = [];
+        attr.choice.split('\n').forEach((e) => {
+            arr_df.push({id : e.split(':')[1].replace(' ', ''), name : e.split(':')[1].replace(' ', ''), value: e.split(':')[0].replace(' ', '')});
+        });
         let fs = {
             model : arg.name,
             values : function(){
-                return [
-                    { id: 'vue', name : 'vue', value : '1' }
-                ]
+                return arr_df;
             }
         }
         Object.assign(fs, arg);
         return { fs }
+    },
+    fd_field_array : function(arg, attr){
+        let fs = {
+            type: "array",
+            model : arg.name,
+            showRemoveButton: true,
+        }
+        Object.assign(fs, arg);
+
+        return {fs}
     }
 }

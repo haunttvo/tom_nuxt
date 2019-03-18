@@ -1,6 +1,6 @@
 <template>
     <div>
-        <b-row>
+        <b-row v-if="loadDatField">
             <b-col md="9">
                 <b-form>
                     <b-form-group label="Title" label-for="postTitle">
@@ -47,14 +47,18 @@
 <script>
 import Vue from 'vue'
 import VueFormGenerator from 'vue-form-generator'
+import { FieldArray } from 'vfg-field-array'
+var ModuleLibrary = require('vfg-field-array')
 import axios from 'axios'
 import draggable from 'vuedraggable'
 import { field_ex } from  '../fields.js'
-Vue.use(VueFormGenerator)
+Vue.component('VueFormGenerator', VueFormGenerator.component)
+Vue.component('FieldArray', FieldArray);
 export default {
     layout: 'admin',
     components:{
-        draggable
+        draggable,
+        FieldArray
     },
     async asyncData({params}){
         let detailpost = await axios.get(`/api/admin/posts/detailpost/${params.id}`);
@@ -70,6 +74,7 @@ export default {
     },
     data(){
         return{
+            loadDatField : false,
             arrFormGeneratorCol2 : [],
             arrFormGenerator : [],
             argsFormPosts: {
@@ -143,7 +148,7 @@ export default {
                     Object.keys(field.model).forEach((e) => {
                         let arg = {
                             key: e,
-                            value : field.model[e],
+                            value : { field : field.model[e] } ,
                         };
                         if(field.model[e] != ''){
                             axios.put('/api/admin/meta/update', { arg : arg, postid : vm.$route.params.id });
@@ -162,6 +167,30 @@ export default {
                     evt.added.element.position = 'left';
                 }
             }
+        },
+        async resInput(){
+            var vm = this;
+            this.arrFormGenerator.concat(vm.arrFormGeneratorCol2).forEach((v, index) => {
+                v.fd.forEach((i) => {
+                    v.model = Object.assign({}, v.model, { [i.formAcf.name] : '' }) ;
+                    axios.post(`/api/admin/meta/getmeta`,{ arg : { postid : vm.$route.params.id, key : [i.formAcf.name] } }).then((res) => {
+                        if(res.data[0]) v.model[i.formAcf.name] = res.data[0].value.field;
+                    });
+                    switch (i.formAcf.type) {
+                        case 'input':
+                            v.schema.fields.push( field_ex.fd_text(i.formAcf).fs );
+                            break;
+                        case 'select':
+                            v.schema.fields.push( field_ex.fd_select(i.formAcf, i.attr).fs );
+                            break;
+                        case 'array':
+                            v.schema.fields.push( field_ex.fd_field_array(i.formAcf,i.attr ).fs );
+                            break;
+                        default:
+                            break;
+                    }
+                }); 
+            });
         }
         
     },
@@ -173,25 +202,10 @@ export default {
         this.acfFieldRight.forEach((field) => {
                 vm.arrFormGeneratorCol2.push({fd: field.field.fieldAcf, nameAcf : field.field.nameField, model : {}, schema : { fields: [] }, position : field.field.position, _id : field._id });
         });
-
-        this.arrFormGenerator.concat(vm.arrFormGeneratorCol2).forEach((v, index) => {
-            v.fd.forEach((i) => {
-                v.model = Object.assign({}, v.model, { [i.formAcf.name] : '' }) ;
-                axios.post(`/api/admin/meta/getmeta`,{ arg : { postid : vm.$route.params.id, key : [i.formAcf.name] } }).then((res) => {
-                    if(res.data[0]) v.model[i.formAcf.name] = res.data[0].value;
-                });
-                switch (i.formAcf.type) {
-                    case 'input':
-                        v.schema.fields.push( field_ex.fd_text(i.formAcf).fs );
-                        break;
-                    case 'select':
-                        v.schema.fields.push( field_ex.fd_select(i.formAcf).fs );
-                        break;
-                    default:
-                        break;
-                }
-            }); 
-        });
+        this.resInput().then(_ => {
+            this.loadDatField = true;
+        })
+        
     }
 }
 </script>

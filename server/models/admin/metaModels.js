@@ -2,7 +2,7 @@ var mongoose = require('mongoose');
 
 var Schema = mongoose.Schema({
     key : String,
-    value : String,
+    value : Object,
     postid : { type : String },
     date_created : { type : Date, default: Date.now }
 });

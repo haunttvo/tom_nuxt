@@ -61,15 +61,16 @@
                                             <b-form-select size="sm" v-model="itemAcf.formAcf.type" :options="optionsTypeAcf"></b-form-select>
                                         </td>
                                     </tr>
+                                    <tr v-if="itemAcf.formAcf.type == 'select'">
+                                        <td class="td-label">Choice</td>
+                                        <td class="et-form">
+                                            <textarea name="" v-model="itemAcf.attr.choice" rows="8" cols="80" class="form-control"></textarea>
+                                        </td>
+                                    </tr>
                                     <tr>
                                         <td class="td-label">Default Values</td>
                                         <td class="et-form">
-                                            <template v-if="itemAcf.formAcf.type == 'input'">
                                               <input type="text" v-model="itemAcf.attr.defaultsvalues" class="form-control form-control-sm">
-                                            </template>
-                                            <template v-else>
-                                              <textarea name="" v-model="itemAcf.attr.defaultsvalues" rows="8" cols="80" class="form-control"></textarea>
-                                            </template>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -151,7 +152,10 @@ export default {
                 {name: 'Field Label', typefield: ''},
                 {name: 'Field Name', typefield: ''},
             ],
-            optionsTypeAcf: [{ value : 'input', text: 'Input' }, { value : 'select', text:  'Select' }],
+            optionsTypeAcf: [
+                { value : 'input', text: 'Input' }, 
+                { value : 'select', text:  'Select' },
+                { value : 'array', text:  'Array' }],
             optionPostsType : [{value : 'post', text: 'post'}, {value : 'page', text: 'page'}],
             optionType : [ {value : 'cpt', text: 'Post Type'} ],
             optionPosition : [ {value : 'left', text : 'Left'},{value : 'right', text : 'Right'} ],
@@ -168,7 +172,7 @@ export default {
                 },
                 attr:{
                   defaultsvalues: '',
-                  position : ''
+                  choice : ''
                 }
             });
         },

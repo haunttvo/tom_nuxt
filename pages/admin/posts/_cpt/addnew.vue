@@ -46,14 +46,18 @@
 <script>
 import Vue from 'vue'
 import VueFormGenerator from 'vue-form-generator'
+import { FieldArray } from 'vfg-field-array'
 import draggable from 'vuedraggable'
 import axios from 'axios'
 import { field_ex } from  './fields.js'
-Vue.use(VueFormGenerator)
+// Vue.use(VueFormGenerator)
+Vue.component('VueFormGenerator', VueFormGenerator.component)
+Vue.component('FieldArray', FieldArray);
 export default {
     layout: 'admin',
     components:{
-        draggable
+        draggable,
+        FieldArray
     },
     fetch ({ store, params }) {
     //    console.log("params:", params);
@@ -143,7 +147,7 @@ export default {
                     Object.keys(field.model).forEach((key) => {
                         let arg = {
                             key: key,
-                            value : field.model[key],
+                            value : { field : field.model[key] } ,
                             postid : residPost
                         }
                         if( field.model[key] != '' ){
@@ -167,13 +171,16 @@ export default {
             var vm = this;
             this.arrFormGenerator.concat(vm.arrFormGeneratorCol2).forEach((v, index) => {
                 v.fd.forEach((i) => {
-                    v.model = Object.assign({}, v.model, { [i.formAcf.name] : '' }) ;
+                    v.model = Object.assign({}, v.model, { [i.formAcf.name] : i.attr.defaultsvalues }) ;
                     switch (i.formAcf.type) {
                         case 'input':
                             v.schema.fields.push( field_ex.fd_text(i.formAcf).fs );
                             break;
                         case 'select':
-                            v.schema.fields.push( field_ex.fd_select(i.formAcf).fs );
+                            v.schema.fields.push( field_ex.fd_select(i.formAcf,i.attr ).fs );
+                            break;
+                        case 'array':
+                            v.schema.fields.push( field_ex.fd_field_array(i.formAcf,i.attr ).fs );
                             break;
                         default:
                             break;
