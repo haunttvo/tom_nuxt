@@ -72,7 +72,9 @@
                                             Array Multipe Field
                                         </td>
                                         <td>
-                                            <table class="table table-bordered table-acf-form">
+                                            {{ itemAcf.formAcf.items.schema }}
+                                            <!-- <table class="table table-bordered table-acf-form">
+                                                
                                                 <template v-for="(fieldmultipe, index) in itemAcf.formAcf.items.schema.fields">
                                                     <div :key="index">
                                                         <tr>
@@ -95,7 +97,7 @@
                                                         </tr>
                                                     </div>
                                                 </template>
-                                            </table>
+                                            </table> -->
                                             <b-button variant="info" size="sm" @click="addFieldArrMultipe(i)">Add Field</b-button>
                                         </td>
                                     </tr>
@@ -174,9 +176,11 @@
 import Vue from 'vue';
 import VueTheMask from 'vue-the-mask';
 import axios from 'axios';
+import formField from '~/components/admin/acf/formField';
 Vue.use(VueTheMask);
 export default {
     layout: 'admin',
+    components: {formField},
     data(){
         return{
             items: [
@@ -238,15 +242,12 @@ export default {
             if( value != 'array_multipe' ){
                 delete this.createItemAcf.fieldAcf[index].formAcf.items;
             }else{
-                this.$nextTick(() => {
-                    this.createItemAcf.fieldAcf[index].formAcf.items = {
-                        type: 'object',
-                        schema : {
-                            fields : []
-                        }
+                 this.createItemAcf.fieldAcf[index].formAcf['items'] = {
+                    type: 'object',
+                    schema : {
+                        fields : []
                     }
-                    this.loadMuiltipe = true;
-                });
+                }
             }
         },
         editAcf(ref){
