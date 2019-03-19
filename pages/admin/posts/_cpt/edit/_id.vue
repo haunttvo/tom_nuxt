@@ -48,17 +48,18 @@
 import Vue from 'vue'
 import VueFormGenerator from 'vue-form-generator'
 import { FieldArray } from 'vfg-field-array'
+import { FieldObject } from 'vfg-field-object'
 var ModuleLibrary = require('vfg-field-array')
 import axios from 'axios'
 import draggable from 'vuedraggable'
 import { field_ex } from  '../fields.js'
 Vue.component('VueFormGenerator', VueFormGenerator.component)
 Vue.component('FieldArray', FieldArray);
+Vue.component('FieldObject', FieldObject);
 export default {
     layout: 'admin',
     components:{
-        draggable,
-        FieldArray
+        draggable
     },
     async asyncData({params}){
         let detailpost = await axios.get(`/api/admin/posts/detailpost/${params.id}`);

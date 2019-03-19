@@ -7590,6 +7590,13 @@ vfg-field-array@^0.0.1:
     lodash.isstring "^4.0.1"
     vue-form-generator "^2.2.1"
 
+vfg-field-object@^0.0.0-development:
+  version "0.0.0-development"
+  resolved "https://registry.yarnpkg.com/vfg-field-object/-/vfg-field-object-0.0.0-development.tgz#c081187c3100281db07622cab3d4d2e1543687b9"
+  integrity sha1-wIEYfDEAKB2wdiLKs9TS4VQ2h7k=
+  dependencies:
+    vue-form-generator "^2.2.1"
+
 vm-browserify@0.0.4:
   version "0.0.4"
   resolved "https://registry.yarnpkg.com/vm-browserify/-/vm-browserify-0.0.4.tgz#5d7ea45bbef9e4a6ff65f95438e0a87c357d5a73"

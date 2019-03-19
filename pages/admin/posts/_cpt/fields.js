@@ -35,13 +35,25 @@ export const field_ex = {
         return {fs}
     },
     fd_field_array_multipe: function(arg, attr){
+        // console.log(arg.items.schema.fields);
         let fs = {
-            type : "array",
+            type : 'array',
             label: 'Columns',
+            model: 'columns',
             items : {
                 type : 'object',
                 schema : {
-                    fields : arg.items.fields
+                    fields : [{
+                        type: 'input',
+                        inputType: 'text',
+                        label: 'Label',
+                        model: 'label',
+                      },{
+                        type: 'input',
+                        inputType: 'text',
+                        label: 'Field',
+                        model: 'field',
+                      }]
                 }
             }
         }
