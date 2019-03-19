@@ -67,6 +67,39 @@
                                             <textarea name="" v-model="itemAcf.attr.choice" rows="8" cols="80" class="form-control"></textarea>
                                         </td>
                                     </tr>
+                                    <tr v-if="itemAcf.formAcf.type == 'array_multipe'">
+                                        <td class="td-label">
+                                            Array Multipe Field
+                                        </td>
+                                        <td>
+                                            <formField @change_field_multipe="change_fild_mt($event, i)" :TypeAcf="optionsTypeAcf" :dataField="itemAcf.formAcf.items.schema.fields"></formField>
+                                            <!-- <table class="table table-bordered table-acf-form">
+                                                
+                                                <template v-for="(fieldmultipe, index) in itemAcf.formAcf.items.schema.fields">
+                                                    <div :key="index">
+                                                        <tr>
+                                                            <td class="Field Label">Field Label</td>
+                                                            <td class="et-form">
+                                                                <input type="text" class="form-control form-control-sm">
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="Field Label">Field Name</td>
+                                                            <td class="et-form">
+                                                                <input type="text" class="form-control form-control-sm">
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="Field Label">Field Type</td>
+                                                            <td class="et-form">
+                                                                <input type="text" class="form-control form-control-sm">
+                                                            </td>
+                                                        </tr>
+                                                    </div>
+                                                </template>
+                                            </table> -->
+                                        </td>
+                                    </tr>
                                     <tr>
                                         <td class="td-label">Default Values</td>
                                         <td class="et-form">
@@ -140,8 +173,10 @@
 <script>
 import Vue from 'vue';
 import axios from 'axios';
+import formField from '~/components/admin/acf/formField';
 export default {
     layout : 'admin',
+    components: {formField},
     async asyncData({params}){
         let dataAcf = await axios.get(`/api/admin/acf/getAcfItem/${params.id}`);
         return { itemDataAcf: dataAcf.data, createItemAcf : dataAcf.data.field }
@@ -155,7 +190,9 @@ export default {
             optionsTypeAcf: [
                 { value : 'input', text: 'Input' }, 
                 { value : 'select', text:  'Select' },
-                { value : 'array', text:  'Array' }],
+                { value : 'array', text:  'Array' },
+                { value : 'array_multipe', text : 'Array Multipe' }
+            ],
             optionPostsType : [{value : 'post', text: 'post'}, {value : 'page', text: 'page'}],
             optionType : [ {value : 'cpt', text: 'Post Type'} ],
             optionPosition : [ {value : 'left', text : 'Left'},{value : 'right', text : 'Right'} ],
@@ -175,6 +212,9 @@ export default {
                   choice : ''
                 }
             });
+        },
+        change_fild_mt(val, idex){
+            this.createItemAcf.fieldAcf[idex].formAcf.items = val;
         },
         editAcf(ref){
             if( !jQuery(this.$refs[ref]).find('.u-acf-head').hasClass('active') ){

@@ -186,6 +186,9 @@ export default {
                         case 'array':
                             v.schema.fields.push( field_ex.fd_field_array(i.formAcf,i.attr ).fs );
                             break;
+                        case 'array_multipe':
+                            v.schema.fields.push( field_ex.fd_field_array_multipe(i.formAcf,i.attr ).fs );
+                            break;    
                         default:
                             break;
                     }

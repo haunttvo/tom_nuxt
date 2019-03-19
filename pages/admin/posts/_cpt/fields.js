@@ -33,5 +33,19 @@ export const field_ex = {
         Object.assign(fs, arg);
 
         return {fs}
+    },
+    fd_field_array_multipe: function(arg, attr){
+        let fs = {
+            type : "array",
+            label: 'Columns',
+            items : {
+                type : 'object',
+                schema : {
+                    fields : arg.items.fields
+                }
+            }
+        }
+        // Object.assign(fs, arg);
+        return {fs}
     }
 }

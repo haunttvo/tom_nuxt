@@ -72,7 +72,7 @@
                                             Array Multipe Field
                                         </td>
                                         <td>
-                                            {{ itemAcf.formAcf.items.schema }}
+                                            <formField @change_field_multipe="change_fild_mt($event, i)" :TypeAcf="optionsTypeAcf"></formField>
                                             <!-- <table class="table table-bordered table-acf-form">
                                                 
                                                 <template v-for="(fieldmultipe, index) in itemAcf.formAcf.items.schema.fields">
@@ -98,7 +98,6 @@
                                                     </div>
                                                 </template>
                                             </table> -->
-                                            <b-button variant="info" size="sm" @click="addFieldArrMultipe(i)">Add Field</b-button>
                                         </td>
                                     </tr>
                                     <tr>
@@ -183,10 +182,6 @@ export default {
     components: {formField},
     data(){
         return{
-            items: [
-                {name: 'Field Label', typefield: ''},
-                {name: 'Field Name', typefield: ''},
-            ],
             optionsTypeAcf: [
                 { value : 'input', text: 'Input' }, 
                 { value : 'select', text:  'Select' }, 
@@ -224,31 +219,14 @@ export default {
                 }
             });
         },
-        addFieldArrMultipe(index){
-            var vm = this;
-            this.createItemAcf.fieldAcf[index].formAcf.items.schema.fields.push(
-                {
-                  type: "input",
-                //   inputType: "text",
-                  label: "Name",
-                //   model: "name",
-                  inputName: "name",
-                //   required: true,
-                //   validator: "string",
-              },
-            );
-        },
         changeValueFieldType(value, index){
             if( value != 'array_multipe' ){
                 delete this.createItemAcf.fieldAcf[index].formAcf.items;
-            }else{
-                 this.createItemAcf.fieldAcf[index].formAcf['items'] = {
-                    type: 'object',
-                    schema : {
-                        fields : []
-                    }
-                }
             }
+        },
+        change_fild_mt(val, idex){
+            this.createItemAcf.fieldAcf[idex].formAcf.items = val;
+            // console.log(idex);
         },
         editAcf(ref){
             if( !jQuery(this.$refs[ref]).find('.u-acf-head').hasClass('active') ){
