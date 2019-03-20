@@ -23,7 +23,10 @@ module.exports = {
     ],
     script:[
       {src:'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js'},
-      {src:'https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js'}
+      {src:'https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js'},
+      // {src : 'https://cdnjs.cloudflare.com/ajax/libs/tinymce/5.0.3/plugins/advlist/plugin.js'},
+      {src:'https://cdnjs.cloudflare.com/ajax/libs/tinymce/5.0.3/tinymce.min.js'},
+      
     ]
   },
 
@@ -44,7 +47,8 @@ module.exports = {
   */
   plugins: [
     { src : '~/plugins/veeValidator'},
-    { src : '~/plugins/settingAxios' }
+    { src : '~/plugins/settingAxios' },
+    // { src : '~/plugins/settingCkeditor', ssr: false }
   ],
 
   /*

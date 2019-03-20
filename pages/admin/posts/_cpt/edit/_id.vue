@@ -6,8 +6,10 @@
                     <b-form-group label="Title" label-for="postTitle">
                         <b-form-input id="postTitle" type="text" autocomplete="off" placeholder="Enter title" v-model="argsFormPosts.title"></b-form-input>
                     </b-form-group>
+                    
                     <b-form-group label="Content" label-for="postContent">
-                        <!-- <ckeditor :editor="editor" v-model="argsFormPosts.content" :config="{}"></ckeditor> -->
+                        
+                        <editor api-key="4zp3khtm2s5naymgl7i1eanj8uvxbe20nzuqx5e5aouoe8yi" :init="{plugins: 'wordcount image code'}"></editor>
                         <!-- <b-form-textarea autocomplete="off" id="postContent" v-model="argsFormPosts.content" /> -->
                     </b-form-group>
                     <draggable :list="arrFormGenerator" group="posts_drag" @change="log">    
@@ -54,16 +56,16 @@ var ModuleLibrary = require('vfg-field-array')
 import axios from 'axios'
 import draggable from 'vuedraggable'
 import { field_ex } from  '../fields.js'
-// import CKEditor from '@ckeditor/ckeditor5-vue'
-// import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
-// Vue.use( CKEditor )
+
+import Editor from '@tinymce/tinymce-vue';
 Vue.component('VueFormGenerator', VueFormGenerator.component)
 Vue.component('FieldArray', FieldArray);
 Vue.component('FieldObject', FieldObject);
 export default {
     layout: 'admin',
     components:{
-        draggable
+        draggable,
+        'editor': Editor
     },
     async asyncData({params}){
         let detailpost = await axios.get(`/api/admin/posts/detailpost/${params.id}`);
@@ -79,7 +81,6 @@ export default {
     },
     data(){
         return{
-            // editor: ClassicEditor,
             loadDatField : false,
             arrFormGeneratorCol2 : [],
             arrFormGenerator : [],
@@ -215,7 +216,12 @@ export default {
             this.loadDatField = true;
         })
         
-    }
+    },
+    mounted() {
+        tinymce.init({
+            selector: '#postContent'
+        });
+    },
 }
 </script>
 
