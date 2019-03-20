@@ -1,3 +1,4 @@
+// import WidgetListColumnEditorContainer from '~/components/admin/acf/widgetItemContainer';
 export const field_ex = {
     /** type input */
     fd_text : function(arg){
@@ -29,31 +30,28 @@ export const field_ex = {
             type: "array",
             model : arg.name,
             showRemoveButton: true,
+            itemFieldClasses: "form-control form-control-sm",
+            fieldClasses : 'acf_field_group_array_wrapper',
+            newElementButtonLabelClasses: "btn btn-info btn-sm",
+            // itemContainerComponent: "Container"
         }
         Object.assign(fs, arg);
 
         return {fs}
     },
     fd_field_array_multipe: function(arg, attr){
-        // console.log(arg.items.schema.fields);
         let fs = {
             type : 'array',
-            label: 'Columns',
-            model: 'columns',
+            label: arg.label,
+            model: arg.name,
+            showRemoveButton: true,
+            newElementButtonLabelClasses: "btn btn-outline-dark mt-2",
+            fieldClasses: (arg.items.properties.display == 'column') ? 'field-column-wrapper acf-group-multipe-array ' + arg.items.properties.FieldClasses: 'acf-group-multipe-array ' +arg.items.properties.FieldClasses,
+            newElementButtonLabelClasses: "btn btn-info btn-sm",
             items : {
                 type : 'object',
                 schema : {
-                    fields : [{
-                        type: 'input',
-                        inputType: 'text',
-                        label: 'Label',
-                        model: 'label',
-                      },{
-                        type: 'input',
-                        inputType: 'text',
-                        label: 'Field',
-                        model: 'field',
-                      }]
+                    fields : arg.items.schema.fields
                 }
             }
         }

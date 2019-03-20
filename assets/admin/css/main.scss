@@ -3,6 +3,46 @@
     src: url('../../fonts/avo/utm-avo.ttf');
 }
 $cool-red: red;
+.acf-group-multipe-array{
+    padding: 10px;
+    border: 1px solid rgba(0, 0, 0, 0.125);
+    > div{
+        position: relative;
+        input[value="x"]{
+            position: absolute;
+            top: 15%;
+            right: 0;
+            border-radius: 50%;
+            background-color: inherit;
+            border: 1px solid #222;
+            width: 26px;
+            height: 26px;
+        }
+    }
+}
+.acf_field_group_array_wrapper{
+    > div{
+        position: relative;
+        margin-bottom: 10px;
+        input[value="x"]{
+            position: absolute;
+            top: 4%;
+            left: -23px;
+            border-radius: 50%;
+            background-color: inherit;
+            border: none;
+            width: 26px;
+            height: 26px;
+            color: red;
+        }
+    }
+}
+.field-column-wrapper .form-group{
+    float: left;
+}
+.field-column-wrapper .form-group:not(:last-child){
+    margin-right: 10px;
+}
 .df-acf{
     margin-top: 14px;
     .box-header-field{

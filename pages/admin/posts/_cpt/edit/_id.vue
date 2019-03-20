@@ -7,7 +7,8 @@
                         <b-form-input id="postTitle" type="text" autocomplete="off" placeholder="Enter title" v-model="argsFormPosts.title"></b-form-input>
                     </b-form-group>
                     <b-form-group label="Content" label-for="postContent">
-                        <b-form-textarea autocomplete="off" id="postContent" v-model="argsFormPosts.content" />
+                        <!-- <ckeditor :editor="editor" v-model="argsFormPosts.content" :config="{}"></ckeditor> -->
+                        <!-- <b-form-textarea autocomplete="off" id="postContent" v-model="argsFormPosts.content" /> -->
                     </b-form-group>
                     <draggable :list="arrFormGenerator" group="posts_drag" @change="log">    
                         <template v-for="(form, i) in arrFormGenerator" >
@@ -53,6 +54,9 @@ var ModuleLibrary = require('vfg-field-array')
 import axios from 'axios'
 import draggable from 'vuedraggable'
 import { field_ex } from  '../fields.js'
+// import CKEditor from '@ckeditor/ckeditor5-vue'
+// import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
+// Vue.use( CKEditor )
 Vue.component('VueFormGenerator', VueFormGenerator.component)
 Vue.component('FieldArray', FieldArray);
 Vue.component('FieldObject', FieldObject);
@@ -75,6 +79,7 @@ export default {
     },
     data(){
         return{
+            // editor: ClassicEditor,
             loadDatField : false,
             arrFormGeneratorCol2 : [],
             arrFormGenerator : [],

@@ -73,31 +73,6 @@
                                         </td>
                                         <td>
                                             <formField @change_field_multipe="change_fild_mt($event, i)" :TypeAcf="optionsTypeAcf"></formField>
-                                            <!-- <table class="table table-bordered table-acf-form">
-                                                
-                                                <template v-for="(fieldmultipe, index) in itemAcf.formAcf.items.schema.fields">
-                                                    <div :key="index">
-                                                        <tr>
-                                                            <td class="Field Label">Field Label</td>
-                                                            <td class="et-form">
-                                                                <input type="text" class="form-control form-control-sm">
-                                                            </td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td class="Field Label">Field Name</td>
-                                                            <td class="et-form">
-                                                                <input type="text" class="form-control form-control-sm">
-                                                            </td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td class="Field Label">Field Type</td>
-                                                            <td class="et-form">
-                                                                <input type="text" class="form-control form-control-sm">
-                                                            </td>
-                                                        </tr>
-                                                    </div>
-                                                </template>
-                                            </table> -->
                                         </td>
                                     </tr>
                                     <tr>
