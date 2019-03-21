@@ -159,9 +159,11 @@ export default {
         return{
             optionsTypeAcf: [
                 { value : 'input', text: 'Input' }, 
+                { value : 'textArea', text: 'textArea' },
                 { value : 'select', text:  'Select' }, 
                 { value : 'array', text:  'Array' },
-                { value : 'array_multipe', text : 'Array Multipe' }
+                { value : 'array_multipe', text : 'Array Multipe' },
+                { value : 'tinymce', text : 'Tinymce' }
             ],
             optionPostsType : [{value : 'post', text: 'post'}, {value : 'page', text: 'page'}],
             optionType : [ {value : 'cpt', text: 'Post Type'} ],

@@ -1,11 +1,12 @@
 <template>
     <div id="acf-wrapper">
         <n-link to="/admin/acf/addnew">Add new field</n-link>
+        <!-- <b-table :items="listAcf"></b-table> -->
         <table class="table table-bordered table-list-acf">
             <thead>
                 <tr>
                     <th>Title</th>
-                    <th>...</th>
+                    <th>Post Type</th>
                     <th>Fields</th>
                 </tr>
             </thead>
@@ -19,8 +20,8 @@
                                 <span>Delete</span>
                             </div>
                         </td>
-                        <td></td>
-                        <td>2</td>
+                        <td>{{ itemacf.field.formLocation.optionPostType }}</td>
+                        <td>{{ itemacf.field.fieldAcf.length }}</td>
                     </tr>
                 </template>
 
@@ -38,7 +39,9 @@ export default {
         return { listAcf: data }
     },
     data(){
+        return{
 
+        }
     }
 }
 </script>

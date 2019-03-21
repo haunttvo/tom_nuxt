@@ -82,6 +82,33 @@
             <!-- end router post type -->
             <li class="sidebar-dropdown">
                 <a class="ls_down" href="javascript:void(0)">
+                  <i class="fa fa-apple-alt"></i>
+                  <span>Apprearance</span>
+                  <span class="badge badge-pill badge-danger">2</span>
+                </a>
+                <div class="sidebar-submenu">
+                  <ul>
+                    <li>
+                      <n-link to="/admin/acf">
+                        customize
+                        <span class="badge badge-pill badge-success">Pro</span>
+                      </n-link>
+                    </li>
+                    <li>
+                      <n-link to="/admin/apprearance/menu">
+                        Menu
+                      </n-link>
+                    </li>
+                    <li>
+                      <n-link to="/admin/acf/addnew">
+                        Header
+                      </n-link>
+                    </li>
+                  </ul>
+                </div>
+            </li>
+            <li class="sidebar-dropdown">
+                <a class="ls_down" href="javascript:void(0)">
                   <i class="fa fa-shopping-cart"></i>
                   <span>Ecommerce</span>
                   <span class="badge badge-pill badge-danger">3</span>

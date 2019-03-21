@@ -10,6 +10,15 @@ export const field_ex = {
         Object.assign(fs, arg);
         return { fs }
     },
+    fd_textarea : function(arg, attr){
+        let fs = {
+            rows: 20,
+            model : arg.name
+            // model : 'price1'
+        }
+        Object.assign(fs, arg);
+        return { fs }
+    },
     /** type select */
     fd_select : function(arg, attr){
         var arr_df = [];
@@ -56,6 +65,21 @@ export const field_ex = {
             }
         }
         // Object.assign(fs, arg);
+        return {fs}
+    },
+    /** type tinymce */
+    fd_field_tinymce(arg, attr){
+        let fs = {
+            type: "tinymce",
+            model : arg.name
+            // showRemoveButton: true,
+            // itemFieldClasses: "form-control form-control-sm",
+            // fieldClasses : 'acf_field_group_array_wrapper',
+            // newElementButtonLabelClasses: "btn btn-info btn-sm",
+            // itemContainerComponent: "Container"
+        }
+        Object.assign(fs, arg);
+
         return {fs}
     }
 }

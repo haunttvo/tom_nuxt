@@ -7,7 +7,7 @@
                         <b-form-input id="postTitle" type="text" autocomplete="off" placeholder="Enter title" v-model="argsFormPosts.title"></b-form-input>
                     </b-form-group>
                     <b-form-group label="Content" label-for="postContent">
-                        <b-form-textarea autocomplete="off" id="postContent" v-model="argsFormPosts.content" />
+                        <editor api-key="4zp3khtm2s5naymgl7i1eanj8uvxbe20nzuqx5e5aouoe8yi" rows="25" v-model="argsFormPosts.content" :init="{plugins: 'wordcount image code'}"></editor>
                     </b-form-group>
                     <draggable :list="arrFormGenerator" group="acfDrag">    
                         <template v-for="(form, i) in arrFormGenerator" >
@@ -50,6 +50,10 @@ import { FieldArray } from 'vfg-field-array'
 import draggable from 'vuedraggable'
 import axios from 'axios'
 import { field_ex } from  './fields.js'
+import Editor from '@tinymce/tinymce-vue'
+/** register field tinymce */
+import fieldTinymce from '~/components/admin/vue-field/fieldTinymce'
+Vue.component("fieldTinymce", fieldTinymce);
 // Vue.use(VueFormGenerator)
 Vue.component('VueFormGenerator', VueFormGenerator.component)
 Vue.component('FieldArray', FieldArray);
@@ -57,7 +61,8 @@ export default {
     layout: 'admin',
     components:{
         draggable,
-        FieldArray
+        FieldArray,
+        'editor': Editor
     },
     fetch ({ store, params }) {
     //    console.log("params:", params);
@@ -176,11 +181,20 @@ export default {
                         case 'input':
                             v.schema.fields.push( field_ex.fd_text(i.formAcf).fs );
                             break;
+                        case 'textArea':
+                            v.schema.fields.push( field_ex.fd_textarea(i.formAcf, i.attr).fs );
+                            break;
                         case 'select':
                             v.schema.fields.push( field_ex.fd_select(i.formAcf,i.attr ).fs );
                             break;
                         case 'array':
                             v.schema.fields.push( field_ex.fd_field_array(i.formAcf,i.attr ).fs );
+                            break;
+                        case 'array_multipe':
+                            v.schema.fields.push( field_ex.fd_field_array_multipe(i.formAcf,i.attr ).fs );
+                            break;   
+                        case 'tinymce':
+                            v.schema.fields.push( field_ex.fd_field_tinymce(i.formAcf,i.attr ).fs );
                             break;
                         default:
                             break;

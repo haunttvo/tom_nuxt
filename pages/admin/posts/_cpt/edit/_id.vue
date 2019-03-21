@@ -6,10 +6,8 @@
                     <b-form-group label="Title" label-for="postTitle">
                         <b-form-input id="postTitle" type="text" autocomplete="off" placeholder="Enter title" v-model="argsFormPosts.title"></b-form-input>
                     </b-form-group>
-                    
                     <b-form-group label="Content" label-for="postContent">
-                        
-                        <editor api-key="4zp3khtm2s5naymgl7i1eanj8uvxbe20nzuqx5e5aouoe8yi" :init="{plugins: 'wordcount image code'}"></editor>
+                        <editor api-key="4zp3khtm2s5naymgl7i1eanj8uvxbe20nzuqx5e5aouoe8yi" rows="25" v-model="argsFormPosts.content" :init="{plugins: 'wordcount image code'}"></editor>
                         <!-- <b-form-textarea autocomplete="off" id="postContent" v-model="argsFormPosts.content" /> -->
                     </b-form-group>
                     <draggable :list="arrFormGenerator" group="posts_drag" @change="log">    
@@ -18,7 +16,7 @@
                                 <div class="box-header-field cursor-pointer" :href="'#collapseExample' + i" data-toggle="collapse">{{ form.nameAcf }}<i class="fas fa-caret-up float-right fd-down-acf"></i></div>
                                 <div class="collapse show" :id="'collapseExample' + i">
                                     <div class="card card-body">
-                                        <vue-form-generator  :schema="form.schema" :model="form.model"></vue-form-generator>
+                                        <vue-form-generator  :schema="form.schema" :model="form.model" :options="formOptions"></vue-form-generator>
                                     </div>
                                 </div>
                             </div>
@@ -36,7 +34,7 @@
                                 <div class="box-header-field cursor-pointer" :href="'#collapseExample1' + i" data-toggle="collapse">{{ form.nameAcf }}<i class="fas fa-caret-up float-right fd-down-acf"></i></div>
                                 <div class="collapse show" :id="'collapseExample1' + i">
                                     <div class="card card-body">
-                                        <vue-form-generator  :schema="form.schema" :model="form.model"></vue-form-generator>
+                                        <vue-form-generator  :schema="form.schema" :model="form.model" :options="formOptions"></vue-form-generator>
                                     </div>
                                 </div>
                             </div>
@@ -56,8 +54,10 @@ var ModuleLibrary = require('vfg-field-array')
 import axios from 'axios'
 import draggable from 'vuedraggable'
 import { field_ex } from  '../fields.js'
-
-import Editor from '@tinymce/tinymce-vue';
+import Editor from '@tinymce/tinymce-vue'
+/** register field tinymce */
+import fieldTinymce from '~/components/admin/vue-field/fieldTinymce'
+Vue.component("fieldTinymce", fieldTinymce);
 Vue.component('VueFormGenerator', VueFormGenerator.component)
 Vue.component('FieldArray', FieldArray);
 Vue.component('FieldObject', FieldObject);
@@ -187,6 +187,9 @@ export default {
                         case 'input':
                             v.schema.fields.push( field_ex.fd_text(i.formAcf).fs );
                             break;
+                        case 'textArea':
+                            v.schema.fields.push( field_ex.fd_textarea(i.formAcf, i.attr).fs );
+                            break;
                         case 'select':
                             v.schema.fields.push( field_ex.fd_select(i.formAcf, i.attr).fs );
                             break;
@@ -195,7 +198,10 @@ export default {
                             break;
                         case 'array_multipe':
                             v.schema.fields.push( field_ex.fd_field_array_multipe(i.formAcf,i.attr ).fs );
-                            break;    
+                            break;   
+                        case 'tinymce':
+                            v.schema.fields.push( field_ex.fd_field_tinymce(i.formAcf,i.attr ).fs );
+                            break; 
                         default:
                             break;
                     }
@@ -218,9 +224,9 @@ export default {
         
     },
     mounted() {
-        tinymce.init({
-            selector: '#postContent'
-        });
+        // tinymce.init({
+        //     selector: 'textarea'
+        // });
     },
 }
 </script>
