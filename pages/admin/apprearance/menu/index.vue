@@ -47,7 +47,13 @@
                 </div>
             </b-col>
             <b-col col lg="9">
-                b
+                <b-row>
+                    <b-col col lg="7">
+                        <nested-draggable :tasks="list" />
+                        <rawDisplayer class="col-3" :value="list" title="List" />
+                    </b-col>
+                </b-row>
+                
             </b-col>
         </b-row>
     </div>
@@ -55,16 +61,45 @@
 
 <script>
 import itemPostType from '~/components/admin/apprearance/menu/itemPostType'
+import draggable from 'vuedraggable'
+import nestedDraggable from "./infra/nested"
+import rawDisplayer from "./infra/raw-displayer"
 export default {
     layout : 'admin',
     components : {
-        itemPostType
+        itemPostType,
+        nestedDraggable,
+        rawDisplayer
     },
     data(){
         return{
             menuoptions : [
                 { value: '1', text: 'Main menu' },
                 { value: '2', text: 'Footer menu' }
+            ],
+            list: [
+                {
+                    name: "Trang chủ",
+                    tasks: [
+                        {
+                        name: "Giới thiệu",
+                        tasks: []
+                        }
+                    ]
+                },
+                {
+                name: "Contact",
+                    tasks: [
+                        {
+                        name: "contact 1",
+                        tasks: []
+                        }
+                    ]
+                },
+                {
+                name: "Media",
+                tasks: []
+                }
             ]
         }
     }
