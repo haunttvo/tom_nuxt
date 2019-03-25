@@ -109,6 +109,33 @@
             </li>
             <li class="sidebar-dropdown">
                 <a class="ls_down" href="javascript:void(0)">
+                  <i class="fa fa-user"></i>
+                  <span>User</span>
+                  <span class="badge badge-pill badge-danger">2</span>
+                </a>
+                <div class="sidebar-submenu">
+                  <ul>
+                    <li>
+                      <n-link to="/admin/users">
+                        All users
+                        <!-- <span class="badge badge-pill badge-success">Pro</span> -->
+                      </n-link>
+                    </li>
+                    <li>
+                      <n-link to="/admin/users/addnew">
+                        Add new
+                      </n-link>
+                    </li>
+                    <!-- <li>
+                      <n-link to="/admin/acf/addnew">
+                        Header
+                      </n-link>
+                    </li> -->
+                  </ul>
+                </div>
+            </li>
+            <li class="sidebar-dropdown">
+                <a class="ls_down" href="javascript:void(0)">
                   <i class="fa fa-shopping-cart"></i>
                   <span>Ecommerce</span>
                   <span class="badge badge-pill badge-danger">3</span>
