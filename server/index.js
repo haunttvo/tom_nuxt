@@ -41,6 +41,7 @@ async function start() {
     await nuxt.ready()
   }
   mongoose.connect(config.connectString,{useNewUrlParser: true});
+  mongoose.set('useCreateIndex', true);
   var db = mongoose.connection;
   db.on('error', console.error.bind(console, 'connection error'));
   db.once('open', function() {

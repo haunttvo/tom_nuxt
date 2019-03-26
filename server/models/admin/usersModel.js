@@ -1,6 +1,9 @@
 var mongoose = require('mongoose');
 var bcrypt = require('bcrypt');
-var Schema = mongoose.Schema({
+var jwt = require('jsonwebtoken');
+var Schema = mongoose.Schema;
+
+var UserSchema = new Schema({
     username:{
         type: String,
         trim: true,
@@ -26,23 +29,17 @@ var Schema = mongoose.Schema({
         required: true,
     },
     date_created : { type: Date, default: Date.now }
-    // passwordConf: {
-    //     type: String,
-    //     required: true,
-    // }
+});
+UserSchema.pre("save", function(next) {
+    const user = this;
+    bcrypt.hash(user.password, 10, function(err, hash){
+        if(err) return next(err)
+        user.password = hash;
+        next();
+    });
 });
 
-var users = mongoose.model('users', Schema);
-Schema.pre('save', function (next) {
-    var user = this;
-    bcrypt.hash(user.password, 10, function (err, hash){
-      if (err) {
-        // return next(err);
-      }
-      user.password = hash;
-    //   next();
-    })
-});
+var users = mongoose.model('users', UserSchema);
 var usersFn = {
     addnew: function(req, res){
         var arg = {
@@ -51,12 +48,36 @@ var usersFn = {
             firstname : req.body.arg.firstname,
             lastname : req.body.arg.lastname,
             password: req.body.arg.password,
-            // passwordConf: req.body.arg.passwordConf,
         }
-        users.create(arg, (err, result) => {
+        var InsertUser = new users(arg);
+        InsertUser.save(arg, (err, result) => {
             if(err) return res.sendStatus(500)
             return res.status(200).json(result)
         });        
+    },
+    checklogin : function(req, res, useritem){
+        users.findOne( { $or : [ {username : useritem.usernameoremail}, {email : useritem.usernameoremail} ] }).exec(function(err, resuser){
+            console.log(resuser);
+            if(err){
+                // console.log(err);
+                return res.status(403).send('error');
+            }else{
+                return res.status(200).json('ok');
+                // bcrypt.compare(useritem.password,resuser.password,function(err, result){
+                //     if(result == true){
+                //         jwt.sign({useritem}, 'scretkeylogin', (error, token) => {
+                //             if(error) return res.status(403).send('error');
+                //             return res.status(200).json({
+                //                 token : token
+                //             });
+                //         });
+                        
+                //     }else{
+                //         return res.status(403).send('error');
+                //     }
+                // });
+            }
+        });
     }
 }
 

@@ -5,15 +5,15 @@
         <div class="card card-signin my-5">
           <div class="card-body">
             <h5 class="card-title text-center">Sign In</h5>
-            <form class="form-signin">
+            <form class="form-signin" @submit="submitlogin">
               <div class="form-label-group">
-                <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
-                <label for="inputEmail">Email address</label>
+                <label for="inputEmail">Email address or username</label>
+                <input type="text" id="inputEmail" v-model="formlogin.usernameoremail" class="form-control" placeholder="Email address" required autofocus>
               </div>
 
               <div class="form-label-group">
-                <input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
                 <label for="inputPassword">Password</label>
+                <input type="password" id="inputPassword" v-model="formlogin.password" class="form-control" placeholder="Password" required>
               </div>
 
               <div class="custom-control custom-checkbox mb-3">
@@ -33,3 +33,26 @@
 
 </style>
 
+
+<script>
+import axios from 'axios'
+export default {
+  data(){
+    return{
+      formlogin : {
+        usernameoremail : '',
+        password : ''
+      }
+    }
+  },
+  methods:{
+    submitlogin(e){
+      e.preventDefault();
+      axios.post('/api/admin/users/login', { formlogin : this.formlogin }).then((res) => {
+        console.log(res);
+      });
+      // alert(1);
+    }
+  }
+}
+</script>

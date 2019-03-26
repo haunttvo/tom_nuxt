@@ -16,15 +16,21 @@ module.exports = function(router){
     });
 
     router.post('/login', (req, res) => {
-        const user = {
-            id : 1,
-            username: 'hau'
+        var userItem = {
+            usernameoremail : req.body.formlogin.usernameoremail,
+            password : req.body.formlogin.password
         }
-        jwt.sign({user},'secretkey',{ expiresIn : '30s' }, (err, token) => {
-            return res.json({
-                token: token
-            });
-        });
+        usersModel.usersFn.checklogin(req, res, userItem);
+        
+        // const user = {
+        //     id : 1,
+        //     username: 'hau'
+        // }
+        // jwt.sign({user},'secretkey',{ expiresIn : '30s' }, (err, token) => {
+        //     return res.json({
+        //         token: token
+        //     });
+        // });
     });
 }
 // format token
