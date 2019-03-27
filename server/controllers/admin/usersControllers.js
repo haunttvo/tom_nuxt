@@ -16,34 +16,31 @@ module.exports = function(router){
         //     }
         // });
     });
-    router.get('/abc', (req, res) => {
-        res.send('ok');
-    });
-    router.post('/login', (req, res) => {
-        var userItem = {
-            usernameoremail : req.body.formlogin.usernameoremail,
-            password : req.body.formlogin.password
-        }
-        usersModel.usersFn.checklogin(userItem).then((ts) => {
-            if(ts != null){
-                bcrypt.compare(userItem.password, ts.password, function(err, result){
-                    if(result == true){
-                        jwt.sign({userItem}, 'scretkeylogin',(error, token) => {
-                            if(error) return res.sendStatus(403);
-                            axios.defaults.headers.common['Authorization'] = `Bearer ${token}` 
-                            return res.status(200).json({
-                                token: token
-                            })
-                        });
-                    }else{
-                        return res.sendStatus(403);
-                    }
-                });
-            }else{
-                return res.sendStatus(403);
-            }
-        });
-    });
+    // router.post('/login', (req, res) => {
+    //     var userItem = {
+    //         usernameoremail : req.body.formlogin.usernameoremail,
+    //         password : req.body.formlogin.password
+    //     }
+    //     usersModel.usersFn.checklogin(userItem).then((ts) => {
+    //         if(ts != null){
+    //             bcrypt.compare(userItem.password, ts.password, function(err, result){
+    //                 if(result == true){
+    //                     jwt.sign({userItem}, 'scretkeylogin',(error, token) => {
+    //                         if(error) return res.sendStatus(403);
+    //                         axios.defaults.headers.common['Authorization'] = `Bearer ${token}` 
+    //                         return res.status(200).json({
+    //                             token: token
+    //                         })
+    //                     });
+    //                 }else{
+    //                     return res.sendStatus(403);
+    //                 }
+    //             });
+    //         }else{
+    //             return res.sendStatus(403);
+    //         }
+    //     });
+    // });
 }
 // verify token
 function verifyToken(req, res, next){

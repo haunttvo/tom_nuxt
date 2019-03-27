@@ -15,8 +15,8 @@ const metaControllers = require('./controllers/admin/metaControllers');
 const usersControllers = require('./controllers/admin/usersControllers');
 /** End Import Controller */
 /* middleware */
-
-// const verifyTokenAdmin = require('./middleware/verifyTokenAdmin');
+const authenAdminController = require('./controllers/admin/authenAdminController');
+const verifyTokenAdmin = require('./middleware/verifyTokenAdmin');
 
 // app.set('port', port);
 app.use(bodyParser.json());
@@ -51,45 +51,43 @@ async function start() {
     // we're connected!
   });
   app.group('/api/admin', (router) => {
-    
-    router.group('/', (router) => {
-      // router.use(verifyToken);
-      router.group('/cpt', (router) => {
-        cptControllers(router);
-      });
-      router.group('/acf', (router) => {
-        acfControllers(router);
-      });
-      router.group('/posts', (router) => {
-        postsControllers(router);
-      });
-      router.group('/meta', (router) => {
-        metaControllers(router);
-      });
-    })
+    router.use([verifyTokenAdmin.verifyToken, verifyTokenAdmin.confirmTokened]);
+    router.group('/cpt', (router) => {
+      cptControllers(router);
+    });
+    router.group('/acf', (router) => {
+      acfControllers(router);
+    });
+    router.group('/posts', (router) => {
+      postsControllers(router);
+    });
+    router.group('/meta', (router) => {
+      metaControllers(router);
+    });
     
     router.group('/users', (router) => {
       usersControllers(router);
     });
   });
-
+  app.group('/api/authen/admin', (router) => {
+    authenAdminController(router);
+  });
   // app.get('/api/admin/login123', (req, res) => {
   //   res.send('ok');
   // });
   
-  function verifyToken(req, res, next){
-    res.sendStatus(403);
-    // const bearerHeader = req.headers['authorization'];
-    // if(typeof bearerHeader !== 'undefined'){
-    //     const bearer = bearerHeader.split(' ');
-    //     // get token
-    //     const bearerToken = bearer[1];
-    //     req.token = bearerToken;
-    //     next();
-    // }else{
-    //     res.sendStatus(403);
-    // }
-  }
+  // function verifyToken(req, res, next){
+  //   const bearerHeader = req.headers['authorization'];
+  //   if(typeof bearerHeader !== 'undefined'){
+  //       const bearer = bearerHeader.split(' ');
+  //       // get token
+  //       const bearerToken = bearer[1];
+  //       req.token = bearerToken;
+  //       next();
+  //   }else{
+  //       res.sendStatus(403);
+  //   }
+  // }
 
   // Give nuxt middleware to express
   app.use(nuxt.render)

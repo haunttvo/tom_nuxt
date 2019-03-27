@@ -52,7 +52,7 @@ export default {
     submitlogin(e){
       var vm = this;
       e.preventDefault();
-      axios.post('/api/admin/users/login', { formlogin : this.formlogin }).then((res) => {
+      axios.post('/api/authen/admin/login', { formlogin : this.formlogin }).then((res) => {
         jwt.verify(res.data.token, 'scretkeylogin', (err, authData) => {
           if(err) return false;
           vm.$store.commit('setAuthAdmin', res.data.token);

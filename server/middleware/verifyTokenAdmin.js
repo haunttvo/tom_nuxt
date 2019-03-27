@@ -1,3 +1,4 @@
+var jwt = require('jsonwebtoken');
 module.exports = {
     verifyToken : function(req, res, next){
         const bearerHeader = req.headers['authorization'];
@@ -10,5 +11,9 @@ module.exports = {
         }else{
             res.sendStatus(403);
         }
+    },
+    confirmTokened : function(req, res, next){
+        console.log(req.token);
+        next();
     }
 }
