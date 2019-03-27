@@ -47,6 +47,7 @@ module.exports = {
   */
   plugins: [
     { src : '~/plugins/veeValidator'},
+    { src : '~/plugins/@nuxtaxios' },
     { src : '~/plugins/settingAxios' },
     // { src : '~/plugins/settingCkeditor', ssr: false }
   ],
@@ -56,7 +57,8 @@ module.exports = {
   */
   modules: [
     // Doc: https://bootstrap-vue.js.org/docs/
-    'bootstrap-vue/nuxt'
+    'bootstrap-vue/nuxt',
+    '@nuxtjs/axios',
   ],
 
   /*

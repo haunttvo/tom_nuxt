@@ -209,6 +209,9 @@
             <li>
                 <a href="#">Contact</a>
             </li>
+            <li @click="logout()">
+                <a  href="#">Logout</a>
+            </li>
         </ul>
       </nav>
       <div id="content">
@@ -228,16 +231,25 @@
 </template>
 
 <script>
+const Cookie = process.client ? require('js-cookie') : undefined
 export default {
     head : {
       script: [
         {src : '/scripts/admin/main.js'}
       ]
     },
+    middleware : 'authenticatedadmin',
     data(){
         return{
           collapseSidebar: false,
         }
+    },
+    methods:{
+      logout(){
+        Cookie.remove('authAdmin');
+        this.$store.commit('setAuthAdmin', null);
+        this.$router.push('/admin/login');
+      }
     },
     mounted(){
         $('.menu-sidebar-items a.ls_down').click(function(){

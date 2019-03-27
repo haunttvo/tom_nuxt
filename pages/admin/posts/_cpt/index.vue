@@ -23,12 +23,15 @@
 </template>
 
 <script>
-import axios from 'axios';
+// import axios from 'axios';
 export default {
     layout: 'admin',
-    async asyncData({params}){
-        let { data } = await axios.get(`/api/admin/posts/listpostcpt/${params.cpt}`);
-        return { listpost: data }
+    async asyncData({params, $axios,store}){
+        if(store.state.authAdmin){
+            let { data } = await $axios.get(`/api/admin/posts/listpostcpt/${params.cpt}`);
+            return { listpost: data }
+        }
+        
     },
     data(){
         return{

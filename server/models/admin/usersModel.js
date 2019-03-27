@@ -55,29 +55,8 @@ var usersFn = {
             return res.status(200).json(result)
         });        
     },
-    checklogin : function(req, res, useritem){
-        users.findOne( { $or : [ {username : useritem.usernameoremail}, {email : useritem.usernameoremail} ] }).exec(function(err, resuser){
-            console.log(resuser);
-            if(err){
-                // console.log(err);
-                return res.status(403).send('error');
-            }else{
-                return res.status(200).json('ok');
-                // bcrypt.compare(useritem.password,resuser.password,function(err, result){
-                //     if(result == true){
-                //         jwt.sign({useritem}, 'scretkeylogin', (error, token) => {
-                //             if(error) return res.status(403).send('error');
-                //             return res.status(200).json({
-                //                 token : token
-                //             });
-                //         });
-                        
-                //     }else{
-                //         return res.status(403).send('error');
-                //     }
-                // });
-            }
-        });
+    checklogin : async function(useritem){
+        return await users.findOne( { $or : [ {username : useritem.usernameoremail}, {email : useritem.usernameoremail} ] });
     }
 }
 

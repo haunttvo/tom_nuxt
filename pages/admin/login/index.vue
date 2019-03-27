@@ -36,7 +36,10 @@
 
 <script>
 import axios from 'axios'
+const Cookie = process.client ? require('js-cookie') : undefined
+import jwt from 'jsonwebtoken'
 export default {
+  middleware : 'logonauth',
   data(){
     return{
       formlogin : {
@@ -47,11 +50,17 @@ export default {
   },
   methods:{
     submitlogin(e){
+      var vm = this;
       e.preventDefault();
       axios.post('/api/admin/users/login', { formlogin : this.formlogin }).then((res) => {
-        console.log(res);
+        jwt.verify(res.data.token, 'scretkeylogin', (err, authData) => {
+          if(err) return false;
+          vm.$store.commit('setAuthAdmin', res.data.token);
+          Cookie.set('authAdmin', res.data.token);
+          this.$router.push('/admin'); 
+        });
+        
       });
-      // alert(1);
     }
   }
 }
