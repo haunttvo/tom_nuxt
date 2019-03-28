@@ -51,8 +51,9 @@ async function start() {
     // we're connected!
   });
   app.group('/api/admin', (router) => {
-    router.use([verifyTokenAdmin.verifyToken, verifyTokenAdmin.confirmTokened]);
+
     router.group('/cpt', (router) => {
+      router.use([verifyTokenAdmin.verifyToken]);
       cptControllers(router);
     });
     router.group('/acf', (router) => {

@@ -5,6 +5,7 @@ module.exports = function(router){
         return cptModels.cptFn.getListCpt(req, res);
     });
     router.get('/getCpt/:idCpt', function(req, res){
+        console.log(req.headers);
         return cptModels.cptFn.getItemCpt(req,res);
     });
     router.post('/addnew', function(req, res){

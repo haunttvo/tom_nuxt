@@ -6,6 +6,7 @@ module.exports = {
             const bearer = bearerHeader.split(' ');
             // get token
             const bearerToken = bearer[1];
+            // console.log(bearerToken);
             req.token = bearerToken;
             next();
         }else{

@@ -25,7 +25,7 @@ export const actions = {
 				// No valid cookie found
 			}
 		}
-		commit('setAuthAdmin', authAdmin)
+		commit('setAuthAdmin', authAdmin);
 		let dataCpt = await axios.get('/api/admin/cpt');
 		commit('receiveCpt', dataCpt.data);
 	}
