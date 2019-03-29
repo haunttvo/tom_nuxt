@@ -21,13 +21,39 @@
                                 </div>
                             </div>
                         </template>
-                    </draggable>    
-                    <!-- <vue-form-generator :schema="schema" :model="model" :options="formOptions"></vue-form-generator> -->
-                    <b-button variant="info" @click="updatepost()" size="sm">Update</b-button>
+                    </draggable>
                 </b-form>
             </b-col>
             <b-col md="3">
-                <label for="">Form right</label>
+                <div class="df-acf" style="margin-top: 28px;">
+                    <div class="box-header-field cursor-pointer" href="#publishpost" data-toggle="collapse">Publish<i class="fas fa-caret-up float-right fd-down-acf"></i></div>
+                    <div class="collapse show" id="publishpost">
+                        <div class="card card-body">
+                            <div id="misc-publishing-actions">
+                                <div class="misc-pub-section misc-pub-post-status">
+                                    <!-- Default unchecked -->
+                                    <i class="fas fa-burn"> STATUS</i>
+                                    <div class="custom-control custom-radio">
+                                        <input type="radio" class="custom-control-input" value="pending" v-model="argsFormPosts.attrPublish.status" id="pendingreviewpost" name="poststatus">
+                                        <label class="custom-control-label" for="pendingreviewpost">Pending Review</label>
+                                    </div>
+                                    <!-- Default checked -->
+                                    <div class="custom-control custom-radio">
+                                        <input type="radio" class="custom-control-input" value="draft" v-model="argsFormPosts.attrPublish.status" id="draftpost" name="poststatus" checked>
+                                        <label class="custom-control-label" for="draftpost">Draft</label>
+                                    </div>
+                                    <i v-if="argsFormPosts.attrPublish.status !== ''" @click="argsFormPosts.attrPublish.status = ''" class="fas fa-times"></i>
+                                </div>
+                                <div class="misc-pub-section misc-pub-visibility">
+
+                                </div>
+                            </div>
+                            <div class="bt-publish">
+                                <b-button variant="info" @click="updatepost()" size="sm">Publish</b-button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <draggable :list="arrFormGeneratorCol2" group="posts_drag" @change="log">
                     <template v-for="(form, i) in arrFormGeneratorCol2" >
                             <div :key="i" class="df-acf">

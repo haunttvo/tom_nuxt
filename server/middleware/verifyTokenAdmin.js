@@ -6,15 +6,15 @@ module.exports = {
             const bearer = bearerHeader.split(' ');
             // get token
             const bearerToken = bearer[1];
-            // console.log(bearerToken);
-            req.token = bearerToken;
-            next();
+            jwt.verify(bearerToken, 'scretkeylogin', function(err, authAdminData){
+                if(typeof authAdminData !== 'undefined'){
+                    next();
+                }else{
+                    return res.sendStatus(403);
+                }
+            });
         }else{
             res.sendStatus(403);
         }
-    },
-    confirmTokened : function(req, res, next){
-        console.log(req.token);
-        next();
     }
 }

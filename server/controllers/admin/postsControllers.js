@@ -1,7 +1,7 @@
 const postsModels = require('../../models/admin/postsModels');
 
 module.exports = function(router){
-    router.get('/listpostcpt/:cpt', verifyToken, function(req, res){
+    router.get('/listpostcpt/:cpt', function(req, res){
         return postsModels.fnPosts.listpostcpt(req, res);
     });
     router.get('/detailpost/:id', function(req, res){
@@ -22,7 +22,6 @@ function verifyToken(req, res, next){
         // get token
         const bearerToken = bearer[1];
         req.token = bearerToken;
-        console.log(req.token);
         next();
     }else{
         res.sendStatus(403);

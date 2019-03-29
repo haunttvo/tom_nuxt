@@ -21,11 +21,39 @@
                             </div>
                         </template>
                     </draggable>  
-                    <b-button variant="info" @click="publishpost()" size="sm">Publish</b-button>
+
                 </b-form>
             </b-col>
             <b-col md="3">
-                <label for="">Form right</label>
+                <div class="df-acf" style="margin-top: 28px;">
+                    <div class="box-header-field cursor-pointer" href="#publishpost" data-toggle="collapse">Publish<i class="fas fa-caret-up float-right fd-down-acf"></i></div>
+                    <div class="collapse show" id="publishpost">
+                        <div class="card card-body">
+                            <div id="misc-publishing-actions">
+                                <div class="misc-pub-section misc-pub-post-status">
+                                    <!-- Default unchecked -->
+                                    <i class="fas fa-burn"> STATUS</i>
+                                    <div class="custom-control custom-radio">
+                                        <input type="radio" class="custom-control-input" value="pending" v-model="argsFormPosts.attrPublish.status" id="pendingreviewpost" name="poststatus">
+                                        <label class="custom-control-label" for="pendingreviewpost">Pending Review</label>
+                                    </div>
+                                    <!-- Default checked -->
+                                    <div class="custom-control custom-radio">
+                                        <input type="radio" class="custom-control-input" value="draft" v-model="argsFormPosts.attrPublish.status" id="draftpost" name="poststatus" checked>
+                                        <label class="custom-control-label" for="draftpost">Draft</label>
+                                    </div>
+                                    <i v-if="argsFormPosts.attrPublish.status !== ''" @click="argsFormPosts.attrPublish.status = ''" class="fas fa-times"></i>
+                                </div>
+                                <div class="misc-pub-section misc-pub-visibility">
+
+                                </div>
+                            </div>
+                            <div class="bt-publish">
+                                <b-button variant="info" @click="publishpost()" size="sm">Publish</b-button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <draggable :list="arrFormGeneratorCol2" group="acfDrag">
                     <template v-for="(form, i) in arrFormGeneratorCol2" >
                             <div :key="i" class="df-acf">
@@ -84,56 +112,14 @@ export default {
             argsFormPosts: {
                 title : '',
                 content: '',
-                posttype : this.$route.params.cpt
+                posttype : this.$route.params.cpt,
+                attrPublish:{
+                    status : ''
+                }
             },
             schema: {
                 fields: [
-                    // {
-                    //     type: 'input',
-                    //     inputType: 'text',
-                    //     label: 'ID (disabled text field)',
-                    //     model: 'id',
-                    //     readonly: true,
-                    //     disabled: true
-                    // },
-                    // {
-                    //     type: 'input',
-                    //     inputType: 'text',
-                    //     label: 'Name',
-                    //     model: 'name',
-                    //     placeholder: 'Your name',
-                    //     featured: true,
-                    //     required: true
-                    // },
-                    // {
-                    //     type: 'input',
-                    //     inputType: 'password',
-                    //     label: 'Password',
-                    //     model: 'password',
-                    //     min: 6,
-                    //     required: true,
-                    //     hint: 'Minimum 6 characters',
-                    //     validator: VueFormGenerator.validators.string
-                    // },
-                    // {
-                    //     type: 'select',
-                    //     label: 'Skills',
-                    //     model: 'skills',
-                    //     values: ['Javascript', 'VueJS', 'CSS3', 'HTML5']
-                    // },
-                    // {
-                    //     type: 'input',
-                    //     inputType: 'email',
-                    //     label: 'E-mail',
-                    //     model: 'email',
-                    //     placeholder: 'User\'s e-mail address'
-                    // },
-                    // {
-                    //     type: 'checkbox',
-                    //     label: 'Status',
-                    //     model: 'status',
-                    //     default: true
-                    // }
+
                 ]
             },
             formOptions: {
@@ -168,7 +154,7 @@ export default {
                     value : JSON.stringify(this.arrFormGeneratorCol2)
                 }
                 axios.post('/api/admin/meta/addnew', { arg: itemsort }).then((res) => {
-                    console.log(res);
+                    return self.$router.push(`/admin/posts/${self.$route.params.cpt}`);
                 });
             })
         },

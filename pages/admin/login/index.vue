@@ -56,6 +56,7 @@ export default {
         jwt.verify(res.data.token, 'scretkeylogin', (err, authData) => {
           if(err) return false;
           vm.$store.commit('setAuthAdmin', res.data.token);
+          vm.$store.commit('afterLoginSuccess', res.data.token);
           Cookie.set('authAdmin', res.data.token);
           this.$router.push('/admin'); 
         });
