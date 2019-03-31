@@ -13,6 +13,9 @@ module.exports = function(router){
     router.put('/updatePost', function(req, res){
         return postsModels.fnPosts.updatePost(req, res);
     });
+    router.delete('/deletePost/:id', function(req, res) {
+        return postsModels.fnPosts.deletePost(req, res);
+    });
 }
 
 function verifyToken(req, res, next){

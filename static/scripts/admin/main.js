@@ -9,7 +9,7 @@ jQuery(document).ready(function($){
         }
         $(this).parents('.box-tom').find('.tb-acf').toggle();
     });
-    $('.menu-sidebar-items a.ls_down').click(function(){
+    $(document).on('click','.menu-sidebar-items a.ls_down', function(){
         if( $(this).parent().hasClass('active') ){
             $(this).parent().removeClass('active');
             $(this).next('.sidebar-submenu').slideUp(200);

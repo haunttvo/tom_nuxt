@@ -14,7 +14,7 @@
                 <td>{{ post.context.title }}</td>
                 <td>
                     <n-link :to="`/admin/posts/${$route.params.cpt}/edit/${post._id}`">Edit</n-link>
-                    <button class="btn btn-danger btn-sm">Delete</button>
+                    <button @click="deletePost(post._id)" class="btn btn-danger btn-sm">Delete</button>
                 </td>
             </tr>
         </tbody>
@@ -23,7 +23,7 @@
 </template>
 
 <script>
-// import axios from 'axios';
+import axios from 'axios';
 export default {
     layout: 'admin',
     async asyncData({params, $axios,store}){
@@ -37,6 +37,13 @@ export default {
         return{
 
         }
-    }
+    },
+    methods: {
+        deletePost(id){
+            axios.delete(`/api/admin/posts/deletePost/${id}`).then((res) => {
+                console.log(res);
+            });
+        }
+    },
 }
 </script>

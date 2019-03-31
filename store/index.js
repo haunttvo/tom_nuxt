@@ -6,7 +6,7 @@ const AfterLoginAdmin = async (commit, token) => {
 	await axios.get('/api/admin/cpt').then((rs) => {
 		commit('receiveCpt', rs.data);
 	}).catch((err) => {
-		console.log(err);
+		// console.log(err);
 	});
 }
 

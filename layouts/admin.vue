@@ -107,6 +107,29 @@
                   </ul>
                 </div>
             </li>
+            <!-- media -->
+            <li class="sidebar-dropdown">
+                <a class="ls_down" href="javascript:void(0)">
+                  <i class="fa fa-file"></i>
+                  <span>Media</span>
+                  <span class="badge badge-pill badge-danger">2</span>
+                </a>
+                <div class="sidebar-submenu">
+                  <ul>
+                    <li>
+                      <n-link to="/admin/media">
+                        Library
+                        <span class="badge badge-pill badge-success">Pro</span>
+                      </n-link>
+                    </li>
+                    <li>
+                      <n-link to="/admin/media/addnew">
+                        Add new
+                      </n-link>
+                    </li>
+                  </ul>
+                </div>
+            </li>
             <li class="sidebar-dropdown">
                 <a class="ls_down" href="javascript:void(0)">
                   <i class="fa fa-user"></i>

@@ -39,7 +39,14 @@ var fnPosts = {
         });
     },
     deletePost(req, res){
-
+        this._delPost(req.params.id).then((rs) => {
+            res.status(200).json({ data : 'done' });
+        });
+    },
+    async _delPost(id){
+        await posts.deleteOne({_id : id}, function(err, result){
+            return result;
+        });
     }
 }
 
