@@ -34,11 +34,24 @@ fileNames.forEach(fileName => {
 return constructed;
 }
 var res = constructItems(imagesArray, constructed);
+
+import axios from 'axios';
+
 export default {
     data: function() {
       return {
         items_image: res
       };
+    },
+    methods:{
+        getRootFolder(){
+            axios.get('/api/admin/media/rootfolder').then((res) => {
+                // console.log(res);
+            });
+        }
+    },
+    created(){
+        this.getRootFolder();
     }
 }
 </script>

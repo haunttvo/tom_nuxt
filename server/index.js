@@ -13,6 +13,8 @@ const acfControllers = require('./controllers/admin/acfControllers');
 const postsControllers = require('./controllers/admin/postsControllers'); 
 const metaControllers = require('./controllers/admin/metaControllers'); 
 const usersControllers = require('./controllers/admin/usersControllers');
+const mediaControllers = require('./controllers/admin/mediaControllers');
+
 /** End Import Controller */
 /* middleware */
 const authenAdminController = require('./controllers/admin/authenAdminController');
@@ -50,6 +52,7 @@ async function start() {
     console.log("connected db ");
     // we're connected!
   });
+
   app.group('/api/admin', (router) => {
     router.use([verifyTokenAdmin.verifyToken]);
     router.group('/cpt', (router) => {
@@ -64,9 +67,11 @@ async function start() {
     router.group('/meta', (router) => {
       metaControllers(router);
     });
-    
     router.group('/users', (router) => {
       usersControllers(router);
+    });
+    router.group('/media', (router) => {
+      mediaControllers(router);
     });
   });
   app.group('/api/authen/admin', (router) => {

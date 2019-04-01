@@ -6,7 +6,6 @@ module.exports = {
   env: {
     baseUrl: process.env.BASE_URL || 'http://localhost:3000'
   },
-
   /*
   ** Headers of the page
   */
@@ -68,9 +67,12 @@ module.exports = {
     /*
     ** You can extend webpack config here
     */
-    extend(config, ctx) {
-
+  extend (config, { isDev, isClient }) {
+    config.node = {
+       fs: 'empty'
     }
+    // ....
+  }
   },
   connectString: 'mongodb://sohuyn1996:meo123456@ds151805.mlab.com:51805/nuxt_tom',
 }
