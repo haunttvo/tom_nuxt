@@ -1,7 +1,7 @@
 <template>
     <div>
         <ul class="tree-item-media">
-            <li class="abc" @click="getListImage(items.url)">{{ items.name }}</li>
+            <li class="abc" @click="getListImage(items.url)"><i class="fas fa-folder"></i> {{ items.name }}</li>
             <template v-if="items.children.length > 0">
                 <template  v-for=" (item, k) in items.children">
                     <tree :items="item" :key="k"></tree>
@@ -35,9 +35,11 @@ export default {
 </script>
 <style lang="scss">
 .tree-item-media{
+    padding-left: 20px;
     li{
         list-style-type: none;
         cursor: pointer;
+        margin-bottom: 5px;
     }
 }
 </style>

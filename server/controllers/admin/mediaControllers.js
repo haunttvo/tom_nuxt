@@ -10,7 +10,6 @@ module.exports = function(router){
         
     });
     router.post('/listImageReq', function(req, res){
-        console.log(req.body.urlImage);
         fs.readdir(req.body.urlImage, function (err, files) {
             //handling error
             if (err) {
@@ -21,7 +20,7 @@ module.exports = function(router){
                 arr.push({
                     name : element,
                     type : path.extname(element) ? path.extname(element) : 'folder',
-                    dir :  req.body.urlImage.replace('/static', '') + '/' + element
+                    dir :  req.body.urlImage.split('upload')[1] + '/' + element
                 });
             });
             //listing all files using forEach
@@ -40,7 +39,6 @@ var diretoryTreeToObj = function(dir, done) {
         var pending = list.length;
         if (!pending)
             return done(null, {name: path.basename(dir), url : dir, type: 'folder', children: results});
-
         list.forEach(function(file) {
             file = path.resolve(dir, file);
             fs.stat(file, function(err, stat) {
