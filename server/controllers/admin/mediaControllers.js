@@ -32,25 +32,29 @@ module.exports = function(router){
         
         var form = new formidable.IncomingForm();
         form.parse(req);
-        console.log(req.body.urlDir);
-        form.on('file', function(name, file){
-            fs.readFile(file.path, function(err, data){
-                var image_name = file.name;
-                if(!image_name){
-                    res.sendStatus(404);
-                }else{
-                    // var newpath = './static/upload/' + image_name;
-                    // fs.writeFile(newpath, data, function(err){
-                    //     if(err){
-                    //         console.log(err);
-                    //         res.sendStatus(404);
-                    //     }
-                    //     return res.status(200).json('ok');
-                    // });
-                    return res.status(200).json('ok');
-                }
-            });
+        // console.log(req.body.data);
+        form.on('field', function(name, field){
+            var dir = field;
+            form.on('file', function(name, file){
+                fs.readFile(file.path, function(err, data){
+                    var image_name = file.name;
+                    if(!image_name){
+                        res.sendStatus(404);
+                    }else{
+                        var newpath = dir + '/' + image_name;
+                        fs.writeFile(newpath, data, function(err){
+                            if(err){
+                                console.log(err);
+                                res.sendStatus(404);
+                            }
+                            return res.status(200).json('ok');
+                        });
+                    }
+                });
+            });   
         });
+        
+        
     });
 }
 
