@@ -163,7 +163,8 @@ export default {
                 { value : 'select', text:  'Select' }, 
                 { value : 'array', text:  'Array' },
                 { value : 'array_multipe', text : 'Array Multipe' },
-                { value : 'tinymce', text : 'Tinymce' }
+                { value : 'tinymce', text : 'Tinymce' },
+                { value : 'image_field', text : 'Image' }
             ],
             optionPostsType : [{value : 'post', text: 'post'}, {value : 'page', text: 'page'}],
             optionType : [ {value : 'cpt', text: 'Post Type'} ],

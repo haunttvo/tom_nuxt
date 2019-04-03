@@ -48,7 +48,6 @@ module.exports = {
     { src : '~/plugins/veeValidator'},
     { src : '~/plugins/@nuxtaxios' },
     { src : '~/plugins/settingAxios' },
-    // { src : '~/plugins/settingCkeditor', ssr: false }
   ],
 
   /*

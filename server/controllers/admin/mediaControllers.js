@@ -1,5 +1,6 @@
 var fs = require('fs');
 var path = require('path');
+var formidable = require('formidable');
 module.exports = function(router){
     router.get('/rootfolder', (req, res) => {
         diretoryTreeToObj('./static/upload', function(err, result){
@@ -20,11 +21,35 @@ module.exports = function(router){
                 arr.push({
                     name : element,
                     type : path.extname(element) ? path.extname(element) : 'folder',
-                    dir :  req.body.urlImage.split('upload')[1] + '/' + element
+                    dir :  req.body.urlImage.split('upload')[1].replace('//', '/') + '/' + element
                 });
             });
             //listing all files using forEach
             return res.status(200).json(arr);
+        });
+    });
+    router.post('/uploadFile', (req, res) => {
+        
+        var form = new formidable.IncomingForm();
+        form.parse(req);
+        console.log(req.body.urlDir);
+        form.on('file', function(name, file){
+            fs.readFile(file.path, function(err, data){
+                var image_name = file.name;
+                if(!image_name){
+                    res.sendStatus(404);
+                }else{
+                    // var newpath = './static/upload/' + image_name;
+                    // fs.writeFile(newpath, data, function(err){
+                    //     if(err){
+                    //         console.log(err);
+                    //         res.sendStatus(404);
+                    //     }
+                    //     return res.status(200).json('ok');
+                    // });
+                    return res.status(200).json('ok');
+                }
+            });
         });
     });
 }

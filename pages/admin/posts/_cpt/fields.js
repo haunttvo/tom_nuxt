@@ -81,5 +81,14 @@ export const field_ex = {
         Object.assign(fs, arg);
 
         return {fs}
+    },
+    fd_field_image(arg, attr){
+        let fs = {
+            type: 'image_field',
+            model : arg.name
+        }
+        Object.assign(fs, arg);
+
+        return {fs}
     }
 }

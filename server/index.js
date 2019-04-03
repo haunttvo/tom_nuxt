@@ -5,7 +5,7 @@ const { Nuxt, Builder } = require('nuxt')
 const bodyParser = require('body-parser')
 const mongoose = require('mongoose')
 const app = express()
-
+app.use(express.static('static'))
 /** Import Controllers */
 
 const cptControllers = require('./controllers/admin/cptControllers'); 
@@ -23,7 +23,6 @@ const verifyTokenAdmin = require('./middleware/verifyTokenAdmin');
 // app.set('port', port);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
 // Import and Set Nuxt.js options
 let config = require('../nuxt.config.js')
 config.dev = !(process.env.NODE_ENV === 'production')

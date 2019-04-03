@@ -83,7 +83,9 @@ import { field_ex } from  '../fields.js'
 import Editor from '@tinymce/tinymce-vue'
 /** register field tinymce */
 import fieldTinymce from '~/components/admin/vue-field/fieldTinymce'
-Vue.component("fieldTinymce", fieldTinymce);
+import fieldImage from '~/components/admin/vue-field/fieldImage'
+Vue.component("fieldTinymce", fieldTinymce)
+Vue.component("field-image_field", fieldImage)
 Vue.component('VueFormGenerator', VueFormGenerator.component)
 Vue.component('FieldArray', FieldArray);
 Vue.component('FieldObject', FieldObject);
@@ -228,6 +230,8 @@ export default {
                         case 'tinymce':
                             v.schema.fields.push( field_ex.fd_field_tinymce(i.formAcf,i.attr ).fs );
                             break; 
+                        case 'image_field':
+                            v.schema.fields.push( field_ex.fd_field_image(i.formAcf,i.attr ).fs );
                         default:
                             break;
                     }
