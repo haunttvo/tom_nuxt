@@ -1,6 +1,5 @@
-const pkg = require('./package')
-
-
+const pkg = require('./package');
+const webpack = require("webpack");
 module.exports = {
   mode: 'universal',
   env: {
@@ -48,6 +47,7 @@ module.exports = {
     { src : '~/plugins/veeValidator'},
     { src : '~/plugins/@nuxtaxios' },
     { src : '~/plugins/settingAxios' },
+    // { src : '~/plugins/jquerySetting' }
   ],
 
   /*
@@ -66,12 +66,12 @@ module.exports = {
     /*
     ** You can extend webpack config here
     */
-  extend (config, { isDev, isClient }) {
-    config.node = {
-       fs: 'empty'
+    extend (config, { isDev, isClient }) {
+      config.node = {
+         fs: 'empty'
+      }
+      // ....
     }
-    // ....
-  }
   },
   connectString: 'mongodb://sohuyn1996:meo123456@ds151805.mlab.com:51805/nuxt_tom',
 }

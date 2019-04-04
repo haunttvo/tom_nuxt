@@ -36,7 +36,7 @@
       </b-navbar>    
     </div>
     <div class="wrapper">
-      <nav id="sidebar" :class="{'active' : collapseSidebar}">
+      <nav id="sidebar" :class="{'active' : collapseSidebar, 'position-relative' : true}">
         <div class="sidebar_header">
           <div class="user-pic">
             <img class="img-responsive img-rounded" src="https://raw.githubusercontent.com/azouaoui-med/pro-sidebar-template/gh-pages/src/img/user.jpg"
@@ -238,14 +238,13 @@
         </ul>
       </nav>
       <div id="content">
-          <nav class="navbar navbar-expand-lg navbar-light bg-light">
+          <nav class="navbar navbar-expand-lg navbar-light bg-light mb-2">
             <div class="container-fluid">
-                <button type="button" @click="collapseSidebar = !collapseSidebar" id="sidebarCollapse" class="btn btn-info">
+                <button type="button" @click="collapseSidebar = !collapseSidebar" id="sidebarCollapse" class="btn btn-info btn-sm">
                     <i class="fas fa-align-left"></i>
-                    <span>Toggle Sidebar</span>
                 </button>
             </div>
-        </nav>
+          </nav>
           <nuxt/>
         
       </div>

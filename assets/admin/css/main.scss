@@ -2,6 +2,7 @@
     font-family: 'avo';
     src: url('../../fonts/avo/utm-avo.ttf');
 }
+button, input{border-radius: 0 !important;}
 textarea:focus, 
 textarea.form-control:focus, 
 input.form-control:focus, 
@@ -15,8 +16,8 @@ input[type=number]:focus,
 [type=tel].form-control:focus, 
 .card-body:focus,
 [contenteditable].form-control:focus {
-  box-shadow: inset 0 -1px 0 #ddd;
-  outline: none;
+  box-shadow: inset 0 -1px 0 #ddd !important;
+  outline: none !important;
 }
 #accordion-menu-th{
     .card{

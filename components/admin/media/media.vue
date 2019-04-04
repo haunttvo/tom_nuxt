@@ -13,15 +13,27 @@
                 <b-card class="rounded-0">
                     <div class="img-gallety-header">
                         <b-button size="sm" variant="info" @click="showModalUpload()" class="rounded-0"><i class="fas fa-plus"></i> Upload</b-button>
-                        <b-button size="sm" variant="info" :disabled="currentLink.length == 1 " class="rounded-0" @click="preUrlMedia()" ><i class="fas fa-long-arrow-alt-left"></i></b-button>
-                        <b-button size="sm" variant="info" class="rounded-0" disabled="" ><i class="fas fa-long-arrow-alt-right"></i></b-button>
+                        <b-button size="sm" v-b-tooltip.hover title="Pre" variant="info" :disabled="currentLink.length == 1" class="rounded-0" @click="preUrlMedia()" ><i class="fas fa-long-arrow-alt-left"></i></b-button>
+                        <b-button size="sm" v-b-tooltip.hover title="Next" variant="info" class="rounded-0" disabled="" ><i class="fas fa-long-arrow-alt-right"></i></b-button>
+                        <b-button size="sm" v-b-tooltip.hover title="Delete" variant="info" :disabled="arrImgSelected.length == 0" @click="removeImageDir()" class="rounded-0"><i class="fas fa-trash-alt"></i></b-button>
+                        <div class="d-inline-block">
+                            <b-form inline>
+                                <b-form-group>
+                                    <b-form-input size="sm" class="rounded-0" placeholder="Search Name File"></b-form-input>
+                                </b-form-group>
+                                <b-form-group>
+                                    <b-form-input type="date" class="rounded-0" size="sm"></b-form-input>
+                                </b-form-group>
+                            </b-form>
+                        </div>
+                        <b-button variant="primary" class="rounded-0" size="sm">Filter</b-button>
                     </div>
                     <div class="img-gellary-list">
                         <div class="row">
                             <div class="item-image-items col-lg-2" v-for="(item, index) in items_image" :key="index">
                                 <template v-if="['.jpg', '.png'].indexOf(item.type) >= 0">
                                     <div class="item-img-line">
-                                        <img class="display_img" :src="`/upload/${item.dir}`" alt="" @click="selectItemFs($event)">
+                                        <img class="display_img" :src="`/upload/${item.dir}`" alt="" @click="selectItemFs($event, item.dir)">
                                     </div>
                                 </template>
                                 <template v-else-if="['folder'].indexOf(item.type) == 0 ">
@@ -55,6 +67,7 @@ export default {
         items_image: [],
         treeFolder : [],
         currentLink : [],
+        arrImgSelected: [],
         options: {
             url: "/api/admin/media/uploadFile",
             headers: { "Authorization" : `Bearer ${this.$store.state.authAdmin}` },
@@ -75,6 +88,8 @@ export default {
             if(!pre){
                 this.currentLink.push(url);
             }
+            vm.arrImgSelected = [];
+            vm.items_image = [];
             axios.post('/api/admin/media/listImageReq', { urlImage : url }).then((res) => {
                 vm.items_image = res.data;
             });
@@ -90,15 +105,27 @@ export default {
             this.currentLink.pop();
             this.resImageList(this.currentLink[this.currentLink.length - 1], true);
         },
-        selectItemFs(evt){
+        selectItemFs(evt, url){
             if(jQuery(evt.target).parent().hasClass('selected')){
-                jQuery(evt.target).parent().removeClass('selected')
+                jQuery(evt.target).parent().removeClass('selected');
+                let idex = this.arrImgSelected.indexOf(url);
+                if(idex !== -1) this.arrImgSelected.splice(idex, 1);
             }else{
+                this.arrImgSelected.push(url);
                 jQuery(evt.target).parent().addClass('selected');
             }  
         },
         sendingEvent(file, xhr, formData){
             formData.append('urlDir', this.currentLink[this.currentLink.length - 1]);
+        },
+        removeImageDir(){
+            let vm = this;
+            axios.delete('/api/admin/media/removeArrImageDir',{ data : { arrImage: this.arrImgSelected } } ).then((res) => {
+                if(vm.currentLink.length == 0 || vm.currentLink.length == 1){
+                    this.resImageList('./static/upload');
+                }
+                vm.resImageList(vm.currentLink[vm.currentLink.length - 1]);
+            });
         }
     },
     created(){
@@ -141,11 +168,17 @@ export default {
                 .item-img-line.selected{
                     outline: 4px solid #2980b9;
                 }
-                // .item-img-line.selected::before{
-                //     font-family: "Font Awesome 5 Free";
-                //     content: "\f067";
-                //     position: absolute;
-                // }                
+                .item-img-line.selected::before{
+                    content: "\f14a";
+                    font-family: 'Font Awesome\ 5 Free';
+                    font-weight: 900;
+                    position: absolute;
+                    z-index: 1;
+                    right: 0;
+                    color: #2980b9;
+                    top: -7px;
+                    font-size: 21px;
+                }                
             }
             
 

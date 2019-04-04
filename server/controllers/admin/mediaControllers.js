@@ -29,10 +29,8 @@ module.exports = function(router){
         });
     });
     router.post('/uploadFile', (req, res) => {
-        
         var form = new formidable.IncomingForm();
         form.parse(req);
-        // console.log(req.body.data);
         form.on('field', function(name, field){
             var dir = field;
             form.on('file', function(name, file){
@@ -53,14 +51,30 @@ module.exports = function(router){
                 });
             });   
         });
-        
-        
+    });
+    router.delete('/removeArrImageDir', (req, res) => {
+        arrImageDir = req.body.arrImage;
+        arrImageDir.forEach((el) => {
+            _deleFile(el);
+        });
+        res.status(200).send('file deleted successfully');
+    });
+}
+
+function _deleFile(url){
+    fs.stat(`./static/upload/${url}`, function (err, stats) {
+        if (err) {
+            return console.error(err);
+        }
+        fs.unlink(`./static/upload/${url}`,function(err){
+            if(err) return console.log(err);
+            // console.log('file deleted successfully');
+        });
     });
 }
 
 var diretoryTreeToObj = function(dir, done) {
     var results = [];
-
     fs.readdir(dir, function(err, list) {
         if (err)
             return done(err);
