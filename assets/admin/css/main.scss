@@ -30,6 +30,8 @@ $cool-red: red;
     border: 1px solid rgba(0, 0, 0, 0.125);
     > div{
         position: relative;
+        border-bottom: 1px dashed rgba(0,0,0,0.1);
+        margin-bottom: 10px;
         input[value="x"]{
             position: absolute;
             top: 0%;
