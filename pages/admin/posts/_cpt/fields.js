@@ -5,7 +5,6 @@ export const field_ex = {
         let fs = {
             inputType: 'text',
             model : arg.name
-            // model : 'price1'
         }
         Object.assign(fs, arg);
         return { fs }
@@ -14,7 +13,6 @@ export const field_ex = {
         let fs = {
             rows: 20,
             model : arg.name
-            // model : 'price1'
         }
         Object.assign(fs, arg);
         return { fs }
@@ -54,8 +52,9 @@ export const field_ex = {
             label: arg.label,
             model: arg.name,
             showRemoveButton: true,
+            // styleClasses: "meo123456",
             newElementButtonLabelClasses: "btn btn-outline-dark mt-2",
-            fieldClasses: (arg.items.properties.display == 'column') ? 'field-column-wrapper acf-group-multipe-array ' + arg.items.properties.FieldClasses: 'acf-group-multipe-array ' +arg.items.properties.FieldClasses,
+            fieldClasses: (arg.items.properties.display == 'column') ? 'field-column-wrapper acf-group-multipe-array ' + arg.items.properties.display: 'acf-group-multipe-array ' +arg.items.properties.display,
             newElementButtonLabelClasses: "btn btn-info btn-sm",
             items : {
                 type : 'object',
@@ -89,6 +88,14 @@ export const field_ex = {
         }
         Object.assign(fs, arg);
 
+        return {fs}
+    },
+    fd_field_image_multipe(arg, attr){
+        let fs = {
+            type : 'image_multipe_field',
+            model : arg.name
+        }
+        Object.assign(fs, arg);
         return {fs}
     }
 }

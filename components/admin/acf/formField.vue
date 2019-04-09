@@ -20,7 +20,13 @@
                     <td class="et-form">
                         <b-form-select size="sm" v-model="field.type" :options="TypeAcf" ></b-form-select>
                     </td>
-                </tr>  
+                </tr>
+                <tr>
+                    <td class="Field Label">Class</td>
+                    <td class="et-form">
+                        <input type="text" v-model="field.styleClasses" class="form-control form-control-sm">
+                    </td>
+                </tr>   
                 </table>  
             </div>
         </template>
@@ -30,8 +36,8 @@
                 <span>Properties</span>
                 <span class="float-right"><i class="fa fa-chevron-circle-up cursor-pointer bt-toggle-box-tom"></i></span>
             </div>
-            <div class="tb-acf">
-                <table class="table table-bordered table-acf-form">
+            <div class="tb-acf" style="display:block;">
+                <table class="table table-bordered table-acf-form" >
                     <tbody>
                         <tr>
                             <td class="td-label"><p class="font-weight-bold">Field Classes</p></td>
@@ -106,6 +112,7 @@ export default {
                   inputType: "text",
                   label: "",
                   model: "",
+                  styleClasses: ""
                 //   inputName: "",
                 //   required: true,
                 //   validator: "string",

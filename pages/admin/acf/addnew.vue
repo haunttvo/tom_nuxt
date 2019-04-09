@@ -164,9 +164,10 @@ export default {
                 { value : 'array', text:  'Array' },
                 { value : 'array_multipe', text : 'Array Multipe' },
                 { value : 'tinymce', text : 'Tinymce' },
-                { value : 'image_field', text : 'Image' }
+                { value : 'image_field', text : 'Image' },
+                { value : 'image_multipe_field', text : 'Image Multipe' }
             ],
-            optionPostsType : [{value : 'post', text: 'post'}, {value : 'page', text: 'page'}],
+            optionPostsType : [{value : 'post', text: 'post'}, {value : 'page', text: 'page'}, {value : 'product', text: 'Product'}],
             optionType : [ {value : 'cpt', text: 'Post Type'} ],
             optionPosition : [ {value : 'left', text : 'Left'},{value : 'right', text : 'Right'} ],
             optionsTypeChoiceCpt : [{value : '=', text : 'is equal to'}],
@@ -198,13 +199,21 @@ export default {
             });
         },
         changeValueFieldType(value, index){
-            if( value != 'array_multipe' ){
-                delete this.createItemAcf.fieldAcf[index].formAcf.items;
+            switch (value) {
+                case 'image_multipe_field':
+                    this.createItemAcf.fieldAcf[index].attr.defaultsvalues = [];
+                    break; 
+                case 'image_field':
+                    this.createItemAcf.fieldAcf[index].attr.defaultsvalues = [];
+                    break;
+                default:
+                    this.createItemAcf.fieldAcf[index].attr.defaultsvalues = '';
+                    delete this.createItemAcf.fieldAcf[index].formAcf.items;
+                    break;
             }
         },
         change_fild_mt(val, idex){
             this.createItemAcf.fieldAcf[idex].formAcf.items = val;
-            // console.log(idex);
         },
         editAcf(ref){
             if( !jQuery(this.$refs[ref]).find('.u-acf-head').hasClass('active') ){

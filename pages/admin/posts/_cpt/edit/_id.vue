@@ -32,7 +32,7 @@
                             <div id="misc-publishing-actions">
                                 <div class="misc-pub-section misc-pub-post-status">
                                     <!-- Default unchecked -->
-                                    <i class="fas fa-burn"> STATUS</i>
+                                    <i class="fas fa-burn"></i> STATUS
                                     <div class="custom-control custom-radio">
                                         <input type="radio" class="custom-control-input" value="pending" v-model="argsFormPosts.attrPublish.status" id="pendingreviewpost" name="poststatus">
                                         <label class="custom-control-label" for="pendingreviewpost">Pending Review</label>
@@ -49,7 +49,7 @@
                                 </div>
                             </div>
                             <div class="bt-publish">
-                                <b-button variant="info" @click="updatepost()" size="sm">Publish</b-button>
+                                <b-button variant="info" @click="updatepost()" size="sm">Update</b-button>
                             </div>
                         </div>
                     </div>
@@ -81,11 +81,13 @@ import axios from 'axios'
 import draggable from 'vuedraggable'
 import { field_ex } from  '../fields.js'
 import Editor from '@tinymce/tinymce-vue'
-/** register field tinymce */
+/** register field */
 import fieldTinymce from '~/components/admin/vue-field/fieldTinymce'
 import fieldImage from '~/components/admin/vue-field/fieldImage'
+import fieldImageMultipe from '~/components/admin/vue-field/fieldImageMultipe'
 Vue.component("fieldTinymce", fieldTinymce)
 Vue.component("field-image_field", fieldImage)
+Vue.component("field-image_multipe_field", fieldImageMultipe)
 Vue.component('VueFormGenerator', VueFormGenerator.component)
 Vue.component('FieldArray', FieldArray);
 Vue.component('FieldObject', FieldObject);
@@ -185,9 +187,7 @@ export default {
                             key: e,
                             value : { field : field.model[e] } ,
                         };
-                        if(field.model[e] != ''){
-                            axios.put('/api/admin/meta/update', { arg : arg, postid : vm.$route.params.id });
-                        }
+                        axios.put('/api/admin/meta/update', { arg : arg, postid : vm.$route.params.id });
                     });
                 });
             }).then(() => {
@@ -207,9 +207,13 @@ export default {
             var vm = this;
             this.arrFormGenerator.concat(vm.arrFormGeneratorCol2).forEach((v, index) => {
                 v.fd.forEach((i) => {
-                    v.model = Object.assign({}, v.model, { [i.formAcf.name] : '' }) ;
+                    v.model = {};
                     axios.post(`/api/admin/meta/getmeta`,{ arg : { postid : vm.$route.params.id, key : [i.formAcf.name] } }).then((res) => {
-                        if(res.data[0]) v.model[i.formAcf.name] = res.data[0].value.field;
+                        if(res.data[0]){
+                            v.model = Object.assign({}, v.model, { [i.formAcf.name] : res.data[0].value.field });
+                        }else{
+                            v.model = Object.assign({}, v.model, { [i.formAcf.name] : i.attr.defaultsvalues });
+                        } 
                     });
                     switch (i.formAcf.type) {
                         case 'input':
@@ -232,6 +236,10 @@ export default {
                             break; 
                         case 'image_field':
                             v.schema.fields.push( field_ex.fd_field_image(i.formAcf,i.attr ).fs );
+                            break;
+                        case 'image_multipe_field':
+                            v.schema.fields.push( field_ex.fd_field_image_multipe(i.formAcf,i.attr ).fs );
+                            break;
                         default:
                             break;
                     }

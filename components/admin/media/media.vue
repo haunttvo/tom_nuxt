@@ -26,13 +26,19 @@
                                 </b-form-group>
                             </b-form>
                         </div>
-                        <b-button variant="primary" class="rounded-0" size="sm">Filter</b-button>
+                        <b-button variant="primary" class="rounded-0" size="sm">Filter </b-button>
                     </div>
                     <div class="img-gellary-list">
                         <div class="row">
                             <div class="item-image-items col-lg-2" v-for="(item, index) in items_image" :key="index">
                                 <template v-if="['.jpg', '.png'].indexOf(item.type) >= 0">
-                                    <div class="item-img-line">
+                                    <div class="item-img-line" v-if="typeDisplay == 'mediaManager'">
+                                        <img class="display_img" :src="`/upload/${item.dir}`" alt="" @click="selectItemFs($event, item.dir)">
+                                    </div>
+                                    <div class="item-img-line" v-else-if="typeDisplay == 'singleImage'">
+                                        <img class="display_img" :src="`/upload/${item.dir}`" alt="" @click="selectItemFsSingle($event, item.dir)">
+                                    </div>
+                                    <div class="item-img-line" v-else-if="typeDisplay == 'MultipeImage'">
                                         <img class="display_img" :src="`/upload/${item.dir}`" alt="" @click="selectItemFs($event, item.dir)">
                                     </div>
                                 </template>
@@ -40,6 +46,12 @@
                                     <div class="cursor-pointer" @dblclick="resImageList(`./static/upload/${item.dir}`)"><i class="fas fa-folder-open fz-9"></i><p>{{ item.name }}</p></div>
                                 </template>
                             </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <b-button size="sm" @click="selectFile()" variant="primary">Select File</b-button>
+                            </div>
+                            
                         </div>
                     </div>
                 </b-card>
@@ -62,6 +74,12 @@ import Dropzone from 'nuxt-dropzone'
 import 'nuxt-dropzone/dropzone.css'
 export default {
     name : 'media',
+    props :{
+        typeDisplay : {
+            type : String,
+            default : 'mediaManager'
+        }
+    },
     data: function() {
       return {
         items_image: [],
@@ -105,6 +123,11 @@ export default {
             this.currentLink.pop();
             this.resImageList(this.currentLink[this.currentLink.length - 1], true);
         },
+        selectFile(){
+            this.$emit('selectImage', { file : this.arrImgSelected});
+            jQuery('.item-img-line').removeClass('selected');
+            this.arrImgSelected = [];
+        },
         selectItemFs(evt, url){
             if(jQuery(evt.target).parent().hasClass('selected')){
                 jQuery(evt.target).parent().removeClass('selected');
@@ -114,6 +137,12 @@ export default {
                 this.arrImgSelected.push(url);
                 jQuery(evt.target).parent().addClass('selected');
             }  
+        },
+        selectItemFsSingle(evt, url){
+            this.arrImgSelected = [];
+            this.arrImgSelected.push(url);
+            jQuery('.item-img-line').removeClass('selected');
+            jQuery(evt.target).parent().addClass('selected');
         },
         sendingEvent(file, xhr, formData){
             formData.append('urlDir', this.currentLink[this.currentLink.length - 1]);

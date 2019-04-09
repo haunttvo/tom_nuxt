@@ -58,7 +58,7 @@
                                     <tr>
                                         <td class="td-label">Field Type</td>
                                         <td class="et-form">
-                                            <b-form-select size="sm" v-model="itemAcf.formAcf.type" :options="optionsTypeAcf"></b-form-select>
+                                            <b-form-select size="sm" v-model="itemAcf.formAcf.type" :options="optionsTypeAcf" @change="changeValueFieldType(itemAcf.formAcf.type, i)"></b-form-select>
                                         </td>
                                     </tr>
                                     <tr v-if="itemAcf.formAcf.type == 'select'">
@@ -168,9 +168,10 @@ export default {
                 { value : 'array', text:  'Array' },
                 { value : 'array_multipe', text : 'Array Multipe' },
                 { value : 'tinymce', text : 'Tinymce' },
-                { value : 'image_field', text : 'Image' }
+                { value : 'image_field', text : 'Image' },
+                { value : 'image_multipe_field', text : 'Image Multipe' }
             ],
-            optionPostsType : [{value : 'post', text: 'post'}, {value : 'page', text: 'page'}],
+            optionPostsType : [{value : 'post', text: 'post'}, {value : 'page', text: 'page'}, {value : 'product', text: 'Product'}],
             optionType : [ {value : 'cpt', text: 'Post Type'} ],
             optionPosition : [ {value : 'left', text : 'Left'},{value : 'right', text : 'Right'} ],
             optionsTypeChoiceCpt : [{value : '=', text : 'is equal to'}],
@@ -189,6 +190,20 @@ export default {
                   choice : ''
                 }
             });
+        },
+        changeValueFieldType(value, index){
+            switch (value) {
+                case 'image_multipe_field':
+                    this.createItemAcf.fieldAcf[index].attr.defaultsvalues = [];
+                    break; 
+                case 'image_field':
+                    this.createItemAcf.fieldAcf[index].attr.defaultsvalues = [];
+                    break;
+                default:
+                    this.createItemAcf.fieldAcf[index].attr.defaultsvalues = '';
+                    delete this.createItemAcf.fieldAcf[index].formAcf.items;
+                    break;
+            }
         },
         change_fild_mt(val, idex){
             this.createItemAcf.fieldAcf[idex].formAcf.items = val;

@@ -79,10 +79,13 @@ import draggable from 'vuedraggable'
 import axios from 'axios'
 import { field_ex } from  './fields.js'
 import Editor from '@tinymce/tinymce-vue'
-/** register field tinymce */
+/** register field */
 import fieldTinymce from '~/components/admin/vue-field/fieldTinymce'
+import fieldImage from '~/components/admin/vue-field/fieldImage'
+import fieldImageMultipe from '~/components/admin/vue-field/fieldImageMultipe'
 Vue.component("fieldTinymce", fieldTinymce);
-// Vue.use(VueFormGenerator)
+Vue.component("field-image_field", fieldImage)
+Vue.component("field-image_multipe_field", fieldImageMultipe)
 Vue.component('VueFormGenerator', VueFormGenerator.component)
 Vue.component('FieldArray', FieldArray);
 export default {
@@ -181,6 +184,12 @@ export default {
                             break;   
                         case 'tinymce':
                             v.schema.fields.push( field_ex.fd_field_tinymce(i.formAcf,i.attr ).fs );
+                            break;
+                        case 'image_field':
+                            v.schema.fields.push( field_ex.fd_field_image(i.formAcf,i.attr ).fs );
+                            break;
+                        case 'image_multipe_field':
+                            v.schema.fields.push( field_ex.fd_field_image_multipe(i.formAcf,i.attr ).fs );
                             break;
                         default:
                             break;
