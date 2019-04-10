@@ -58,7 +58,7 @@
         <ul class="list-unstyled components menu-sidebar-items">
             <!-- router post type -->
             <!-- <pre>{{ $store.state.listCptSidebar }}</pre> -->
-            <li class="sidebar-dropdown" v-for=" (cpt, i) in $store.state.listCptSidebar" :key="i">
+            <li class="sidebar-dropdown" v-for=" (cpt, i) in menuCpt" :key="i">
                 <a class="ls_down" href="javascript:void(0)">
                   <i class="fa fa-tachometer-alt"></i>
                   <span>{{ cpt.name }}</span>
@@ -77,11 +77,14 @@
                         <span class="badge badge-pill badge-success">Pro</span>
                       </nuxt-link>
                     </li>
-                    <!-- <li v-for="(term, idex) in cpt.child" :key="idex">
-                      <nuxt-link :to="`/admin/taxonomy/${term._id}`">
-                        <span>{{ term.name }}</span>
-                      </nuxt-link>
-                    </li> -->
+                    <template v-if="cpt.child.length > 0">
+                      <li v-for="(term, idex) in cpt.child" :key="idex">
+                        <nuxt-link :to="`/admin/posts/${cpt.name}/taxonomy/${term._id}`">
+                          <span>{{ term.name }}</span>
+                        </nuxt-link>
+                      </li>
+                    </template>
+                    
                   </ul>
                 </div>
             </li>
@@ -260,6 +263,7 @@
 </template>
 
 <script>
+import axios from 'axios'
 const Cookie = process.client ? require('js-cookie') : undefined
 export default {
     head : {
@@ -271,6 +275,7 @@ export default {
     data(){
         return{
           collapseSidebar: false,
+          menuCpt : []
         }
     },
     methods:{
@@ -280,8 +285,19 @@ export default {
         this.$router.push('/admin/login');
       }
     },
-    mounted(){
-
+    created() {
+      let vm = this;
+      axios.get('/api/admin/cpt').then((rs) => {
+        var getTerm = rs.data.map((item) => {
+          return axios.get(`/api/admin/terms/findterms/${item.slug}`).then((result) => {
+            item.child = result.data;
+          })
+        });
+        Promise.all(getTerm).then(() => {
+          vm.menuCpt = rs.data
+        })
+        
+      });
     },
     computed: {
       map () {

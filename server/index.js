@@ -15,6 +15,7 @@ const metaControllers = require('./controllers/admin/metaControllers');
 const usersControllers = require('./controllers/admin/usersControllers');
 const mediaControllers = require('./controllers/admin/mediaControllers');
 const termsControllers = require('./controllers/admin/termsControllers');
+const metaTermsControllers = require('./controllers/admin/metaTermsControllers');
 /** End Import Controller */
 /* middleware */
 const authenAdminController = require('./controllers/admin/authenAdminController');
@@ -75,6 +76,9 @@ async function start() {
     router.group('/terms', (router) => {
       termsControllers(router);
     });
+    router.group('/metaterms', (router) => {
+      metaTermsControllers(router);
+    })
   });
   app.group('/api/authen/admin', (router) => {
     authenAdminController(router);
