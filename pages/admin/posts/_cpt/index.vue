@@ -75,9 +75,6 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-    .table-bordered thead th, .table-bordered thead td{
-        border-bottom-width: 1px;
-    }
     .display_list_posts{
         
         .methods{

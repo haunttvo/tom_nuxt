@@ -94,7 +94,7 @@ export default {
     data(){
         return {
             items: {
-                type: 'object',
+                type: 'array',
                 default : {},
                 properties : this.propertiesField,
                 schema : {
@@ -113,10 +113,7 @@ export default {
                   label: "",
                   model: "",
                   styleClasses: ""
-                //   inputName: "",
-                //   required: true,
-                //   validator: "string",
-              },
+                },
             );
         },
     },

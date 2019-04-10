@@ -75,6 +75,7 @@
 import Vue from 'vue'
 import VueFormGenerator from 'vue-form-generator'
 import { FieldArray } from 'vfg-field-array'
+import { FieldObject } from 'vfg-field-object'
 import draggable from 'vuedraggable'
 import axios from 'axios'
 import { field_ex } from  './fields.js'
@@ -87,16 +88,14 @@ Vue.component("fieldTinymce", fieldTinymce);
 Vue.component("field-image_field", fieldImage)
 Vue.component("field-image_multipe_field", fieldImageMultipe)
 Vue.component('VueFormGenerator', VueFormGenerator.component)
-Vue.component('FieldArray', FieldArray);
+Vue.component('FieldArray', FieldArray)
+Vue.component('FieldObject', FieldObject);
+
 export default {
     layout: 'admin',
     components:{
         draggable,
-        FieldArray,
         'editor': Editor
-    },
-    fetch ({ store, params }) {
-    //    console.log("params:", params);
     },
     async asyncData({params}) {
         let fieldAcfLeft = await axios.get(`/api/admin/acf/getAcfPost/${params.cpt}/left`);
@@ -180,6 +179,26 @@ export default {
                             v.schema.fields.push( field_ex.fd_field_array(i.formAcf,i.attr ).fs );
                             break;
                         case 'array_multipe':
+                            // console.log(i.formAcf.items.schema.fields);
+                            var md = new Array();
+                            var obModel = {};
+                            i.formAcf.items.schema.fields.forEach(element => {
+                                switch (element.type) {
+                                    case 'input':
+                                        obModel = Object.assign({},obModel,{[element.model] : ''}  );
+                                        break;
+                                    case 'image':
+                                        obModel = Object.assign({},obModel,{[element.model] : []}  );
+                                        break; 
+                                    case 'image_multipe_field':
+                                        obModel = Object.assign({},obModel,{[element.model] : []}  );
+                                        break;                                   
+                                    default:
+                                        obModel = Object.assign({},obModel,{[element.model] : ''}  );
+                                        break;
+                                }
+                            });
+                            v.model = { [i.formAcf.name] : [ obModel ] }
                             v.schema.fields.push( field_ex.fd_field_array_multipe(i.formAcf,i.attr ).fs );
                             break;   
                         case 'tinymce':

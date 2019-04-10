@@ -1,17 +1,18 @@
 <template>
     <div>
-        <template v-if="value">
             <div class="items-single-multipe"  >
-                <div class="image-single-multipe" v-for="(it, index) in value" :key="index">
-                    <img class="img-thumbnail" :src="`/upload/${it}`" alt="">
-                    <i class="fas fa-times" @click="removeItemImg(index)"></i>
-                </div>
+                <template v-if="value">
+                    <div class="image-single-multipe" v-for="(it, index) in value" :key="index">
+                        <img class="img-thumbnail" :src="`/upload/${it}`" alt="">
+                        <i class="fas fa-times" @click="removeItemImg(index)"></i>
+                    </div>
+                </template>
+                
                 <div class="border-dashed-upload" @click="openDialogMedia()">
                     <i class="fas fa-upload fa-2x pt-2"></i>
                     <span>Choose File</span> 
                 </div>
             </div>
-        </template>
         <b-modal ref="open-media" hide-footer centered size="xl">
             <media typeDisplay="MultipeImage" @selectImage="selectImageRes"></media>
         </b-modal>
@@ -21,6 +22,7 @@
 import { abstractField } from "vue-form-generator";
 import media from '~/components/admin/media/media';
 export default {
+    name: 'MultipeImage',
     mixins: [ abstractField ],
     components : {media},
     methods:{

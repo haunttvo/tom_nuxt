@@ -57,6 +57,7 @@
         </div>
         <ul class="list-unstyled components menu-sidebar-items">
             <!-- router post type -->
+            <!-- <pre>{{ $store.state.listCptSidebar }}</pre> -->
             <li class="sidebar-dropdown" v-for=" (cpt, i) in $store.state.listCptSidebar" :key="i">
                 <a class="ls_down" href="javascript:void(0)">
                   <i class="fa fa-tachometer-alt"></i>
@@ -76,6 +77,11 @@
                         <span class="badge badge-pill badge-success">Pro</span>
                       </nuxt-link>
                     </li>
+                    <!-- <li v-for="(term, idex) in cpt.child" :key="idex">
+                      <nuxt-link :to="`/admin/taxonomy/${term._id}`">
+                        <span>{{ term.name }}</span>
+                      </nuxt-link>
+                    </li> -->
                   </ul>
                 </div>
             </li>
@@ -149,11 +155,6 @@
                         Add new
                       </n-link>
                     </li>
-                    <!-- <li>
-                      <n-link to="/admin/acf/addnew">
-                        Header
-                      </n-link>
-                    </li> -->
                   </ul>
                 </div>
             </li>
@@ -228,6 +229,12 @@
                   <i class="fa fa-globe"></i>
                   <span>CPT</span>
                 </n-link>
+            </li>
+            <li>
+              <n-link to="/admin/taxonomy">
+                <i class="fa fa-dice-d20"></i>
+                <span>Taxonomy</span>
+              </n-link>
             </li>
             <li>
                 <a href="#">Contact</a>

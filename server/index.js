@@ -14,7 +14,7 @@ const postsControllers = require('./controllers/admin/postsControllers');
 const metaControllers = require('./controllers/admin/metaControllers'); 
 const usersControllers = require('./controllers/admin/usersControllers');
 const mediaControllers = require('./controllers/admin/mediaControllers');
-
+const termsControllers = require('./controllers/admin/termsControllers');
 /** End Import Controller */
 /* middleware */
 const authenAdminController = require('./controllers/admin/authenAdminController');
@@ -72,27 +72,13 @@ async function start() {
     router.group('/media', (router) => {
       mediaControllers(router);
     });
+    router.group('/terms', (router) => {
+      termsControllers(router);
+    });
   });
   app.group('/api/authen/admin', (router) => {
     authenAdminController(router);
   });
-  // app.get('/api/admin/login123', (req, res) => {
-  //   res.send('ok');
-  // });
-  
-  // function verifyToken(req, res, next){
-  //   const bearerHeader = req.headers['authorization'];
-  //   if(typeof bearerHeader !== 'undefined'){
-  //       const bearer = bearerHeader.split(' ');
-  //       // get token
-  //       const bearerToken = bearer[1];
-  //       req.token = bearerToken;
-  //       next();
-  //   }else{
-  //       res.sendStatus(403);
-  //   }
-  // }
-
   // Give nuxt middleware to express
   app.use(nuxt.render)
 
