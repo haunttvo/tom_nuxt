@@ -10,7 +10,7 @@
                         <b-form-input size="sm" v-model="formAddTerm.slug"></b-form-input>
                     </b-form-group>
                     <b-form-group label="Parent">
-                        <b-form-select size="sm" v-model="formAddTerm.parentId">
+                        <b-form-select size="sm" v-model="formAddTerm.parentId" :options="parentTerms">
 
                         </b-form-select>
                     </b-form-group>
@@ -32,11 +32,12 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
+                        <pre>{{ listTerms }}</pre>
+                        <tr v-for="(term, index) in listTerms" :key="index">
                             <td></td>
-                            <td>Red</td>
-                            <td>May do</td>
-                            <td>red</td>
+                            <td>{{ term.name }}</td>
+                            <td>{{ term.description }}</td>
+                            <td>{{ term.slug }}</td>
                             <td>1</td>
                         </tr>
                     </tbody>
@@ -47,13 +48,27 @@
 </template>
 <script>
 import axios from 'axios';
+function getTermsData(idterm){
+    return axios.get(`/api/admin/metaterms/getterms/${idterm}`)
+}
 export default {
     layout: 'admin',
+    async asyncData({isDev, route, store, env, params, query, req, res, redirect, error}) {
+        var termdata = await getTermsData(params.id);
+        var optionParentTerm = [{value : '0', text: '--parent--'}];
+        termdata.data.forEach(element => {
+            optionParentTerm.push({ value : element._id, text : element.name });
+        });
+        return { 
+            listTerms : termdata.data,
+            parentTerms :  optionParentTerm
+        }
+    },
     data() {
         return {
             formAddTerm : {
                 name : '',
-                parentId : '',
+                parentId : '0',
                 slug: '',
                 description : '',
                 termId : this.$route.params.id
@@ -62,8 +77,11 @@ export default {
     },
     methods: {
         submitTerms(){
+            let vm = this;
             axios.post('/api/admin/metaterms/addnew', { arg : this.formAddTerm }).then((res) => {
-                console.log(res);
+                getTermsData(vm.$route.params.id).then((rs) => {
+                    vm.listTerms = rs.data;
+                });
             });
         }
     },

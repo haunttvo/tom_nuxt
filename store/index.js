@@ -2,7 +2,7 @@ import axios from 'axios';
 import {after} from "vee-validate/dist/rules.esm";
 const cookieparser = process.server ? require('cookieparser') : undefined;
 const AfterLoginAdmin = async (commit, token) => {
-	// axios.defaults.headers.common['Authorization'] = `Bearer ${token}` ;
+	axios.defaults.headers.common['Authorization'] = `Bearer ${token}` ;
 	// await axios.get('/api/admin/cpt').then((rs) => {
 	// 	var dataCpt = rs.data;
 	// 	var getTerm = dataCpt.map(function(item){
