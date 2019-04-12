@@ -19,34 +19,20 @@ var fnMetaTerms = {
         });
     },
     getterms : async function (req, res) {
-        metaTerm.find({ termId : req.params.idterm, parentId : '0' }, function(err, result){
-            if(err) return res.status(400).json(err);
-            var dataTerms = result.map(function(e, index, terms){
-                // console.log(e);
-                // return e.asdasd = [123213213123];
-                // childTerms(e, function(err, rs){
-                //     if(rs){
-                //         return Object.assign({children:rs}, e._doc);
-                //     }else{
-                //         return Object.assign({children:[]}, e._doc);
-                //     }
-                //     // console.log(rs.children);
-                    
-                    
-                // });
-                // return childTerms
-                return childTerms(e, function(err, rs){
-                    return rs;
-                })
-                
-                // return Object.assign({children:[]}, e._doc);
-                // console.log(xx);
-                
-                
-            });
-            // console.log(dataTerms);
-            return res.status(200).json(dataTerms);
-        })    
+        var pushAncesstors = function (name, doc) {
+            if(doc.parentId) {
+                metaTerm.update({name : name}, {$addToSet : {"ancesstors" : {name : doc.parentId}}});
+                pushAncesstors(name, db.collection.findOne({name : doc.parentId}))
+            }
+        }
+        metaTerm.find( { termId : req.params.idterm }).forEach(function (doc){
+            pushAncesstors(doc.parentId, doc);
+        });
+        return res.status(200).json(123123123);
+
+        
+
+        
     }
 }
 
@@ -59,10 +45,10 @@ var childTerms = function(data, done){
         if(!pending)
             return done(null, results);
         var results = rs.map(function(e){
-            return childTerms(e, function(err, res){
-                return Object.assign({children:res}, e._doc);
+            childTerms(e, function(err, res){
+                // return Object.assign({children:res}, e._doc);
             });
-            // return Object.assign({children:rs}, e._doc);
+            return Object.assign({children:rs}, e._doc);
         });
         return done(null, results);
     });

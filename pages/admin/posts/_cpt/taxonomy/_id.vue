@@ -9,11 +9,11 @@
                     <b-form-group label="Slug">
                         <b-form-input size="sm" v-model="formAddTerm.slug"></b-form-input>
                     </b-form-group>
-                    <b-form-group label="Parent">
+                    <!-- <b-form-group label="Parent">
                         <b-form-select size="sm" v-model="formAddTerm.parentId" :options="parentTerms">
 
                         </b-form-select>
-                    </b-form-group>
+                    </b-form-group> -->
                     <b-form-group label="Description">
                         <b-form-textarea size="sm" v-model="formAddTerm.description"></b-form-textarea>
                     </b-form-group>
@@ -33,13 +33,13 @@
                     </thead>
                     <tbody>
                         <pre>{{ listTerms }}</pre>
-                        <tr v-for="(term, index) in listTerms" :key="index">
+                        <!-- <tr v-for="(term, index) in listTerms" :key="index">
                             <td></td>
                             <td>{{ term.name }}</td>
                             <td>{{ term.description }}</td>
                             <td>{{ term.slug }}</td>
                             <td>1</td>
-                        </tr>
+                        </tr> -->
                     </tbody>
                 </table>
             </b-col>
@@ -56,9 +56,9 @@ export default {
     async asyncData({isDev, route, store, env, params, query, req, res, redirect, error}) {
         var termdata = await getTermsData(params.id);
         var optionParentTerm = [{value : '0', text: '--parent--'}];
-        termdata.data.forEach(element => {
-            optionParentTerm.push({ value : element._id, text : element.name });
-        });
+        // termdata.data.forEach(element => {
+        //     optionParentTerm.push({ value : element._id, text : element.name });
+        // });
         return { 
             listTerms : termdata.data,
             parentTerms :  optionParentTerm
