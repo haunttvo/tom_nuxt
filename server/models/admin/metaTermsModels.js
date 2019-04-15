@@ -19,15 +19,36 @@ var fnMetaTerms = {
         });
     },
     getterms : async function (req, res) {
-        var pushAncesstors = function (name, doc) {
-            if(doc.parentId) {
-                metaTerm.update({name : name}, {$addToSet : {"ancesstors" : {name : doc.parentId}}});
-                pushAncesstors(name, db.collection.findOne({name : doc.parentId}))
-            }
-        }
-        metaTerm.find( { termId : req.params.idterm }).forEach(function (doc){
-            pushAncesstors(doc.parentId, doc);
+        
+        var rsTermsArr = [];
+        metaTerm.find({ parentId : 0 },function(err, result){
+            if(err) console.log(err);
+            var frChildTerm = new Promise((resolve, reject) => {
+                result.forEach((el) => {
+                    var itemChild = {
+                        _id : el._id,
+                        name: el.name,
+                        slug: el.slug,
+                        parentId : el.parentId,
+                        description : el.description,
+                        termId : el.termId,
+                        date_created : el.date_created,
+                        children : []
+                    }
+                    var indexItem = rsTermsArr.push(itemChild);
+                });
+                resolve(rsTermsArr);
+            });
+            Promise.all([frChildTerm]).then((rs) => {
+                console.log(rs);
+            })
+            // console.log(rsTermsArr);
+
         });
+        
+        
+
+
         return res.status(200).json(123123123);
 
         
