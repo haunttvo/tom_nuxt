@@ -19,9 +19,21 @@ var fnMetaTerms = {
         });
     },
     getterms : async function (req, res) {
-        metaTerm.find({ parentId : 0, termId : req.params.idterm },function(err, result){
-            return res.status(200).json(result);
-        });   
+        metaTerm.find({ parentId : 0, termId : req.params.idterm }).exec((err, result) => {
+            if(err) console.log(err);
+            var dataTerms = result.map(function(e, index, terms){
+                return Object.assign({children : []}, e._doc);
+
+            });
+            dataTerms.forEach((el, index) => {
+                childTerms(el, function(err, rs){
+                    el.children = rs;
+                    if(index >= 1){
+                        return res.status(200).json(dataTerms);
+                    }
+                });
+            });
+        });
     },
     gettermschildren : function(req, res){
         metaTerm.find({parentId : req.params.parentid}, function(err, result){
@@ -30,4 +42,22 @@ var fnMetaTerms = {
         });
     }
 }
+
+var childTerms = function(data, done){
+    metaTerm.find({parentId : data._id}, function(err, rs){
+        if(err)
+            return done(err);
+        var pending = rs.length;
+        if(!pending)
+            return done(null, rs);
+        var results = rs.map(function(e){
+            return Object.assign({children : []}, e._doc);
+        });
+        results.forEach((el) => {
+            // childTerms();
+        });
+        return done(null, results);
+    });
+};
+
 module.exports = {metaTerm, fnMetaTerms};

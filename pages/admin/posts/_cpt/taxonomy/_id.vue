@@ -32,16 +32,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <template v-for="(term, index) in listTerms" >
-                            <tr :key="index">
-                                <td></td>
-                                <td>{{ term.name }}</td>
-                                <td>{{ term.description }}</td>
-                                <td>{{ term.slug }}</td>
-                                <td>1</td>
-                            </tr>
-                            <ChildTerm :key="index" :parentId="term._id"></ChildTerm>
-                        </template>
+                    <pre>{{ listTerms }}</pre>
                         
                     </tbody>
                 </table>
@@ -60,9 +51,9 @@ export default {
     async asyncData({isDev, route, store, env, params, query, req, res, redirect, error}) {
         var termdata = await getTermsData(params.id);
         var optionParentTerm = [{value : '0', text: '--parent--'}];
-        termdata.data.forEach(element => {
-            optionParentTerm.push({ value : element._id, text : element.name });
-        });
+        // termdata.data.forEach(element => {
+        //     optionParentTerm.push({ value : element._id, text : element.name });
+        // });
         return { 
             listTerms : termdata.data,
             parentTerms :  optionParentTerm
