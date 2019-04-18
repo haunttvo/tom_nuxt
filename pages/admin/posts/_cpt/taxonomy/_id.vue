@@ -10,9 +10,14 @@
                         <b-form-input size="sm" v-model="formAddTerm.slug"></b-form-input>
                     </b-form-group>
                     <b-form-group label="Parent">
-                        <b-form-select size="sm" v-model="formAddTerm.parentId" :options="parentTerms">
+                        <b-form-select size="sm" @change="pushAncestorsData" v-model="formAddTerm.parent" :options="parentTerms">
 
                         </b-form-select>
+                        <!-- <select v-model="formAddTerm.parentId" name="" id="" class="form-control form-control-sm">
+                            <template v-for="(item, index) in parentTerms">
+                                <option @change="pushAncestorsData" :key="index" :value="item.value">{{ item.text }}</option>
+                            </template>
+                        </select> -->
                     </b-form-group>
                     <b-form-group label="Description">
                         <b-form-textarea size="sm" v-model="formAddTerm.description"></b-form-textarea>
@@ -40,13 +45,16 @@
                                 <td>{{ term.slug }}</td>
                                 <td></td>
                             </tr>
-                            <tr v-if="term.children.length > 0" v-for="(termChild, idex) in term.children" :key="`childTerm${idex}`">
-                                <td></td>
-                                <td>{{ termChild.name }}</td>
-                                <td>{{ termChild.description }}</td>
-                                <td>{{ termChild.slug }}</td>
-                                <td></td>
-                            </tr>
+                            <template v-if="term.children.length > 0">
+                                <tr v-for="(termChild, idex) in term.children" :key="`childTerm${idex}`">
+                                    <td></td>
+                                    <td>{{ beforeChildDirection(termChild.ancestors.length) + ' ' + termChild.name }}</td>
+                                    <td>{{ termChild.description }}</td>
+                                    <td>{{ termChild.slug }}</td>
+                                    <td></td>
+                                </tr>
+                            </template>
+                            
                         </template>
                     </tbody>
                 </table>
@@ -60,13 +68,25 @@ import ChildTerm from './ChildTerm';
 function getTermsData(idterm){
     return axios.get(`/api/admin/metaterms/getterms/${idterm}`)
 }
+function bfDirecText(num){
+    var dr = '';
+    for (let index = 0; index < num; index++) {
+        dr = dr + '— ';
+    }
+    return dr;
+}
 export default {
     layout: 'admin',
     async asyncData({isDev, route, store, env, params, query, req, res, redirect, error}) {
         var termdata = await getTermsData(params.id);
-        var optionParentTerm = [{value : '0', text: '--parent--'}];
+        var optionParentTerm = [{value : null, text: '— parent —', ancestors : []}];
         termdata.data.forEach(element => {
-            optionParentTerm.push({ value : element._id, text : element.name });
+            optionParentTerm.push({ value : element._id, text : element.name, ancestors : element.ancestors });
+            if(element.children.length > 0){
+                element.children.forEach((e) => {
+                    optionParentTerm.push({ value : e._id, text : bfDirecText(e.ancestors.length) + e.name, ancestors : e.ancestors });
+                });
+            }
         });
         return { 
             listTerms : termdata.data,
@@ -78,7 +98,7 @@ export default {
         return {
             formAddTerm : {
                 name : '',
-                parentId : '0',
+                parent : null,
                 ancestors : [],
                 slug: '',
                 description : '',
@@ -94,6 +114,20 @@ export default {
                     vm.listTerms = rs.data;
                 });
             });
+        },
+        beforeChildDirection(num){
+            var dr = '';
+            for (let index = 0; index < num; index++) {
+                dr = dr + '— ';
+            }
+            return dr;
+        },
+        pushAncestorsData(evt){
+            var item = this.parentTerms.filter((e) => {
+                return e.value === evt;
+            });
+            this.formAddTerm.ancestors = item[0].ancestors;
+            this.formAddTerm.ancestors.push(evt);
         }
     }
 }

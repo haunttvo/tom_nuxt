@@ -26,7 +26,7 @@ var fnMetaTerms = {
             });
             var pd = termsData.length;
             termsData.forEach((ele) => {
-                metaTerm.find( { ancestors : String(ele._id) }).exec(function(er, rs){
+                metaTerm.find( { ancestors : String(ele._id) }).populate('parent').exec(function(er, rs){
                     ele.children = rs;
                     if (!--pd)
                         return res.status(200).json(termsData);
