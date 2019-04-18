@@ -1,35 +1,18 @@
-<template>
-    <tr>
+<template v-for="(term, idex) in ArrTerms" >
+    <tr :key="`asdas${idex}`">
+        <td>{{ term.name }}</td>
         <td></td>
-        <td>dấd</td>
-        <td>ádasd</td>
-        <td>ádasd</td>
-        <td>âsdasdas</td>
+        <td></td>
+        <td></td>
+        <td></td>
     </tr>
 </template>
 <script>
-import axios from 'axios';
 export default {
     props : {
-        parentId : {
-            type: String
+        ArrTerms : {
+            type: Array
         }
-    },
-    data(){
-        return{
-            arrChildTerms: []
-        }
-    },
-    methods: {
-        getChildTerm(){
-            let vm = this;
-            axios.get(`/api/admin/metaterms/termchildren/${this.parentId}`).then((rs) => {
-                vm.arrChildTerms = rs.data;
-            });
-        }
-    },
-    created() {
-        this.getChildTerm();
-    },
+    }
 }
 </script>

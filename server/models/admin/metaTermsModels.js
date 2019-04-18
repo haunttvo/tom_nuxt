@@ -3,7 +3,8 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema({
     name: {type: String, required: true},
     slug : {type: String, required: true},
-    parentId : { type: String },
+    ancestors : {type: Array},
+    parent : { type: String, default : null },
     description : String,
     termId : { type: String, required: true },
     date_created : { type : Date, default: Date.now }
@@ -19,18 +20,16 @@ var fnMetaTerms = {
         });
     },
     getterms : async function (req, res) {
-        metaTerm.find({ parentId : 0, termId : req.params.idterm }).exec((err, result) => {
-            if(err) console.log(err);
-            var dataTerms = result.map(function(e, index, terms){
-                return Object.assign({children : []}, e._doc);
-
+        metaTerm.find({ parent : null, termId: req.params.idterm }, function(err, result){
+            var termsData = result.map((el) => {
+                return Object.assign({children : []}, el._doc);
             });
-            dataTerms.forEach((el, index) => {
-                childTerms(el, function(err, rs){
-                    el.children = rs;
-                    if(index >= 1){
-                        return res.status(200).json(dataTerms);
-                    }
+            var pd = termsData.length;
+            termsData.forEach((ele) => {
+                metaTerm.find( { ancestors : String(ele._id) }).exec(function(er, rs){
+                    ele.children = rs;
+                    if (!--pd)
+                        return res.status(200).json(termsData);
                 });
             });
         });
@@ -43,21 +42,14 @@ var fnMetaTerms = {
     }
 }
 
-var childTerms = function(data, done){
-    metaTerm.find({parentId : data._id}, function(err, rs){
-        if(err)
-            return done(err);
-        var pending = rs.length;
-        if(!pending)
-            return done(null, rs);
-        var results = rs.map(function(e){
-            return Object.assign({children : []}, e._doc);
+var getAscendants = function(id,root) {
+    var rec = metaTerm.findOne({id: id});
+    if(rec.hasOwnProperty("parents")){
+        (rec["parents"]).forEach(function(parent) {
+            root[parent] = {};
+            getAscendants(parent,root[parent]);
         });
-        results.forEach((el) => {
-            // childTerms();
-        });
-        return done(null, results);
-    });
+    }
 };
 
 module.exports = {metaTerm, fnMetaTerms};

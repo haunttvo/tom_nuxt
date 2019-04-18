@@ -32,8 +32,22 @@
                         </tr>
                     </thead>
                     <tbody>
-                    <pre>{{ listTerms }}</pre>
-                        
+                        <template v-for="(term, index) in listTerms" >
+                            <tr :key="`item${index}`">
+                                <td></td>
+                                <td>{{ term.name }}</td>
+                                <td>{{ term.description }}</td>
+                                <td>{{ term.slug }}</td>
+                                <td></td>
+                            </tr>
+                            <tr v-if="term.children.length > 0" v-for="(termChild, idex) in term.children" :key="`childTerm${idex}`">
+                                <td></td>
+                                <td>{{ termChild.name }}</td>
+                                <td>{{ termChild.description }}</td>
+                                <td>{{ termChild.slug }}</td>
+                                <td></td>
+                            </tr>
+                        </template>
                     </tbody>
                 </table>
             </b-col>
@@ -51,9 +65,9 @@ export default {
     async asyncData({isDev, route, store, env, params, query, req, res, redirect, error}) {
         var termdata = await getTermsData(params.id);
         var optionParentTerm = [{value : '0', text: '--parent--'}];
-        // termdata.data.forEach(element => {
-        //     optionParentTerm.push({ value : element._id, text : element.name });
-        // });
+        termdata.data.forEach(element => {
+            optionParentTerm.push({ value : element._id, text : element.name });
+        });
         return { 
             listTerms : termdata.data,
             parentTerms :  optionParentTerm
@@ -65,6 +79,7 @@ export default {
             formAddTerm : {
                 name : '',
                 parentId : '0',
+                ancestors : [],
                 slug: '',
                 description : '',
                 termId : this.$route.params.id
