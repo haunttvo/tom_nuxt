@@ -47,6 +47,7 @@ module.exports = {
     { src : '~/plugins/veeValidator'},
     { src : '~/plugins/@nuxtaxios' },
     { src : '~/plugins/settingAxios' },
+    { src : '~/plugins/vue-notification' },
     // { src : '~/plugins/jquerySetting' }
   ],
 

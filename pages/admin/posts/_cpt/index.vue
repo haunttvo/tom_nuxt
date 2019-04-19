@@ -74,14 +74,4 @@ export default {
     },
 }
 </script>
-<style lang="scss" scoped>
-    .display_list_posts{
-        
-        .methods{
-            opacity: 0;
-        }
-        .title:hover .methods{
-            opacity: 1;
-        }
-    }
-</style>
+

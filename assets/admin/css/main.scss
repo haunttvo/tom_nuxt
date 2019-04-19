@@ -25,6 +25,14 @@ input[type=number]:focus,
     }
 }
 $cool-red: red;
+.display_list_posts{
+    .methods{
+        opacity: 0;
+    }
+    .title:hover .methods{
+        opacity: 1;
+    }
+}
 .acf-group-multipe-array{
     padding: 10px;
     border: 1px solid rgba(0, 0, 0, 0.125);

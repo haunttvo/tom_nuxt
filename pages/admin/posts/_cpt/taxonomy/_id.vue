@@ -23,6 +23,11 @@
                         <b-form-textarea size="sm" v-model="formAddTerm.description"></b-form-textarea>
                     </b-form-group>
                     <b-button type="button" @click="submitTerms()" size="sm" variant="primary">Add new category</b-button>
+                    <!--<no-ssr>-->
+                        <!--<notifications group="foo" />-->
+                    <!--</no-ssr>-->
+
+
                 </b-form>
             </b-col>
             <b-col col lg=8>
@@ -36,25 +41,21 @@
                             <th>Post</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="display_list_posts">
                         <template v-for="(term, index) in listTerms" >
                             <tr :key="`item${index}`">
                                 <td></td>
-                                <td>{{ term.name }}</td>
+                                <td class="title">
+                                    <p class="mb-0">{{ term.text }}</p>
+                                    <div class="methods">
+                                        <span><n-link :to="`/admin/posts/`">Edit</n-link></span> |
+                                        <span class="text-danger cursor-pointer" @click="deleteTerm(term.value)">Delete</span>
+                                    </div>
+                                </td>
                                 <td>{{ term.description }}</td>
                                 <td>{{ term.slug }}</td>
                                 <td></td>
                             </tr>
-                            <template v-if="term.children.length > 0">
-                                <tr v-for="(termChild, idex) in term.children" :key="`childTerm${idex}`">
-                                    <td></td>
-                                    <td>{{ beforeChildDirection(termChild.ancestors.length) + ' ' + termChild.name }}</td>
-                                    <td>{{ termChild.description }}</td>
-                                    <td>{{ termChild.slug }}</td>
-                                    <td></td>
-                                </tr>
-                            </template>
-                            
                         </template>
                     </tbody>
                 </table>
@@ -64,7 +65,7 @@
 </template>
 <script>
 import axios from 'axios';
-import ChildTerm from './ChildTerm';
+import arrayToTree from 'array-to-tree';
 function getTermsData(idterm){
     return axios.get(`/api/admin/metaterms/getterms/${idterm}`)
 }
@@ -75,25 +76,26 @@ function bfDirecText(num){
     }
     return dr;
 }
+function convertArrOneLevel(tree){
+    return tree.reduce(function(acc, o) {
+        acc.push({ value : o._id, text : bfDirecText(o.ancestors.length) + o.name, ancestors : o.ancestors, description: o.description, slug : o.slug });
+        if(o.children && o.children.length > 0)
+            acc = acc.concat(convertArrOneLevel(o.children));
+        return acc;
+    }, []);
+}
 export default {
     layout: 'admin',
     async asyncData({isDev, route, store, env, params, query, req, res, redirect, error}) {
         var termdata = await getTermsData(params.id);
+        var termArr = arrayToTree(termdata.data, { parentProperty : 'parent', customID: '_id' });
         var optionParentTerm = [{value : null, text: '— parent —', ancestors : []}];
-        termdata.data.forEach(element => {
-            optionParentTerm.push({ value : element._id, text : element.name, ancestors : element.ancestors });
-            if(element.children.length > 0){
-                element.children.forEach((e) => {
-                    optionParentTerm.push({ value : e._id, text : bfDirecText(e.ancestors.length) + e.name, ancestors : e.ancestors });
-                });
-            }
-        });
+        var chilTermTerm = convertArrOneLevel(termArr);
         return { 
-            listTerms : termdata.data,
-            parentTerms :  optionParentTerm
+            listTerms : chilTermTerm,
+            parentTerms :  optionParentTerm.concat(chilTermTerm),
         }
     },
-    components : {ChildTerm},
     data() {
         return {
             formAddTerm : {
@@ -111,24 +113,31 @@ export default {
             let vm = this;
             axios.post('/api/admin/metaterms/addnew', { arg : this.formAddTerm }).then((res) => {
                 getTermsData(vm.$route.params.id).then((rs) => {
-                    vm.listTerms = rs.data;
+                    window.location.reload(true);
+                    // return vm.$router.push(`/admin/posts/${vm.$route.params.cpt}/taxonomy/${vm.$route.params.id}`);
+                    // var resTermsRequest = convertArrOneLevel(arrayToTree(rs.data, { parentProperty : 'parent', customID: '_id' }))
+                    // vm.listTerms = resTermsRequest;
+                    // vm.parentTerms = [{value : null, text: '— parent —', ancestors : []}].concat(resTermsRequest);
                 });
             });
-        },
-        beforeChildDirection(num){
-            var dr = '';
-            for (let index = 0; index < num; index++) {
-                dr = dr + '— ';
-            }
-            return dr;
         },
         pushAncestorsData(evt){
             var item = this.parentTerms.filter((e) => {
                 return e.value === evt;
             });
-            this.formAddTerm.ancestors = item[0].ancestors;
-            this.formAddTerm.ancestors.push(evt);
+            this.formAddTerm.ancestors = item[0].ancestors.concat([evt]);
+        },
+        deleteTerm(idTerm){
+            let confirmDel = confirm('Are you sure delete term');
+            if(confirmDel){
+                axios.delete(`/api/admin/metaterms/delete/${idTerm}`).then((rs) => {
+                    window.location.reload(true);
+                });
+            }
         }
+    },
+    mounted() {
+        
     }
 }
 </script>

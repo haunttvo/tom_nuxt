@@ -7,6 +7,9 @@ module.exports = function(router){
     router.get('/getterms/:idterm', function(req, res){
         return metaTermsModel.fnMetaTerms.getterms(req, res);
     });
+    router.delete('/delete/:idterm', function(req, res){
+        return metaTermsModel.fnMetaTerms.deleteTerm(req, res);
+    });
     router.get('/termchildren/:parentid', function(req, res){
         return metaTermsModel.fnMetaTerms.gettermschildren(req, res);
     });
