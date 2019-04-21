@@ -111,15 +111,16 @@ export default {
     methods: {
         submitTerms(){
             let vm = this;
-            axios.post('/api/admin/metaterms/addnew', { arg : this.formAddTerm }).then((res) => {
-                getTermsData(vm.$route.params.id).then((rs) => {
-                    window.location.reload(true);
-                    // return vm.$router.push(`/admin/posts/${vm.$route.params.cpt}/taxonomy/${vm.$route.params.id}`);
-                    // var resTermsRequest = convertArrOneLevel(arrayToTree(rs.data, { parentProperty : 'parent', customID: '_id' }))
-                    // vm.listTerms = resTermsRequest;
-                    // vm.parentTerms = [{value : null, text: '— parent —', ancestors : []}].concat(resTermsRequest);
-                });
-            });
+            alert(123);
+            // axios.post('/api/admin/metaterms/addnew', { arg : this.formAddTerm }).then((res) => {
+            //     getTermsData(vm.$route.params.id).then((rs) => {
+            //         window.location.reload(true);
+            //         // return vm.$router.push(`/admin/posts/${vm.$route.params.cpt}/taxonomy/${vm.$route.params.id}`);
+            //         // var resTermsRequest = convertArrOneLevel(arrayToTree(rs.data, { parentProperty : 'parent', customID: '_id' }))
+            //         // vm.listTerms = resTermsRequest;
+            //         // vm.parentTerms = [{value : null, text: '— parent —', ancestors : []}].concat(resTermsRequest);
+            //     });
+            // });
         },
         pushAncestorsData(evt){
             var item = this.parentTerms.filter((e) => {
