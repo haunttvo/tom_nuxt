@@ -42,7 +42,7 @@
 import axios from 'axios';
 export default {
     layout: 'admin',
-    async asyncData({params, $axios,store}){
+    async asyncData({params, store}){
         if(store.state.authAdmin){
             let { data } = await axios.get(`/api/admin/posts/listpostcpt/${params.cpt}`);
             return { listpost: data }
