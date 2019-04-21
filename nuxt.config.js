@@ -3,7 +3,7 @@ const webpack = require("webpack");
 module.exports = {
   mode: 'universal',
   env: {
-    baseUrl: 'https://nuxtcms.herokuapp.com/' || 'https://nuxtcms.herokuapp.com/'
+    baseUrl: process.env.BASE_URL || 'https://nuxtcms.herokuapp.com/'
   },
   /*
   ** Headers of the page

@@ -44,7 +44,7 @@ export default {
     layout: 'admin',
     async asyncData({params, $axios,store}){
         if(store.state.authAdmin){
-            let { data } = await $axios.get(`/api/admin/posts/listpostcpt/${params.cpt}`);
+            let { data } = await axios.get(`/api/admin/posts/listpostcpt/${params.cpt}`);
             return { listpost: data }
         }
     },
