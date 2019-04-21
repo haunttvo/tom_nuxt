@@ -37,7 +37,7 @@
 import axios from 'axios';
 export default {
   async asyncData({params}){
-    const {data} = await axios.get(`http://localhost:3000/api/admin/cpt`);
+    const {data} = await axios.get(`/api/admin/cpt`);
     return { items: data } 
   },  
   layout: 'admin',
