@@ -64,6 +64,7 @@
     </div>
 </template>
 <script>
+import Vue from  'vue';
 import axios from 'axios';
 import arrayToTree from 'array-to-tree';
 function getTermsData(idterm){
@@ -111,7 +112,10 @@ export default {
     methods: {
         submitTerms(){
             let vm = this;
-            alert(123);
+            this.$session.flash.set('message', 'thanh cong');
+            window.location.reload(true);
+            // this.$bus.$emit('message', 'success');
+            // alert(123);
             // axios.post('/api/admin/metaterms/addnew', { arg : this.formAddTerm }).then((res) => {
             //     getTermsData(vm.$route.params.id).then((rs) => {
             //         window.location.reload(true);
@@ -137,8 +141,14 @@ export default {
             }
         }
     },
+    created(){
+        // this.$bus.$on('message', function(msg){
+        //     console.log(msg);
+        // });
+
+    },
     mounted() {
-        
+
     }
 }
 </script>

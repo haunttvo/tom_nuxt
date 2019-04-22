@@ -35,6 +35,8 @@
         </b-collapse>
       </b-navbar>    
     </div>
+        <!--notification-->
+        <notifications></notifications>
     <div class="wrapper">
       <nav id="sidebar" :class="{'active' : collapseSidebar, 'position-relative' : true}">
         <div class="sidebar_header">
@@ -263,8 +265,9 @@
 </template>
 
 <script>
-import axios from 'axios'
-const Cookie = process.client ? require('js-cookie') : undefined
+import axios from 'axios';
+import notifications from '~/components/admin/notifications/index';
+const Cookie = process.client ? require('js-cookie') : undefined;
 export default {
     head : {
       script: [
@@ -272,6 +275,7 @@ export default {
       ]
     },
     middleware : 'authenticatedadmin',
+    components : {notifications},
     data(){
         return{
           collapseSidebar: false,
