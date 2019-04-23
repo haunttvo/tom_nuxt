@@ -1,4 +1,10 @@
-import Vue from "vue";
-import VueAWN from "vue-awesome-notifications";
+import Vue           from 'vue'
+import Notifications from 'vue-notification'
 
-Vue.use(VueAWN, options);
+/*
+or for SSR:
+import Notifications from 'vue-notification/dist/ssr.js'
+*/
+if(process.client){
+    Vue.use(Notifications)
+}
