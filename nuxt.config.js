@@ -49,7 +49,7 @@ module.exports = {
     { src : '~/plugins/settingAxios' },
     { src : '~/plugins/eventBus' },
     { src : '~/plugins/vueSession' },
-    { src : '~/plugins/vue-notification' }
+    // { src : '~/plugins/vue-notification' }
   ],
 
   /*

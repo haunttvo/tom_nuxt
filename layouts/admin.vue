@@ -35,8 +35,6 @@
         </b-collapse>
       </b-navbar>    
     </div>
-        <!--notification-->
-        <notifications></notifications>
     <div class="wrapper">
       <nav id="sidebar" :class="{'active' : collapseSidebar, 'position-relative' : true}">
         <div class="sidebar_header">
@@ -257,6 +255,8 @@
                 </button>
             </div>
           </nav>
+          <!--notification-->
+          <notifications></notifications>
           <nuxt/>
         
       </div>

@@ -112,7 +112,11 @@ export default {
     methods: {
         submitTerms(){
             let vm = this;
-            this.$session.flash.set('message', 'thanh cong');
+            this.$session.flash.set('notification', Array({
+                'variant' : 'success',
+                'type' : 'message',
+                'text' : 'Add new success'
+            }));
             window.location.reload(true);
             // this.$bus.$emit('message', 'success');
             // alert(123);
