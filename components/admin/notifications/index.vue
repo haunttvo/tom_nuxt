@@ -1,6 +1,6 @@
 <template>
-    <div>
-        <b-alert variant="success" show dismissible fade >Update Success!</b-alert>
+    <div v-if="display">
+        <b-alert :variant="variant" show dismissible fade >{{ text }}</b-alert>
     </div>
 </template>
 
@@ -22,9 +22,9 @@
             var notification = this.$session.flash.get('notification');
             if(typeof notification !== 'undefined'){
                 this.display = true;
-                this.variant = notification.variant;
-                this.text = notification.text;
-                this.type = notification.type;
+                this.variant = notification[0].variant;
+                this.text = notification[0].text;
+                this.type = notification[0].type;
             }
 
         }
