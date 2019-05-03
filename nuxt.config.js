@@ -44,6 +44,7 @@ module.exports = {
   ** Plugins to load before mounting the App
   */
   plugins: [
+    { src : '~/plugins/init'},
     { src : '~/plugins/veeValidator'},
     { src : '~/plugins/@nuxtaxios' },
     { src : '~/plugins/settingAxios' },

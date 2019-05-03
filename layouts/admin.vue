@@ -116,8 +116,15 @@
                   </ul>
                 </div>
             </li>
+
+            <template v-for="(item, idex) in $menusidebar">
+                <itemposttype :item="item" :key="`sb${idex}`"></itemposttype>
+            </template>
+            
+
+
             <!-- media -->
-            <li class="sidebar-dropdown">
+            <!-- <li class="sidebar-dropdown">
                 <a class="ls_down" href="javascript:void(0)">
                   <i class="fa fa-file"></i>
                   <span>Media</span>
@@ -138,8 +145,9 @@
                     </li>
                   </ul>
                 </div>
-            </li>
-            <li class="sidebar-dropdown">
+            </li> -->
+
+            <!-- <li class="sidebar-dropdown">
                 <a class="ls_down" href="javascript:void(0)">
                   <i class="fa fa-user"></i>
                   <span>User</span>
@@ -150,7 +158,6 @@
                     <li>
                       <n-link to="/admin/users">
                         All users
-                        <!-- <span class="badge badge-pill badge-success">Pro</span> -->
                       </n-link>
                     </li>
                     <li>
@@ -160,7 +167,8 @@
                     </li>
                   </ul>
                 </div>
-            </li>
+            </li> -->
+
             <li class="sidebar-dropdown">
                 <a class="ls_down" href="javascript:void(0)">
                   <i class="fa fa-shopping-cart"></i>
@@ -267,6 +275,7 @@
 <script>
 import axios from 'axios';
 import notifications from '~/components/admin/notifications/index';
+import itemposttype from '~/components/admin/sidebar/posttype';
 const Cookie = process.client ? require('js-cookie') : undefined;
 export default {
     head : {
@@ -275,7 +284,7 @@ export default {
       ]
     },
     middleware : 'authenticatedadmin',
-    components : {notifications},
+    components : {notifications, itemposttype},
     data(){
         return{
           collapseSidebar: false,
@@ -290,6 +299,7 @@ export default {
       }
     },
     created() {
+      // console.log(this.$posttype);
       let vm = this;
       axios.get('/api/admin/cpt').then((rs) => {
         var getTerm = rs.data.map((item) => {
