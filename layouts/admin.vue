@@ -120,9 +120,6 @@
             <template v-for="(item, idex) in $menusidebar">
                 <itemposttype :item="item" :key="`sb${idex}`"></itemposttype>
             </template>
-            
-
-
             <!-- media -->
             <!-- <li class="sidebar-dropdown">
                 <a class="ls_down" href="javascript:void(0)">
@@ -246,6 +243,12 @@
                 <i class="fa fa-dice-d20"></i>
                 <span>Taxonomy</span>
               </n-link>
+            </li>
+            <li>
+                <n-link to="/admin/kioviet">
+                  <i class="fa fa-file"></i>
+                  <span>Sync Kioviet</span>
+                </n-link>
             </li>
             <li>
                 <a href="#">Contact</a>
