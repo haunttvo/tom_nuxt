@@ -16,6 +16,7 @@ const usersControllers = require('./controllers/admin/usersControllers');
 const mediaControllers = require('./controllers/admin/mediaControllers');
 const termsControllers = require('./controllers/admin/termsControllers');
 const metaTermsControllers = require('./controllers/admin/metaTermsControllers');
+const kiovietControllers = require('./controllers/admin/kiovietControllers');
 /** End Import Controller */
 /* middleware */
 const authenAdminController = require('./controllers/admin/authenAdminController');
@@ -78,6 +79,10 @@ async function start() {
     });
     router.group('/metaterms', (router) => {
       metaTermsControllers(router);
+    });
+    /* module kioviet */
+    router.group('/kioviet', (router) => {
+      kiovietControllers(router);
     })
   });
   app.group('/api/authen/admin', (router) => {
