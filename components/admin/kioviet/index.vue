@@ -10,15 +10,13 @@ import Cookies from 'js-cookie';
 export default {
     methods: {
         getAccessToken(){
-            if(!Cookies.get('tokenKioviet')){
-                axios.get('/api/admin/kioviet/accessToken').then(res => {
-                    Cookies.set('tokenKioviet', res.data);
-                });
-            }else{
-                axios.get('https://public.kiotapi.com/products').then(res => {
-                    console.log(res);
-                });
-            }
+            // axios.get('/api/admin/kioviet/accessToken').then(res => {
+            //     Cookies.set('tokenKioviet', res.data);
+            // });
+            axios.get('/api/admin/kioviet/getproducts').then(res => {
+                console.log(res);
+            });
+
             // console.log();
         }
     },

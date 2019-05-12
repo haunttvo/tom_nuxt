@@ -1,11 +1,15 @@
-const express = require('express')
-const consola = require('consola')
-require('express-group-routes')
-const { Nuxt, Builder } = require('nuxt')
-const bodyParser = require('body-parser')
-const mongoose = require('mongoose')
-const app = express()
-app.use(express.static('static'))
+const express = require('express');
+const consola = require('consola');
+require('express-group-routes');
+const { Nuxt, Builder } = require('nuxt');
+const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
+const app = express();
+const session = require('express-session');
+var cookieParser = require('cookie-parser');
+app.use(cookieParser());
+app.use(session({secret: "Shh, its a secret!"}));
+app.use(express.static('static'));
 /** Import Controllers */
 
 const cptControllers = require('./controllers/admin/cptControllers'); 
