@@ -1,23 +1,23 @@
 <template>
     <div>
-        <h2>trang kioviet</h2>
+        <pre>{{dataProduct  }}</pre>
     </div>
 </template>
 
 <script>
 import axios from 'axios';
-import Cookies from 'js-cookie';
 export default {
+    data(){
+      return{
+          dataProduct : []
+      }
+    },
     methods: {
         getAccessToken(){
-            // axios.get('/api/admin/kioviet/accessToken').then(res => {
-            //     Cookies.set('tokenKioviet', res.data);
-            // });
+            let vm = this;
             axios.get('/api/admin/kioviet/getproducts').then(res => {
-                console.log(res);
+                vm.dataProduct = JSON.parse(res.data);
             });
-
-            // console.log();
         }
     },
     mounted() {
