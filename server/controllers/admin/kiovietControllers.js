@@ -1,5 +1,5 @@
 var request = require("request");
-
+var _ = require('lodash');
 /* get accesstoken kioviet */
 
 async function getaccesstoken(req){
@@ -47,14 +47,15 @@ module.exports = function(router){
         getaccesstoken(req).then(response => {
             var options = {
                 method: 'get',
-                url : 'https://public.kiotapi.com/products',
+                url : 'https://public.kiotapi.com/products?pageSize=100&orderBy=id&lastModifiedFrom=2018-01-01&orderDirection=desc',
                 headers : {
                     Retailer : 'namanstore',
                     Authorization : `Bearer ${response.access_token}`
                 }
             };
             request(options, function(err, response, data){
-                return res.status(200).json(data);
+                let arrdata = JSON.parse(data);
+                return res.status(200).json( _.groupBy(arrdata.data,'masterProductId'));
             })
             // req.session.accesstokenkioviet = res.access_token;
         });

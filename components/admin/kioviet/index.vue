@@ -1,6 +1,6 @@
 <template>
     <div>
-        <pre>{{dataProduct  }}</pre>
+        <pre>{{ dataProduct }}</pre>
     </div>
 </template>
 
@@ -9,14 +9,15 @@ import axios from 'axios';
 export default {
     data(){
       return{
-          dataProduct : []
+          dataProduct : {}
       }
     },
     methods: {
         getAccessToken(){
             let vm = this;
             axios.get('/api/admin/kioviet/getproducts').then(res => {
-                vm.dataProduct = JSON.parse(res.data);
+                // console.log(res);
+                vm.dataProduct = res.data;
             });
         }
     },
