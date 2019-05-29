@@ -1,5 +1,13 @@
 var request = require("request");
 var _ = require('lodash');
+var WooCommerceAPI = require('woocommerce-api');
+var WooCommerce = new WooCommerceAPI({
+    url: 'http://localhost/namanstore', // Your store URL
+    consumerKey: 'ck_221095ddfea75373f8a3c7a7204d497ddf0384dc', // Your consumer key
+    consumerSecret: 'cs_ceeadf781816534a82ec32c062e7b2c34b9c7ab4', // Your consumer secret
+    wpAPI: true, // Enable the WP REST API integration
+    version: 'wc/v3' // WooCommerce WP REST API version
+});
 /* get accesstoken kioviet */
 
 async function getaccesstoken(req){
@@ -37,8 +45,6 @@ async function getaccesstoken(req){
             });
         });
     }
-
-
 }
 
 
@@ -47,7 +53,7 @@ module.exports = function(router){
         getaccesstoken(req).then(response => {
             var options = {
                 method: 'get',
-                url : 'https://public.kiotapi.com/products?pageSize=100&orderBy=id&lastModifiedFrom=2018-01-01&orderDirection=desc',
+                url : 'https://public.kiotapi.com/products?pageSize=5&orderBy=id&lastModifiedFrom=2018-01-01&orderDirection=desc',
                 headers : {
                     Retailer : 'namanstore',
                     Authorization : `Bearer ${response.access_token}`
@@ -56,8 +62,94 @@ module.exports = function(router){
             request(options, function(err, response, data){
                 let arrdata = JSON.parse(data);
                 return res.status(200).json( _.groupBy(arrdata.data,'masterProductId'));
-            })
-            // req.session.accesstokenkioviet = res.access_token;
+            });
         });
+    });
+    router.post('/sync', function(req, res){
+        Object.keys(req.body.data).forEach(function(key){
+            req.body.data[key].forEach(function(vl, key){
+                if(key == 0){
+                    let dataproduct = {
+                        name : vl.name,
+                        type: 'variable',
+                    };
+                    WooCommerce.post('products', dataproduct, function(err, data, rs){
+                      let datavariation = {
+                          regular_price: '60.00',
+                          attributes: [
+                              {
+                                  option: 'cpy'
+                              }
+                          ]
+                      };
+                      let rsparse = JSON.parse(rs);
+                        WooCommerce.post('products/attributes/1/terms', { name: 'xanh lá' }, function(errterm, dataterm, rsterm) {
+                            let psterm = JSON.parse(rsterm);
+                            console.log(psterm);
+                            // return res.status(200).json(rs);
+                        });
+                        // WooCommerce.post(`products/${rsparse.id}/variations`, datavariation, function(error, dt, result) {
+                        //     console.log(result);
+                        // });
+                    });
+                }
+            });
+        });
+        return res.status(200).json('ok');
+
+        // var data = {
+        //     name: 'Premium Quality Variation',
+        //     type: 'variable',
+        //     regular_price: '21.99',
+        //     description: 'Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo.',
+        //     short_description: 'Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.',
+        //     categories: [
+        //         {
+        //             id: 9
+        //         },
+        //         {
+        //             id: 14
+        //         }
+        //     ],
+        //     images: [
+        //         {
+        //             src: 'http://demo.woothemes.com/woocommerce/wp-content/uploads/sites/56/2013/06/T_2_front.jpg'
+        //         },
+        //         {
+        //             src: 'http://demo.woothemes.com/woocommerce/wp-content/uploads/sites/56/2013/06/T_2_back.jpg'
+        //         }
+        //     ],
+        //     attributes : [
+        //         {
+        //             'name' : 'Chip',
+        //             'variation' : true,
+        //             'visible'   : true,
+        //             'options'   : [ 'cpy', 'Hồng', 'Tím' ],
+        //         }
+        //     ]
+        // };
+        // WooCommerce.post('products', data, function(err, data, rs) {
+        //     return res.status(200).json(rs);
+        // });
+        // var data = {
+        //     regular_price: '60.00',
+        //     attributes: [
+        //         {
+        //             option: 'cpy'
+        //         }
+        //     ]
+        // };
+        //
+        // WooCommerce.post('products/392/variations', data, function(err, data, rs) {
+        //     res.status(200).json(rs);
+        // });
+        // res.status(200).json(rs);
+        // var data = {
+        //     name: 'xanh lá'
+        // };
+        //
+        // WooCommerce.post('products/attributes/1/terms', data, function(err, data, rs) {
+        //     return res.status(200).json(rs);
+        // });
     });
 }
