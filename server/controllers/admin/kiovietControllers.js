@@ -46,8 +46,67 @@ async function getaccesstoken(req){
         });
     }
 }
+async function insertpd(vl, key){
+    if(key == 0){
+        let dataproduct = {
+            name : vl.name,
+            type: 'variable',
+        };
+        await WooCommerce.post('products', dataproduct, function(err, data, rs){
+            return JSON.parse(rs);
+        });
+    }
+}
+async function pushattr(data){
+    let arrge = [];
+    await req.body.data[key].forEach(function(vl, k){
+        arrge.push(vl.attributes);
+    });
+}
+async function pushattr(data){
+    var arrattr = [];
+    await Object.keys(data).forEach(function(item, key){
+        data[item].forEach(function(b){
+            b.attributes.forEach(function(i){
+                arrattr.push(i);
+            });
+        });
+    });
+    return arrattr;
+}
+async function createproduct(data){
+    var id = [];
+    const prs = Object.keys(data);
 
+        for (const pr of prs) {
+            for (const a of data[pr]){
+                var datapr = {
+                    name: a.name,
+                    type: 'variable',
+                };
+                return new Promise(function(resolve, reject){
+                    WooCommerce.post('products', datapr, function(err, dt, rs) {
+                        if(err){
+                            reject(err);
+                        }
+                        id.push( JSON.parse(rs).id );
+                        resolve(id);
+                    });
+                });
 
+            }
+        }
+    // await Object.keys(data).forEach(function(it, k){
+    //     var datapr = {
+    //         name: data[it][k].name,
+    //         type: 'variable',
+    //     };
+    //     WooCommerce.post('products', datapr, function(err, dt, rs) {
+    //         id.push( JSON.parse(rs).id );
+    //     });
+    // });
+    // return id;
+}
 module.exports = function(router){
     router.get('/getproducts', function(req, res){
         getaccesstoken(req).then(response => {
@@ -66,36 +125,15 @@ module.exports = function(router){
         });
     });
     router.post('/sync', function(req, res){
-        Object.keys(req.body.data).forEach(function(key){
-            req.body.data[key].forEach(function(vl, key){
-                if(key == 0){
-                    let dataproduct = {
-                        name : vl.name,
-                        type: 'variable',
-                    };
-                    WooCommerce.post('products', dataproduct, function(err, data, rs){
-                      let datavariation = {
-                          regular_price: '60.00',
-                          attributes: [
-                              {
-                                  option: 'cpy'
-                              }
-                          ]
-                      };
-                      let rsparse = JSON.parse(rs);
-                        WooCommerce.post('products/attributes/1/terms', { name: 'xanh lá' }, function(errterm, dataterm, rsterm) {
-                            let psterm = JSON.parse(rsterm);
-                            console.log(psterm);
-                            // return res.status(200).json(rs);
-                        });
-                        // WooCommerce.post(`products/${rsparse.id}/variations`, datavariation, function(error, dt, result) {
-                        //     console.log(result);
-                        // });
-                    });
-                }
-            });
+        /* create product */
+        createproduct(req.body.data).then(rs => {
+            return res.status(200).json(rs);
         });
-        return res.status(200).json('ok');
+        // pushattr(req.body.data).then(rs => {
+        //     return res.status(200).json(rs);
+        // });
+
+
 
         // var data = {
         //     name: 'Premium Quality Variation',
