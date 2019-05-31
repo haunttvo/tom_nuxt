@@ -46,73 +46,176 @@ async function getaccesstoken(req){
         });
     }
 }
-async function insertpd(vl, key){
-    if(key == 0){
-        let dataproduct = {
-            name : vl.name,
-            type: 'variable',
-        };
-        await WooCommerce.post('products', dataproduct, function(err, data, rs){
-            return JSON.parse(rs);
-        });
-    }
-}
-async function pushattr(data){
-    let arrge = [];
-    await req.body.data[key].forEach(function(vl, k){
-        arrge.push(vl.attributes);
-    });
-}
-async function pushattr(data){
-    var arrattr = [];
-    await Object.keys(data).forEach(function(item, key){
-        data[item].forEach(function(b){
-            b.attributes.forEach(function(i){
-                arrattr.push(i);
-            });
-        });
-    });
-    return arrattr;
-}
-async function createproduct(data){
-    var id = [];
+
+function createproduct(data){
+    var prproduct = [];
     const prs = Object.keys(data);
-
-        for (const pr of prs) {
-            for (const a of data[pr]){
-                var datapr = {
-                    name: a.name,
+    for (const pr of prs) {
+        if(pr !== 'undefined'){
+            let da = {
+                name : data[pr][0].name,
+                type: 'variable',
+                attributes : [],
+                categories : []
+            };
+            let optioncolor = [];
+            let optionsize = [];
+            for (const item of data[pr]){
+                da.categories.push({name : item.categoryName});
+                for (const atr of item.attributes){
+                    if(atr.attributeName === 'MÀU SẮC'){
+                        optioncolor.push(atr.attributeValue);
+                    }else{
+                        optionsize.push(atr.attributeValue);
+                    }
+                }
+            }
+            let uniqColorAttr = optioncolor.reduce(function(a,b){
+                if (a.indexOf(b) < 0 ) a.push(b);
+                return a;
+            },[]);
+            let uniqSizeAttr = optionsize.reduce(function(a,b){
+                if (a.indexOf(b) < 0 ) a.push(b);
+                return a;
+            },[]);
+            if(uniqColorAttr.length > 0){
+                da.attributes.push({
+                    id:1,
+                    position: 0,
+                    visible: true,
+                    variation: true,
+                    options: uniqColorAttr
+                })
+            }
+            if(uniqSizeAttr.length > 0){
+                da.attributes.push({
+                    id:2,
+                    position: 0,
+                    visible: true,
+                    variation: true,
+                    options: uniqSizeAttr
+                })
+            }
+            prproduct.push(insertproductvariation(da,data[pr]));
+        }else{
+            for(const itemid of data[pr]){
+                let datavariation = {
+                    name : itemid.name,
                     type: 'variable',
+                    attributes : [],
+                    categories : []
                 };
-                return new Promise(function(resolve, reject){
-                    WooCommerce.post('products', datapr, function(err, dt, rs) {
-                        if(err){
-                            reject(err);
+                let optioncolor = [];
+                let optionsize = [];
+                for (const atr of itemid.attributes){
+                    if(atr.attributeName === 'MÀU SẮC'){
+                        optioncolor.push(atr.attributeValue);
+                    }else{
+                        optionsize.push(atr.attributeValue);
+                    }
+                }
+                let uniqColorAttr = optioncolor.reduce(function(a,b){
+                    if (a.indexOf(b) < 0 ) a.push(b);
+                    return a;
+                },[]);
+                let uniqSizeAttr = optionsize.reduce(function(a,b){
+                    if (a.indexOf(b) < 0 ) a.push(b);
+                    return a;
+                },[]);
+                if(uniqColorAttr.length > 0){
+                    datavariation.attributes.push({
+                        id:1,
+                        position: 0,
+                        visible: true,
+                        variation: true,
+                        options: uniqColorAttr
+                    })
+                }
+                if(uniqSizeAttr.length > 0){
+                    datavariation.attributes.push({
+                        id:2,
+                        position: 0,
+                        visible: true,
+                        variation: true,
+                        options: uniqSizeAttr
+                    })
+                }
+                prproduct.push(new Promise(function(resolve, reject){
+                    WooCommerce.post('products', datavariation, function(errvr, datavr, rsvs){
+                        let resvs =  JSON.parse(rsvs);
+                        let dtresva = {
+                            regular_price : itemid.basePrice.toString(),
+                            attributes : []
+                        };
+                        if(itemid.attributes.length > 0){
+                            dtresva.attributes.push(
+                                {
+                                    id: 1,
+                                    options: itemid.attributes[0].attributeValue
+                                },
+                                {
+                                    id: 2,
+                                    options: itemid.attributes[1].attributeValue
+                                }
+                            );
                         }
-                        id.push( JSON.parse(rs).id );
-                        resolve(id);
+                        WooCommerce.post(`products/${resvs.id}/variations`, dtresva, function(errva, datava, resva) {
+                            if(errva){
+                                return reject(errva);
+                            }
+                            return resolve(JSON.parse(resva));
+                        });
                     });
-                });
-
+                }));
             }
         }
-    // await Object.keys(data).forEach(function(it, k){
-    //     var datapr = {
-    //         name: data[it][k].name,
-    //         type: 'variable',
-    //     };
-    //     WooCommerce.post('products', datapr, function(err, dt, rs) {
-    //         id.push( JSON.parse(rs).id );
-    //     });
-    // });
-    // return id;
+    }
+    Promise.all(prproduct).then(function(rs){
+        // console.log(rs);
+    });
+}
+function insertproductvariation(da, prdata){
+    new Promise(function(resolve, reject){
+        WooCommerce.post('products', da, function(err, dt, rs){
+            if(err){
+                return reject(err);
+            }
+            let datares = JSON.parse(rs);
+            /* create product variation when have id */
+            for (const item of prdata){
+                let datavariation = {
+                    regular_price : item.basePrice.toString(),
+                    attributes : []
+                };
+                for(const atr of item.attributes){
+                    if(atr.attributeName === 'MÀU SẮC'){
+                        datavariation.attributes.push({
+                            id: 1,
+                            option : atr.attributeValue
+                        });
+                    }else{
+                        datavariation.attributes.push({
+                            id: 2,
+                            option : atr.attributeValue
+                        });
+                    }
+                }
+                WooCommerce.post(`products/${datares.id}/variations`, datavariation, function(errva, datava, resva) {
+                    if(errva){
+                        return reject(errva);
+                    }
+                    return resolve(JSON.parse(resva));
+                });
+            }
+        });
+    })
 }
 module.exports = function(router){
     router.get('/getproducts', function(req, res){
         getaccesstoken(req).then(response => {
             var options = {
                 method: 'get',
-                url : 'https://public.kiotapi.com/products?pageSize=5&orderBy=id&lastModifiedFrom=2018-01-01&orderDirection=desc',
+                url : 'https://public.kiotapi.com/products?pageSize=50&orderBy=id&lastModifiedFrom=2018-01-01&orderDirection=desc',
                 headers : {
                     Retailer : 'namanstore',
                     Authorization : `Bearer ${response.access_token}`
@@ -126,68 +229,6 @@ module.exports = function(router){
     });
     router.post('/sync', function(req, res){
         /* create product */
-        createproduct(req.body.data).then(rs => {
-            return res.status(200).json(rs);
-        });
-        // pushattr(req.body.data).then(rs => {
-        //     return res.status(200).json(rs);
-        // });
-
-
-
-        // var data = {
-        //     name: 'Premium Quality Variation',
-        //     type: 'variable',
-        //     regular_price: '21.99',
-        //     description: 'Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo.',
-        //     short_description: 'Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.',
-        //     categories: [
-        //         {
-        //             id: 9
-        //         },
-        //         {
-        //             id: 14
-        //         }
-        //     ],
-        //     images: [
-        //         {
-        //             src: 'http://demo.woothemes.com/woocommerce/wp-content/uploads/sites/56/2013/06/T_2_front.jpg'
-        //         },
-        //         {
-        //             src: 'http://demo.woothemes.com/woocommerce/wp-content/uploads/sites/56/2013/06/T_2_back.jpg'
-        //         }
-        //     ],
-        //     attributes : [
-        //         {
-        //             'name' : 'Chip',
-        //             'variation' : true,
-        //             'visible'   : true,
-        //             'options'   : [ 'cpy', 'Hồng', 'Tím' ],
-        //         }
-        //     ]
-        // };
-        // WooCommerce.post('products', data, function(err, data, rs) {
-        //     return res.status(200).json(rs);
-        // });
-        // var data = {
-        //     regular_price: '60.00',
-        //     attributes: [
-        //         {
-        //             option: 'cpy'
-        //         }
-        //     ]
-        // };
-        //
-        // WooCommerce.post('products/392/variations', data, function(err, data, rs) {
-        //     res.status(200).json(rs);
-        // });
-        // res.status(200).json(rs);
-        // var data = {
-        //     name: 'xanh lá'
-        // };
-        //
-        // WooCommerce.post('products/attributes/1/terms', data, function(err, data, rs) {
-        //     return res.status(200).json(rs);
-        // });
+        createproduct(req.body.data);
     });
 }

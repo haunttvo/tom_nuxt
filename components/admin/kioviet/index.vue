@@ -1,6 +1,7 @@
 <template>
     <div>
         <button @click="SyncKivoet()" class="btn btn-info">Sync</button>
+        <button @click="SyncCategories()" class="btn btn-info">SyncCategories</button>
         <!--<pre>{{ dataProduct }}</pre>-->
     </div>
 </template>
@@ -25,6 +26,9 @@ export default {
             axios.post('/api/admin/kioviet/sync', { data: vm.dataProduct }).then(res => {
                 console.log(res);
             });
+        },
+        SyncCategories(){
+
         }
     },
     mounted() {
