@@ -47,20 +47,19 @@ async function getaccesstoken(req){
     }
 }
 
-function createproduct(data){
+async function createproduct(data){
     var prproduct = [];
-    const prs = Object.keys(data);
-    for (const pr of prs) {
-        if(pr !== 'undefined'){
+    if(data.length > 0){
+        for (const pr of data) {
             let da = {
-                name : data[pr][0].name,
+                name : pr[0].name,
                 type: 'variable',
                 attributes : [],
                 categories : []
             };
             let optioncolor = [];
             let optionsize = [];
-            for (const item of data[pr]){
+            for (const item of pr){
                 da.categories.push({name : item.categoryName});
                 for (const atr of item.attributes){
                     if(atr.attributeName === 'MÀU SẮC'){
@@ -96,126 +95,85 @@ function createproduct(data){
                     options: uniqSizeAttr
                 })
             }
-            prproduct.push(insertproductvariation(da,data[pr]));
-        }else{
-            for(const itemid of data[pr]){
-                let datavariation = {
-                    name : itemid.name,
-                    type: 'variable',
-                    attributes : [],
-                    categories : []
-                };
-                let optioncolor = [];
-                let optionsize = [];
-                for (const atr of itemid.attributes){
-                    if(atr.attributeName === 'MÀU SẮC'){
-                        optioncolor.push(atr.attributeValue);
-                    }else{
-                        optionsize.push(atr.attributeValue);
-                    }
-                }
-                let uniqColorAttr = optioncolor.reduce(function(a,b){
-                    if (a.indexOf(b) < 0 ) a.push(b);
-                    return a;
-                },[]);
-                let uniqSizeAttr = optionsize.reduce(function(a,b){
-                    if (a.indexOf(b) < 0 ) a.push(b);
-                    return a;
-                },[]);
-                if(uniqColorAttr.length > 0){
-                    datavariation.attributes.push({
-                        id:1,
-                        position: 0,
-                        visible: true,
-                        variation: true,
-                        options: uniqColorAttr
-                    })
-                }
-                if(uniqSizeAttr.length > 0){
-                    datavariation.attributes.push({
-                        id:2,
-                        position: 0,
-                        visible: true,
-                        variation: true,
-                        options: uniqSizeAttr
-                    })
-                }
-                prproduct.push(new Promise(function(resolve, reject){
-                    WooCommerce.post('products', datavariation, function(errvr, datavr, rsvs){
-                        let resvs =  JSON.parse(rsvs);
-                        let dtresva = {
-                            regular_price : itemid.basePrice.toString(),
-                            attributes : []
-                        };
-                        if(itemid.attributes.length > 0){
-                            dtresva.attributes.push(
-                                {
-                                    id: 1,
-                                    options: itemid.attributes[0].attributeValue
-                                },
-                                {
-                                    id: 2,
-                                    options: itemid.attributes[1].attributeValue
-                                }
-                            );
-                        }
-                        WooCommerce.post(`products/${resvs.id}/variations`, dtresva, function(errva, datava, resva) {
-                            if(errva){
-                                return reject(errva);
-                            }
-                            return resolve(JSON.parse(resva));
-                        });
-                    });
-                }));
-            }
+            prproduct.push(insertproductvariation(da,pr));
         }
     }
-    Promise.all(prproduct).then(function(rs){
-        // console.log(rs);
-    });
+
+    return Promise.all(prproduct);
 }
 function insertproductvariation(da, prdata){
     new Promise(function(resolve, reject){
-        WooCommerce.post('products', da, function(err, dt, rs){
-            if(err){
-                return reject(err);
-            }
-            let datares = JSON.parse(rs);
-            /* create product variation when have id */
-            for (const item of prdata){
-                let datavariation = {
-                    regular_price : item.basePrice.toString(),
-                    attributes : []
-                };
-                for(const atr of item.attributes){
-                    if(atr.attributeName === 'MÀU SẮC'){
-                        datavariation.attributes.push({
-                            id: 1,
-                            option : atr.attributeValue
-                        });
-                    }else{
-                        datavariation.attributes.push({
-                            id: 2,
-                            option : atr.attributeValue
-                        });
-                    }
+        try{
+            WooCommerce.post('products', da, function(err, dt, rs){
+                if(err){
+                    throw err;
                 }
-                WooCommerce.post(`products/${datares.id}/variations`, datavariation, function(errva, datava, resva) {
-                    if(errva){
-                        return reject(errva);
+                let datares = JSON.parse(rs);
+                /* create product variation when have id */
+                for (const item of prdata){
+                    let datavariation = {
+                        regular_price : item.basePrice.toString(),
+                        attributes : []
+                    };
+                    for(const atr of item.attributes){
+                        if(atr.attributeName === 'MÀU SẮC'){
+                            datavariation.attributes.push({
+                                id: 1,
+                                option : atr.attributeValue
+                            });
+                        }else{
+                            datavariation.attributes.push({
+                                id: 2,
+                                option : atr.attributeValue
+                            });
+                        }
                     }
-                    return resolve(JSON.parse(resva));
-                });
-            }
-        });
+                    WooCommerce.post(`products/${datares.id}/variations`, datavariation, function(errva, datava, resva) {
+                        if(errva){
+                            return reject(errva);
+                        }
+                        return resolve(JSON.parse(resva));
+                    });
+                }
+            });
+        }catch (e) {
+            console.log(e);
+        }
+
     })
+}
+async function createTerm(arrdata,termArr, parent = null){
+    arrdata.forEach(function(value, key){
+        let dt = {
+            name: value.categoryName,
+        };
+        if(parent !== null){
+            dt.parent = parent;
+        }
+        termArr.push(new Promise(function(resolve, reject){
+            WooCommerce.post('products/categories', dt, function(err, dataterm, resterm) {
+                if(err){
+                    return reject(err);
+                }
+                return resolve(resterm);
+            });
+        }).then(function(response){
+            if(value.hasChild){
+                let resparse = JSON.parse(response);
+                let idparent = ( resparse.code === 'term_exists' ) ? resparse.data.resource_id : resparse.id;
+                createTerm(value.children, termArr, idparent);
+            }
+        }));
+    });
+    return Promise.all(termArr);
 }
 module.exports = function(router){
     router.get('/getproducts', function(req, res){
         getaccesstoken(req).then(response => {
+            let pagesize = 100;
             var options = {
                 method: 'get',
-                url : 'https://public.kiotapi.com/products?pageSize=50&orderBy=id&lastModifiedFrom=2018-01-01&orderDirection=desc',
+                url : `https://public.kiotapi.com/products?pageSize=${pagesize}&currentItem=200&orderBy=id&orderDirection=asc`,
                 headers : {
                     Retailer : 'namanstore',
                     Authorization : `Bearer ${response.access_token}`
@@ -223,12 +181,35 @@ module.exports = function(router){
             };
             request(options, function(err, response, data){
                 let arrdata = JSON.parse(data);
-                return res.status(200).json( _.groupBy(arrdata.data,'masterProductId'));
+                let dtres = _.groupBy(arrdata.data,'masterProductId');
+                let total = arrdata.total;
+                return res.status(200).json( {total : total, data : dtres, pagesize: pagesize} );
             });
         });
     });
     router.post('/sync', function(req, res){
         /* create product */
-        createproduct(req.body.data);
+        createproduct(req.body.data).then(rs => {
+            return res.status(200).json(rs);
+        });
+    });
+    router.get('/syncterm', function(req, res){
+        getaccesstoken(req).then(response => {
+            var options = {
+                method : 'get',
+                url: 'https://public.kiotapi.com/categories?format=json&includeRemoveIds=true&pageSize=100&currentItem=4&orderBy=categoryName&orderDirection=asc&hierachicalData=true',
+                headers :{
+                    Retailer : 'namanstore',
+                    Authorization : `Bearer ${response.access_token}`
+                }
+            };
+            request(options, function(err, response, data){
+                let arrdata = JSON.parse(data).data;
+                let termArr = [];
+                createTerm(arrdata,termArr).then(rs => {
+                    return res.status(200).json(rs);
+                });
+            });
+        });
     });
 }
